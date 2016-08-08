@@ -22,6 +22,17 @@ var exportedMethods = {
         });
     },
 
+    getUserPreferences(userId) {
+        return Users().then((userCollection) => {
+            return userCollection.findOne({ _id: userId }, { preferences: 1, _id: 0 }).then((userObj) => {
+                if (!userObj) throw "User not found";
+                return userObj;
+            }).catch((error) => {
+                return error;
+            });
+        });
+    },
+
 
     addUsersGeneral(obj) {
         return Users().then((userCollection) => {

@@ -8,8 +8,7 @@
         //clear all input values
         $("#actors").val('');
         $("#genre").val('');
-        $("#director").val('');
-        $("#rating").val('');
+        $("#crew").val('');
         $("#releaseYear").val('');
         $("#keywords").val('');
         $("#title").val('');

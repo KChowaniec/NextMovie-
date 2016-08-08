@@ -8,7 +8,7 @@ const users = data.users;
 const movie = data.movie;
 
 //GET PLAYLIST
-router.get("/playlist", (req, res) => {
+router.get("/", (req, res) => {
     //get playlist information
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
@@ -39,7 +39,7 @@ router.get("/playlist", (req, res) => {
 
 
 //CLEAR PLAYLIST
-router.delete("/playlist/:playlistId", (req, res) => {
+router.delete("/:playlistId", (req, res) => {
     //method to clear out playlist
     let playlistId = req.params.playlistId;
     let clearList = playlist.clearPlaylist(playlistId);
@@ -51,7 +51,7 @@ router.delete("/playlist/:playlistId", (req, res) => {
 });
 
 //CHECK-OFF MOVIE FROM PLAYLIST
-router.put("/playlist/movie/:movieId", (req, res) => {
+router.put("/movie/:movieId", (req, res) => {
     let movieId = req.params.movieId;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
@@ -66,7 +66,7 @@ router.put("/playlist/movie/:movieId", (req, res) => {
 });
 
 //ADD REVIEW TO MOVIE IN PLAYLIST
-router.post("/playlist/reviews/:movieId", (req, res) => {
+router.post("/reviews/:movieId", (req, res) => {
     let movieId = req.params.movieId;
     let reviewData = req.body;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
@@ -83,7 +83,7 @@ router.post("/playlist/reviews/:movieId", (req, res) => {
 });
 
 //REMOVE REVIEW FROM MOVIE IN PLAYLIST
-router.delete("/playlist/movie/:movieId/reviews/:reviewId", (req, res) => {
+router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
     let reviewId = req.params.reviewId;
     let movieId = req.params.movieId;
     //method to delete review from playlist and movie collections
@@ -103,7 +103,7 @@ router.delete("/playlist/movie/:movieId/reviews/:reviewId", (req, res) => {
 });
 
 //UPDATE PLAYLIST TITLE
-router.put("/playlist/title/:playlistId", (req, res) => {
+router.put("/title/:playlistId", (req, res) => {
     //method to clear out playlist
     let playlistId = req.params.playlistId;
     let newTitle = req.body.title;
@@ -117,7 +117,7 @@ router.put("/playlist/title/:playlistId", (req, res) => {
 
 
 //REMOVE MOVIE FROM PLAYLIST
-router.delete("/playlist/movie/:movieId", (req, res) => {
+router.delete("/movie/:movieId", (req, res) => {
     let movieId = req.params.movieId;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
@@ -132,7 +132,7 @@ router.delete("/playlist/movie/:movieId", (req, res) => {
 });
 
 //ADD MOVIE TO PLAYLIST
-router.post("/playlist/:movieId", (req, res) => {
+router.post("/:movieId", (req, res) => {
     let movieId = req.params.movieId;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         //check limit of playlist

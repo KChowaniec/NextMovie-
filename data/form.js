@@ -16,33 +16,6 @@ let exportedMethods = {
         return movielist;
     },
 
-    filterForDirector(directorId, movies, total) {
-
-    },
-
-    getDirectorId(director) {
-        api.getPersonIdByName(director, function (result) {
-            let id = result.results[0].id;
-            console.log(id);
-            return id;
-        });
-        // console.log(getName);
-        //   getName.then((directorId) => {
-        //     let id = directorId.results[0].id;
-        //     /// callback(id);
-        //     exportedMethods.storeDId(id);
-        //     //directorId = id;
-        // });
-    },
-    storeDId(id) {
-        console.log("setting id to " + id);
-        directorId = id;
-    },
-    getDId() {
-        console.log("inside get id");
-        console.log(directorId);
-        return directorId;
-    },
     getKeywordIds(keywords) {
         let ids = [];
         for (var i = 0; i < keywords.length; i++) {
@@ -57,31 +30,17 @@ let exportedMethods = {
     },
     getActorIds(actors) {
 
-        let ids = [];
+        var ids = [];
         for (var i = 0; i < actors.length; i++) {
-            let id = this.addId(actors[i], i, actors);
+            var id = api.getPersonIdByName(actors[i]);
             id.then((newId) => {
-                console.log(newId);
                 ids.push(newId);
             });
         }
-
-        // ids.push(id);
-        console.log(ids);
-        return ids;
-    },
-
-    addId(current, index, array) {
-        return exportedMethods.getPersonIdByName(array[index]).then((personId) => {
-            console.log(personId);
-            if (personId.total_results > 0) {
-                return personId.results[0].id;
-            }
-            else {
-                return;
-            }
+        Promise.all([id]).then(values => {
+            //  console.log(values);
+            return values;
         });
     }
-};
-
+}
 module.exports = exportedMethods; //export methods

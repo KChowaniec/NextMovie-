@@ -6,57 +6,53 @@ const api = data.api;
 const user = data.users;
 let userId = " ";
 
-router.get("/search", (req, res) => {
-    res.render("search/preferences", {
-        partial: "form-validation"
+router.get("/", (req, res) => {
+    //check for user preferences (if any)
+    user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+        user.getUserPreferences(userObj._id).then((preferences) => {
+            if (Object.keys(preferences).length > 0) { //preferences defined
+                res.render("search/form", {
+                    partial: "populate-preferences-script"
+                });
+            }
+            else { //no preferences defined
+                res.render("search/form", {
+                    partial: "form-validation"
+                });
+            }
+        });
     });
 });
 
+router.get("/preferences", (req, res) => {
+    //get user preferences (if any)
+    user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+        user.getUserPreferences(userObj._id).then((preferences) => {
+            preferences.actor = 'Brad Pitt';
+            if (Object.keys(preferences).length > 0) { //preferences defined
+                res.json({ success: true, preferences: preferences });
+            }
+        }).catch((error) => {
+            res.json({ success: false, error: error });
+        });
+    });
+});
 
-router.post("/search", (req, res) => {
+router.post("/", (req, res) => {
     let title = req.body.title;
     let actors = req.body.actors;
     let genres = req.body.genre;
-    let director = req.body.director;
+    let crew = req.body.crew;
     let rating = req.body.rating;
     let evaluation = req.body.evaluation;
     let year = parseInt(req.body.releaseYear);
     let keywords = req.body.keywords;
 
     let parseActors = [];
-    let actorIds = [];
-    let keywordIds = [];
-    var directorId;
     let parseWords = [];
     let parseGenre = [];
-
-    if (actors) {
-        parseActors = actors.split(',');
-        if (parseActors.length == 0) {
-            parseActors.push(actors);
-        }
-        let actorIds = form.getActorIds(parseActors);
-        console.log(actorIds);
-    }
-
-    if (director) {
-        //let id = api.getPersonIdByName(director);
-        // id.then((director) => {
-        //     directorId = director.results[0].id;
-        // });
-        directorId = form.getDirectorId(director);
-        // console.log(id);
-        // directorId = form.getDId();
-        //  console.log(directorId);
-    }
-    if (keywords) {
-        parseWords = keywords.split(',');
-        if (parseWords.length == 0) {
-            parseWords.push(keywords);
-        }
-        // console.log(parseWords);
-        let keywordIds = form.getKeywordIds(parseWords);
-    }
+    let aIds = [];
+    let kIds = [];
 
     if (genres) {
         if (typeof genres === "object") { //multiple genres selected
@@ -69,41 +65,70 @@ router.post("/search", (req, res) => {
         }
     }
 
-    //SEARCH BY MOVIE TITLE
-    if (title) {
-        let result = api.searchByTitle(title);
-        result.then((movies) => {
-            let movielist = form.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
-        }).catch((e) => {
-            res.render("search/preferences", {
-                title: title, actors: actors, genres: genre, director: director,
-                evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
-            });
-        });
+    if (actors) {
+        parseActors = actors.split(',');
+        if (parseActors.length == 0) { //only one actor entered
+            parseActors.push(actors);
+        }
+
+        var actorIds = form.getActorIds(parseActors);
+
     }
 
-    //SEARCH BY CRITERIA
-    else {
-        if (directorId) {
-            let criteria = api.createSearchString(actorIds, parseGenre, directorId, rating, evaluation, year, keywords);
+    if (crew) {
+        var crewName = api.getPersonIdByName(crew);
+        crewName.then((crewId) => {
+            var personId = crewId.results[0].id;
+        });
+    }
+    if (keywords) {
+        parseWords = keywords.split(',');
+        if (parseWords.length == 0) {
+            parseWords.push(keywords);
         }
+        // console.log(parseWords);
+        var keywordIds = form.getKeywordIds(parseWords);
+    }
+
+    Promise.all([crewName, actorIds, keywordIds]).then(values => {
+        let crewId;
+        if (values[0]) {
+            crewId = values[0].results[0].id;
+        }
+        //let actorIds = values[0].results[1];
+        //console.log(actorIds);
+
+        //SEARCH BY MOVIE TITLE
+        if (title) {
+            let result = api.searchByTitle(title);
+            result.then((movies) => {
+                let movielist = form.formatReleaseDate(movies.results);
+                let total = movies.total_results;
+                res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
+            }).catch((e) => {
+                res.render("search/form", {
+                    title: title, actors: actors, genres: genre, crew: crew,
+                    evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
+                });
+            });
+        }
+
+        //SEARCH BY CRITERIA
         else {
-            let criteria = api.createSearchString(actorIds, parseGenre, directorId, rating, evaluation, year, keywordIds);
+            let criteria = api.createSearchString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
             let result = api.searchByCriteria(criteria);
             result.then((movies) => {
                 let movielist = form.formatReleaseDate(movies.results);
                 let total = movies.total_results;
                 res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
             }).catch((e) => {
-                res.render("search/preferences", {
-                    title: title, actors: actors, genres: genre, director: director,
+                res.render("search/form", {
+                    title: title, actors: actors, genres: genre, crew: crew,
                     evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
                 });
             });
         }
-    }
+    });
 });
 
 module.exports = router;

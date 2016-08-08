@@ -9,9 +9,9 @@ module.exports = function(app) {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true })); 
   app.use("/",routerUser);
-  app.use("/",routerMovie);
-  app.use("/",routerPlaylist);
-  app.use("/", routerSearch);
+  app.use("/movies",routerMovie);
+  app.use("/playlist",routerPlaylist);
+  app.use("/search", routerSearch);
   app.use("*", (req, res) => {
         //res.sendStatus(404);
         if (req.cookies.next_movie == undefined){

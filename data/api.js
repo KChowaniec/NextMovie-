@@ -4,7 +4,7 @@ var imgHost = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 var restHost = "https://api.themoviedb.org/3";
 
 let exportedMethods = {
-    createSearchString(actors, genre, director, rating, evaluation, year, keywords) {
+    createSearchString(actors, genre, crew, rating, evaluation, year, keywords) {
         let query = "";
         if (rating) query = query + "&certification_country=US";
         if (evaluation === "equal") query = query + "&certification=" + rating;
@@ -13,7 +13,7 @@ let exportedMethods = {
         if (genre.length > 0) query = query + "&with_genres=" + genre.join('|');
         if (keywords.length > 0) query = query + "&with_keywords=" + keywords.join('|');
         if (actors.length > 0) query = query + "&with_cast=" + actors.join('|');
-        if (director) query = query + "&with_crew=" + director;
+        if (crew) query = query + "&with_crew=" + crew;
 
         query = query + "&sort_by=vote_average.desc"; //sort results by movies with highest rating
         return query;
@@ -81,6 +81,26 @@ let exportedMethods = {
             });
         });
     },
+
+    getPageOfResults(pageNum, url) {
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + url + "&page=" + pageNum, function (response) {
+                response.setEncoding('utf8');
+                var body = '';
+                response.on('data', function (d) {
+                    body += d;
+                });
+                response.on('error', (e) => {
+                    reject(e);
+                });
+                response.on('end', function () {
+                    var parsed = JSON.parse(body);
+                    fulfill(parsed);
+                });
+            });
+        });
+    },
+
     getMovieReviews(movieId) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + movieId + "/reviews" + pathTail, function (response) {
@@ -118,19 +138,21 @@ let exportedMethods = {
         });
     },
 
-    getPersonIdByName(personName, callback) {
-        https.get(restHost + "/search/person" + pathTail + "&query=" + personName + "&include_adult=false", function (response) {
-            response.setEncoding('utf8');
-            var body = '';
-            response.on('data', function (d) {
-                body += d;
-            });
-            response.on('error', (e) => {
-                callback(e);
-            });
-            response.on('end', function () {
-                var parsed = JSON.parse(body);
-                callback(parsed);
+    getPersonIdByName(personName) {
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + "/search/person" + pathTail + "&query=" + personName + "&include_adult=false", function (response) {
+                response.setEncoding('utf8');
+                var body = '';
+                response.on('data', function (d) {
+                    body += d;
+                });
+                response.on('error', (e) => {
+                    callback(e);
+                });
+                response.on('end', function () {
+                    var parsed = JSON.parse(body);
+                    fulfill(parsed);
+                });
             });
         });
     },
