@@ -23,11 +23,6 @@ router.get('/login', function (req, res) {
 });
 
 router.get('/user', function (req, res) {
-	if (req.cookies.next_movie == undefined || (new Date(req.cookies.next_movie.expires) < new Date(Date.now()))) {
-		res.redirect("/login");
-		return;
-	}
-
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
 		if (userObj) {
 			res.render("user/index", {
@@ -38,7 +33,6 @@ router.get('/user', function (req, res) {
 			res.sendStatus(404);
 		}
 	});
-
 });
 
 router.post('/users', function (req, res) {
@@ -112,14 +106,46 @@ router.post('/user/login', function (req, res) {
 
 router.post('/user/update_email', function (req, res) {
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-		userObj.profile.email = req.body.email;
-		users.updateUserById(userObj._id, userObj).then((newUser) => {
-			if (newUser){
-				res.json({ success: true , email: newUser.profile.email});
-			} 
-		}).catch((error) => {
-            res.json({ success: false, message: error });
-        });
+		if (userObj != "Users not found"){
+			userObj.profile.email = req.body.email;
+			users.updateUserById(userObj._id, userObj).then((newUser) => {
+				if (newUser){
+					res.json({ success: true , message: "Update success!", email: newUser.profile.email});
+				} 
+			}).catch((error) => {
+				res.json({ success: false, message: error });
+			});
+		} else {
+			res.json({ success: false, message: "User not found!" });
+		}
+	}).catch((error) => {
+		res.json({ success: false, message: error });
+	});
+});
+
+router.post('/user/update_password', function (req, res) {
+	var newPassword = req.body.newPassword;
+	var confirmPassword = req.body.confirmPassword;
+	if ((newPassword != confirmPassword) || newPassword == null || newPassword == undefined || newPassword == ""){
+		res.json({ success: false, message: "Please entry valid and same new password and confirm password!"});
+		return;
+	}
+	
+	users.getUserBySessionIdAndPassword(req.cookies.next_movie, req.body.oldPassword).then((userObj) => {
+		if (userObj != "Users not found"){
+			userObj.hashedPassword = newPassword;
+			users.updateUserById(userObj._id, userObj).then((newUser) => {
+				if (newUser){
+					res.json({ success: true , message: "Update success!"});
+				} 
+			}).catch((error) => {
+				res.json({ success: false, message: error });
+			});
+		} else {
+			res.json({ success: false, message: "User not found!" });
+		}
+	}).catch((error) => {
+		res.json({ success: false, message: error });
 	});
 });
 

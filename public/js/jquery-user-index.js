@@ -65,7 +65,8 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
         $("#email-error-container")[0].classList.add("hidden");
         
         if ($("#email").val() == $("#email").attr("value")){
-            alert("There is no change about email!");
+            $("#email-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "There is no change about email!";
+            $("#email-error-container")[0].classList.remove("hidden");
             return;
         }
         
@@ -81,11 +82,42 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
         $.ajax(requestConfig).then(function (responseMessage) {
             if (responseMessage.success){
                 $("#email").attr("value", responseMessage.email);
-                $("#email-result-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Update success!";
+                $("#email-result-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
                 $("#email-result-container")[0].classList.remove("hidden");    
             } else {
-                $("email-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Update failure!";
-                $("email-error-container")[0].classList.remove("hidden");   
+                $("#email-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                $("#email-error-container")[0].classList.remove("hidden");   
+            }
+        });
+    });
+    
+    $("#password_btn").bind("click", function(){
+        $("#password-error-container")[0].classList.add("hidden");
+        
+        if ($("#new_password").val() != $("#confirm_new_password").val()){
+            $("#password-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Please entry the same password!";
+            $("#password-error-container")[0].classList.remove("hidden");
+            return;
+        }
+        
+        var requestConfig = {
+            method: "POST",
+            url: "/user/update_password",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                oldPassword: $("#password").val(),
+                newPassword: $("#new_password").val(),
+                confirmPassword: $("#confirm_new_password").val()
+            })
+        };
+        
+        $.ajax(requestConfig).then(function (responseMessage) {
+            if (responseMessage.success){
+                $("#password-result-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                $("#password-result-container")[0].classList.remove("hidden");
+            } else {
+                $("#password-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                $("#password-error-container")[0].classList.remove("hidden");
             }
         });
     });

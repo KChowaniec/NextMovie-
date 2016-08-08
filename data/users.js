@@ -167,8 +167,18 @@ var exportedMethods = {
             });
 
         });
+    },
+    
+    getUserBySessionIdAndPassword(sessionId, password){
+        return Users().then((userCollection) => {
+            return userCollection.findOne({$and: [{sessionId: sessionId}, {hashedPassword: password}]}).then((userObj) => {
+                if (!userObj) throw "Users not found";
+                return userObj;
+            }).catch((error) => {
+                return error;
+            });
+        });
     }
-
 }
 
 module.exports = exportedMethods;
