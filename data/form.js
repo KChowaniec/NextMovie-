@@ -4,6 +4,21 @@ var directorId;
 
 var exportedMethods = {
 
+    createQueryString(actors, genre, crew, rating, evaluation, year, keywords) {
+        let query = "";
+        if (rating) query = query + "certification_country=US";
+        if (evaluation === "equal") query = query + "&certification=" + rating;
+        else if (evaluation === "lte") query = query + "&certification.lte=" + rating;
+        if (year) query = query + "&primary_release_year=" + year;
+        if (genre.length > 0) query = query + "&with_genres=" + genre.join('|');
+        if (keywords.length > 0) query = query + "&with_keywords=" + keywords.join('|');
+        if (actors.length > 0) query = query + "&with_cast=" + actors.join('|');
+        if (crew) query = query + "&with_crew=" + crew;
+
+        query = query + "&sort_by=vote_average.desc"; //sort results by movies with highest rating
+        return query;
+    },
+
     formatReleaseDate(movielist) {
         for (var i = 0; i < movielist.length; i++) {
             if (!movielist[i].release_date == '') {

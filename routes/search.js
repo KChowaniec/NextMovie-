@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var express = require('express');
 var router = express.Router();
 var data = require("../data");
@@ -5,6 +6,15 @@ var form = data.form;
 var api = data.api;
 var user = data.users;
 var userId = " ";
+=======
+const express = require('express');
+const router = express.Router();
+const data = require("../data");
+const form = data.form;
+const api = data.api;
+const user = data.users;
+const url = require('url');
+>>>>>>> 13eb60fb8ee6a4ccbd64a6a4d0c3b18aea623ad7
 
 router.get("/", (req, res) => {
     //check for user preferences (if any)
@@ -37,6 +47,7 @@ router.get("/preferences", (req, res) => {
         });
     });
 });
+
 
 router.post("/", (req, res) => {
     var title = req.body.title;
@@ -91,7 +102,11 @@ router.post("/", (req, res) => {
     }
 
     Promise.all([crewName, actorIds, keywordIds]).then(values => {
+<<<<<<< HEAD
         var crewId;
+=======
+        let crewId, actorId, keywordId;
+>>>>>>> 13eb60fb8ee6a4ccbd64a6a4d0c3b18aea623ad7
         if (values[0]) {
             crewId = values[0].results[0].id;
         }
@@ -115,6 +130,7 @@ router.post("/", (req, res) => {
 
         //SEARCH BY CRITERIA
         else {
+<<<<<<< HEAD
             var criteria = api.createSearchString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
             var result = api.searchByCriteria(criteria);
             result.then((movies) => {
@@ -127,8 +143,50 @@ router.post("/", (req, res) => {
                     evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
                 });
             });
+=======
+            // let criteria = api.createSearchString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
+            //    let queryString = "actors=" + aIds + "&genres=" + parseGenre + "&crew=" + crewId + "&rating=" + rating +
+            //    "&evaluation=" + evaluation + "&year=" + year + "&keywords=" + keywords;
+            let criteriaString = form.createQueryString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
+            //redirect to new URL
+            res.redirect("/search/results?" + criteriaString);
+            // let result = api.searchByCriteria(criteria);
+            // result.then((movies) => {
+            //     let movielist = form.formatReleaseDate(movies.results);
+            //     let total = movies.total_results;
+            //     //console.log(criteria);
+            //     //location.replace("/search/results");// + criteria");
+            //     res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
+            // }).catch((e) => {
+            //     res.render("search/form", {
+            //         title: title, actors: actors, genres: genre, crew: crew,
+            //         evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
+            //     });
+            // });
+>>>>>>> 13eb60fb8ee6a4ccbd64a6a4d0c3b18aea623ad7
         }
     });
+});
+
+router.get("/results", (req, res) => { //call search methods using criteria passed in
+    let queryData = url.parse(req.url, true).query;
+    let queryString = "";
+    Object.keys(queryData).forEach(function (key, index) {
+        queryString = queryString + "&" + key + "=" + queryData[key];
+    });
+
+    let result = api.searchByCriteria(queryString);
+    result.then((movies) => {
+        let movielist = form.formatReleaseDate(movies.results);
+        let total = movies.total_results;
+        res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
+    }).catch((e) => {
+        res.render("search/form", {
+            title: title, actors: actors, genres: genre, crew: crew,
+            evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
+        });
+    });
+
 });
 
 module.exports = router;

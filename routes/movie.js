@@ -17,7 +17,7 @@ router.get('/', function (req, res) {
 	});
 }),
 
-	router.get('/:id', function (req, res) {
+	router.get('/detail/:id', function (req, res) {
 		//check movie collection for this movie
 		movies.getMovieById(req.params.id).then((MovieObj) => {
 			if (MovieObj) {
@@ -41,7 +41,6 @@ router.get('/', function (req, res) {
 			}
 		});
 	}),
-
 
 	router.post('/', function (req, res) {
 		var obj = req.body;

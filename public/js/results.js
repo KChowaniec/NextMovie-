@@ -6,7 +6,7 @@
     var moreDetails = $(".details");
     var userId = $(".results").attr('id');
 
-    addToPlaylist.click(function () {
+     addToPlaylist.click(function () {
         var movieId = this.id;
         var addMovie = {
             method: "POST",
@@ -25,7 +25,6 @@
 
     moreDetails.click(function () {
         var movieId = this.id;
-        console.log(movieId);
-        window.location.replace("/movies/" + movieId);
+        window.location = "/movies/detail/" + movieId;
     });
 })(jQuery);
