@@ -18,6 +18,9 @@
 
     // kvpForm.submit(function (event) {
     //     console.log("in submit");
+    //     window.location.replace("/search/results");
+    // });
+    //     console.log("in submit");
     //     event.preventDefault();
 
     //     // reset the form
