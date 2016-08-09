@@ -43,8 +43,14 @@ router.post('/user/register', function (req, res) {
 		
 		if (user != "failed") {
 			//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-			res.json({ success: true });
-			return;
+			var playlistObj = {};
+			playlistObj.title = "My Playlist";
+			playlistObj.user = userObj.profile;
+			playlistObj.playlistMovies = [];
+			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
+				res.json({ success: true });
+				return;
+			});
 		} else {
 			res.json({ success: false, message: "Registration is failed" });
 		}
@@ -64,6 +70,7 @@ router.get('/user', function (req, res) {
 	});
 });
 
+/*
 router.post('/users', function (req, res) {
 	var obj = req.body;
 	users.addUsersGeneral(obj).then((userObj) => {
@@ -80,6 +87,7 @@ router.post('/users', function (req, res) {
 		}
 	});
 });
+*/
 
 router.post('/users/playlist/:title', function (req, res) {
 	var obj = req.body;
@@ -121,7 +129,7 @@ router.post('/user/login', function (req, res) {
 	var userObj = {};
 	userObj.username = req.body.username;
 	userObj.password = req.body.password;
-	//When to fire the session?
+	
 	users.verifyUser(userObj).then((user) => {
 		if (user != "Users not found") {
 			res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
@@ -291,7 +299,6 @@ router.post('/user/add_ageRating', function (req, res) {
 	var addVal = req.body.value;
 	
 	movie.getAllAgeRating().then((ageRatingList) => {
-		console.log(ageRatingList);
 		var flag = true;
 		for (var i = 0; i < ageRatingList.length; i++){
 			if (addVal == ageRatingList[i]){
