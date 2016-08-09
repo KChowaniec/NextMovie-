@@ -230,9 +230,85 @@ router.post('/user/add_genre', function (req, res) {
 	});
 });
 
+router.post('/user/delete_ageRating', function (req, res) {
+	var deleteVal = req.body.value;
+	
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		if (userObj != "Users not found"){
+			var ageArr = userObj.preferences.ageRating;
+			var newAgeArr = [];
+			for (var i = 0; i < ageArr.length; i++){
+				if (ageArr[i] != deleteVal){
+					newAgeArr.push(ageArr[i]);
+				}
+			}
+			
+			userObj.preferences.Genre = newAgeArr;
+			users.updateUserById(userObj._id, userObj).then((newUser) => {
+				if (newUser){
+					res.json({ success: true , message: "Update success!"});
+				} 
+			}).catch((error) => {
+				res.json({ success: false, message: error });
+			});
+		} else {
+			res.json({ success: false, message: "User not found!" });
+		}
+	}).catch((error) => {
+		res.json({ success: false, message: error });
+	});
+});
+
+router.post('/user/add_ageRating', function (req, res) {
+	var addVal = req.body.value;
+	
+	movie.getAllAgeRating().then((ageRatingList) => {
+		console.log(ageRatingList);
+		var flag = true;
+		for (var i = 0; i < ageRatingList.length; i++){
+			if (addVal == ageRatingList[i]){
+				flag = false;
+				break;
+			}
+		}
+		
+		if (flag){
+			res.json({ success: false, message: "This age rating value is not valid!" });
+			return;
+		} 
+		
+		users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+			if (userObj != "Users not found"){
+				var ageArr = userObj.preferences.ageRating;
+				var flag = true;
+				for (var i = 0; i < ageArr.length; i++){
+					if (ageArr[i] == addVal){
+						flag = false;
+						break;
+					}
+				}
+				
+				if (!flag){
+					res.json({ success: false, message: "This age rating value has been added!" });
+					return;
+				}
+				
+				ageArr.push(addVal);
+				userObj.preferences.ageRating = ageArr;
+				users.updateUserById(userObj._id, userObj).then((newUser) => {
+					if (newUser){
+						res.json({ success: true , message: "Update success!"});
+					} 
+				}).catch((error) => {
+					res.json({ success: false, message: error });
+				});
+			} else {
+				res.json({ success: false, message: "User not found!" });
+			}
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
 module.exports = router;
-
-
-/*
-
-*/

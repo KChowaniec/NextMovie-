@@ -15,9 +15,9 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
         genre_val.push($(this).attr("value"));
     });
     filterAttr(genre, genre_val);
-    var genre_rest_dom = "<ul class='nav nav-pills' role='tablist' id='genre_rest_table'>";
+    var genre_rest_dom = "<h7>Options:</h7><ul class='nav nav-pills' role='tablist' id='genre_rest_table'>";
     for (var i = 0; i < genre.length; i++){
-        genre_rest_dom += "<li role='presentation'><a value=" + genre[i] + ">" + genre[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+        genre_rest_dom += "<li role='presentation'><a value='" + genre[i] + "'>" + genre[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
     }
     genre_rest_dom += "</ul>";
     $("#Genre").append(genre_rest_dom);
@@ -27,7 +27,7 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
         age_rating_val.push($(this).attr("value"));
     });
     filterAttr(age_rating, age_rating_val);
-    var age_rating_rest_dom = "<ul class='nav nav-pills' role='tablist' id='age_rating_rest_table'>";
+    var age_rating_rest_dom = "<h7>Options:</h7><ul class='nav nav-pills' role='tablist' id='age_rating_rest_table'>";
     for (var i = 0; i < age_rating.length; i++){
         age_rating_rest_dom += "<li role='presentation'><a value=" + age_rating[i] + ">" + age_rating[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
     }
@@ -198,7 +198,7 @@ function bindAddBtn(){
              $.ajax(requestConfig).then(function (responseMessage) {
                  if (responseMessage.success){
                      btnDom.parent().parent().remove();
-                     var newDom = "<li role='presentation'><a value=" + add_val + ">" + add_val + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
+                     var newDom = "<li role='presentation'><a value='" + add_val + "'>" + add_val + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
                      $("#" + tableId).append(newDom);
                      
                      bindDelectBtn();
