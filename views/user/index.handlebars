@@ -69,13 +69,13 @@
             
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="Genre">
+                    <ul class="nav nav-pills" role="tablist" id="genre_table">
                     {{#if user.preferences.Genre.length}}
-                        <ul class="nav nav-pills" role="tablist" id="genre_table">
-                            {{#each user.preferences.Genre}}
-                                <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
-                            {{/each}}
-                        </ul>
+                        {{#each user.preferences.Genre}}
+                            <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
+                        {{/each}}
                     {{/if}}
+                    </ul>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="Person">
                     <h7>Actor:</h7>
@@ -104,13 +104,13 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="keywords">
+                    <ul class="nav nav-pills" role="tablist" id="keywords_table">
                     {{#if user.preferences.keywords.length}}
-                        <ul class="nav nav-pills" role="tablist" id="keywords_table">
-                            {{#each user.preferences.keywords}}
-                                <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
-                            {{/each}}
-                        </ul>
+                        {{#each user.preferences.keywords}}
+                            <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
+                        {{/each}}
                     {{/if}}
+                    </ul>
                     <div class="col-lg-12">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for Keyword">
@@ -121,22 +121,22 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="releaseYear">
+                    <ul class="nav nav-pills" role="tablist" id="year_table">
                     {{#if user.preferences.releaseYear.length}}
-                        <ul class="nav nav-pills" role="tablist" id="year_table">
-                            {{#each user.preferences.releaseYear}}
-                                <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
-                            {{/each}}
-                        </ul>
+                        {{#each user.preferences.releaseYear}}
+                            <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
+                        {{/each}}
                     {{/if}}
+                    </ul>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="ageRating">
+                    <ul class="nav nav-pills" role="tablist" id="age_rating_table">
                     {{#if user.preferences.ageRating.length}}
-                        <ul class="nav nav-pills" role="tablist" id="age_rating_table">
-                            {{#each user.preferences.ageRating}}
-                                <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
-                            {{/each}}
-                        </ul>
+                        {{#each user.preferences.ageRating}}
+                            <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
+                        {{/each}}
                     {{/if}}
+                    </ul>
                 </div>
             </div>
         <div>

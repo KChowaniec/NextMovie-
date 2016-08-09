@@ -4,6 +4,7 @@
 var express = require('express');
 var users = require('../data/users');
 var movie = require('../data/movie');
+var playlist = require('../data/playlist');
 var router = express.Router();
 var xss = require('xss');
 var crypto = require('crypto');
@@ -45,7 +46,7 @@ router.post('/user/register', function (req, res) {
 			//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
 			var playlistObj = {};
 			playlistObj.title = "My Playlist";
-			playlistObj.user = userObj.profile;
+			playlistObj.user = user.profile;
 			playlistObj.playlistMovies = [];
 			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
 				res.json({ success: true });
@@ -128,7 +129,11 @@ router.delete('/users/:id', function (req, res) {
 router.post('/user/login', function (req, res) {
 	var userObj = {};
 	userObj.username = req.body.username;
-	userObj.password = req.body.password;
+	
+	var hash=crypto.createHash("sha1");
+	hash.update(req.body.password);
+	var password=hash.digest("hex");
+	userObj.password = password;
 	
 	users.verifyUser(userObj).then((user) => {
 		if (user != "Users not found") {
@@ -170,7 +175,11 @@ router.post('/user/update_password', function (req, res) {
 	
 	users.getUserBySessionIdAndPassword(req.cookies.next_movie, req.body.oldPassword).then((userObj) => {
 		if (userObj != "Users not found"){
-			userObj.hashedPassword = newPassword;
+			var hash=crypto.createHash("sha1");
+			hash.update(newPassword);
+			var password=hash.digest("hex");
+			
+			userObj.hashedPassword = password;
 			users.updateUserById(userObj._id, userObj).then((newUser) => {
 				if (newUser){
 					res.json({ success: true , message: "Update success!"});

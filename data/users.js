@@ -143,6 +143,14 @@ var exportedMethods = {
                     username: username,
                     name: name,
                     email: email
+                },
+                preferences: {
+                    Actor: [],
+                    Genre: [],
+                    Director: [],
+                    releaseYear: [],
+                    ageRating: [],
+                    keywords: []
                 }
             };
             return userCollection.insertOne(obj).then((userObj) => {
