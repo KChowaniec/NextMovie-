@@ -358,7 +358,30 @@ var exportedMethods = {
                 });
             });
         });
-    }
+    },
+    
+    getAllGenre(){
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + "/genre/movie/list" + pathTail, (res) => {
+                res.setEncoding('utf8');
+                var _data = '';
+                res.on('data', (d) => {
+                    _data += d;
+                });
+                
+                res.on('end', () => {
+                    var genreArr = [];
+                    var rs = JSON.parse(_data).genres;
+                    
+                    for (var i = 0; i < rs.length; i++){
+                        genreArr.push(rs[i].name);
+                    }
+                    
+                    fulfill(genreArr);
+                });
+            });
+        });
+    } 
 }
 
 module.exports = exportedMethods;

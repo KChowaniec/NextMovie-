@@ -17,7 +17,7 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
     filterAttr(genre, genre_val);
     var genre_rest_dom = "<ul class='nav nav-pills' role='tablist' id='genre_rest_table'>";
     for (var i = 0; i < genre.length; i++){
-        genre_rest_dom += "<li role='presentation'><a value=" + genre[i] + ">" + genre[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>"
+        genre_rest_dom += "<li role='presentation'><a value=" + genre[i] + ">" + genre[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
     }
     genre_rest_dom += "</ul>";
     $("#Genre").append(genre_rest_dom);
@@ -29,33 +29,18 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
     filterAttr(age_rating, age_rating_val);
     var age_rating_rest_dom = "<ul class='nav nav-pills' role='tablist' id='age_rating_rest_table'>";
     for (var i = 0; i < age_rating.length; i++){
-        age_rating_rest_dom += "<li role='presentation'><a value=" + age_rating[i] + ">" + age_rating[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>"
+        age_rating_rest_dom += "<li role='presentation'><a value=" + age_rating[i] + ">" + age_rating[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
     }
     age_rating_rest_dom += "</ul>";
     $("#ageRating").append(age_rating_rest_dom);
     
-    $("#preferences button.close").each(function(){
-        var that = this;
-        $(that).bind("click", function(){
-            var delete_val = $(this).parent().attr("value");
-            var attr_key = $(this).parent().parent().parent().parent().attr("id");
-            
-        });
-    });
+    bindDelectBtn();
+    bindAddBtn();
     
     $("#preferences button.search_attr").each(function(){
         var that = this;
         $(that).bind("click", function(){
             var search_val = $(this).parent().prev().val();
-            var attr_key = $(this).parent().parent().parent().parent().attr("id");
-            
-        });
-    });
-    
-    $("#preferences .glyphicon-plus").each(function(){
-        var that = this;
-        $(that).bind("click", function(){
-            var delete_val = $(this).parent().attr("value");
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
             
         });
@@ -130,3 +115,98 @@ function filterAttr(dataSet, valStr){
     }
 }
 
+function bindDelectBtn(){
+    $("#preferences button.close").each(function(){
+        var that = this;
+        $(that).unbind("click");
+        
+        $(that).bind("click", function(){
+            var btnDom = $(this);
+            var delete_val = $(this).parent().attr("value");
+            var attr_key = $(this).parent().parent().parent().parent().attr("id");
+            
+            var url = "/user/delete_";
+            var tableId = "";
+            var restTableId = "";
+            if (attr_key == "Genre"){
+                url += "genre";
+                restTableId = "genre_";
+            } else if (attr_key == "ageRating"){
+                url += attr_key;
+                restTableId = "age_rating_";
+            } else if (attr_key == "releaseYear"){
+                url += attr_key;
+            }
+            restTableId += "rest_table";
+            
+            var requestConfig = {
+                method: "POST",
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    value: delete_val
+                })
+            };
+            
+             $.ajax(requestConfig).then(function (responseMessage) {
+                 if (responseMessage.success){
+                     btnDom.parent().parent().remove();
+                     var newDom = "<li role='presentation'><a value=" + delete_val + ">" + delete_val + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                     $("#" + restTableId).append(newDom);
+                     
+                     bindDelectBtn();
+                     bindAddBtn();
+                 } else {
+                     
+                 }
+             });
+        });
+    });
+}
+
+function bindAddBtn(){
+    $("#preferences .glyphicon-plus").each(function(){
+        var that = this;
+        $(that).unbind("click");
+        
+        $(that).bind("click", function(){
+            var btnDom = $(this);
+            var add_val = $(this).parent().attr("value");
+            var attr_key = $(this).parent().parent().parent().parent().attr("id");
+            
+            var url = "/user/add_";
+            if (attr_key == "Genre"){
+                url += "genre";
+                tableId = "genre_";
+            } else if (attr_key == "ageRating"){
+                url += attr_key;
+                tableId = "age_rating_";
+            } else if (attr_key == "releaseYear"){
+                url += attr_key;
+            }
+            tableId += "table";
+            
+            var requestConfig = {
+                method: "POST",
+                url: url,
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    value: add_val
+                })
+            };
+            
+             $.ajax(requestConfig).then(function (responseMessage) {
+                 if (responseMessage.success){
+                     btnDom.parent().parent().remove();
+                     var newDom = "<li role='presentation'><a value=" + add_val + ">" + add_val + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
+                     $("#" + tableId).append(newDom);
+                     
+                     bindDelectBtn();
+                     bindAddBtn();
+                 } else {
+                     
+                 }
+             });
+        });
+    });
+}

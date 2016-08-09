@@ -2,7 +2,8 @@
  * @author warri
  */
 var express = require('express');
-var users = require('../data/users')
+var users = require('../data/users');
+var movie = require('../data/movie');
 var router = express.Router();
 const xss = require('xss');
 
@@ -149,4 +150,89 @@ router.post('/user/update_password', function (req, res) {
 	});
 });
 
+router.post('/user/delete_genre', function (req, res) {
+	var deleteVal = req.body.value;
+	
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		if (userObj != "Users not found"){
+			var genreArr = userObj.preferences.Genre;
+			var newGenArr = [];
+			for (var i = 0; i < genreArr.length; i++){
+				if (genreArr[i] != deleteVal){
+					newGenArr.push(genreArr[i]);
+				}
+			}
+			
+			userObj.preferences.Genre = newGenArr;
+			users.updateUserById(userObj._id, userObj).then((newUser) => {
+				if (newUser){
+					res.json({ success: true , message: "Update success!"});
+				} 
+			}).catch((error) => {
+				res.json({ success: false, message: error });
+			});
+		} else {
+			res.json({ success: false, message: "User not found!" });
+		}
+	}).catch((error) => {
+		res.json({ success: false, message: error });
+	});
+});
+
+router.post('/user/add_genre', function (req, res) {
+	var addVal = req.body.value;
+	
+	movie.getAllGenre().then((genreList) => {
+		var flag = true;
+		for (var i = 0; i < genreList.length; i++){
+			if (addVal == genreList[i]){
+				flag = false;
+				break;
+			}
+		}
+		
+		if (flag){
+			res.json({ success: false, message: "This genre value is not valid!" });
+			return;
+		} 
+		
+		users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+			if (userObj != "Users not found"){
+				var genreArr = userObj.preferences.Genre;
+				var flag = true;
+				for (var i = 0; i < genreArr.length; i++){
+					if (genreArr[i] == addVal){
+						flag = false;
+						break;
+					}
+				}
+				
+				if (!flag){
+					res.json({ success: false, message: "This genre value has been added!" });
+					return;
+				}
+				
+				genreArr.push(addVal);
+				userObj.preferences.Genre = genreArr;
+				users.updateUserById(userObj._id, userObj).then((newUser) => {
+					if (newUser){
+						res.json({ success: true , message: "Update success!"});
+					} 
+				}).catch((error) => {
+					res.json({ success: false, message: error });
+				});
+			} else {
+				res.json({ success: false, message: "User not found!" });
+			}
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
 module.exports = router;
+
+
+/*
+
+*/

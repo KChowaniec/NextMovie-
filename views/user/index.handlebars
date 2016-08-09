@@ -140,7 +140,7 @@
                 </div>
                 <div role="tabpanel" class="tab-pane" id="ageRating">
                     {{#if user.preferences.ageRating.length}}
-                        <ul class="nav nav-pills" role="tablist" id="rating_table">
+                        <ul class="nav nav-pills" role="tablist" id="age_rating_table">
                             {{#each user.preferences.ageRating}}
                                 <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
                             {{/each}}
