@@ -4,7 +4,8 @@
 var express = require('express');
 var users = require('../data/users')
 var router = express.Router();
-const xss = require('xss');
+var xss = require('xss');
+var crypto = require('crypto');
 
 router.get('/users', function (req, res) {
   	 var list = users.getAllUser().then((userlist) => {
@@ -21,6 +22,33 @@ router.get('/login', function (req, res) {
 		partial: "jquery-login-scripts"
 	});
 });
+
+router.get('/register',function(req,res){
+	res.render("layouts/register", {
+		partial: "jquery-register-scripts"
+	});
+}),
+
+router.post('/user/register', function (req, res) {
+	var username=req.body.username;
+	console.log(req.body.password);
+	var hash=crypto.createHash("sha1");
+	hash.update(req.body.password);
+	var password=hash.digest("hex");
+	var name=req.body.name;
+	var email=req.body.email;
+	//When to fire the session?
+	users.addUser(username,password,name,email).then((user) => {
+		
+		if (user != "failed") {
+			//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+			res.json({ success: true });
+			return;
+		} else {
+			res.json({ success: false, message: "Registration is failed" });
+		}
+	});
+}),
 
 router.get('/user', function (req, res) {
 	if (req.cookies.next_movie == undefined || (new Date(req.cookies.next_movie.expires) < new Date(Date.now()))) {

@@ -1,8 +1,8 @@
-const dbConnection = require("../config/mongoConnection");
-const data = require("../data/");
-const users = data.users;
-const playlist = data.playlist;
-const movie = data.movie;
+var dbConnection = require("../config/mongoConnection");
+var data = require("../data/");
+var users = data.users;
+var playlist = data.playlist;
+var movie = data.movie;
 
 var https = require("https");
 var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";

@@ -134,8 +134,8 @@ var exportedMethods = {
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
             console.log("Adding user");
-            let userId = uuid.v4();
-            let obj = {
+            var userId = uuid.v4();
+            var obj = {
                 _id: userId,
                 hashedPassword: pwd,
                 profile: {
@@ -146,6 +146,7 @@ var exportedMethods = {
                 }
             };
             return userCollection.insertOne(obj).then((userObj) => {
+                if(!userObj) throw "failed";
                 return userObj.insertedId;
             }).then(newId => {
                 return this.getUserById(newId);

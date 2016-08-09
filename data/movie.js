@@ -31,8 +31,8 @@ var exportedMethods = {
     addMovieGeneral(obj) {
         return Movie().then((movieCollection) => {
             obj["_id"] = uuid.v4();
-            let date = new Date(obj.releaseDate);
-            let formatDate = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear();
+            var date = new Date(obj.releaseDate);
+            var formatDate = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear();
             obj.releaseDate = formatDate;
             return movieCollection.insertOne(obj).then((movieObj) => {
                 return movieObj.insertedId;
@@ -204,7 +204,7 @@ var exportedMethods = {
     },
 
     getMovieByMultiParams(paramObj) {
-        let queryStr = "";
+        var queryStr = "";
         for (var key in paramObj) {
             if (paramObj[key] != null && paramObj[key] != "" && paramObj[key] != undefined) {
                 queryStr += "&with_" + key + "=" + paramObj[key];

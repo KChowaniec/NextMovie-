@@ -3,9 +3,9 @@ var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";
 var imgHost = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 var restHost = "https://api.themoviedb.org/3";
 
-let exportedMethods = {
+var exportedMethods = {
     createSearchString(actors, genre, crew, rating, evaluation, year, keywords) {
-        let query = "";
+        var query = "";
         if (rating) query = query + "&certification_country=US";
         if (evaluation === "equal") query = query + "&certification=" + rating;
         else if (evaluation === "lte") query = query + "&certification.lte=" + rating;
@@ -31,12 +31,12 @@ let exportedMethods = {
                 });
                 response.on('end', function () {
                     var parsed = JSON.parse(body);
-                    let movie = {};
+                    var movie = {};
                     movie._id = movieId;
                     movie.title = parsed.title;
                     movie.description = parsed.overview;
-                    let date = new Date(parsed.release_date);
-                    let formatDate = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear();
+                    var date = new Date(parsed.release_date);
+                    var formatDate = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear();
                     movie.releaseDate = formatDate;
                     movie.averageRating = parsed.vote_average;
                     movie.poster_path = parsed.poster_path;

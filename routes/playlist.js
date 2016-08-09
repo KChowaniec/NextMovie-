@@ -1,11 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const data = require("../data");
-const api = data.api;
-const playlist = data.playlist;
-const users = data.users;
+var express = require('express');
+var router = express.Router();
+var data = require("../data");
+var api = data.api;
+var playlist = data.playlist;
+var users = data.users;
 //const search = data.search;
-const movie = data.movie;
+var movie = data.movie;
 
 //GET PLAYLIST
 router.get("/", (req, res) => {
@@ -13,10 +13,10 @@ router.get("/", (req, res) => {
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
             // let playlistId = req.params.playlistId;
-            let info = playlist.getPlaylistById(playlistInfo._id);//playlist.getPlaylistById(playlistId);
+            var info = playlist.getPlaylistById(playlistInfo._id);//playlist.getPlaylistById(playlistId);
             info.then((result) => {
-                let viewed = [];
-                let unviewed = [];
+                var viewed = [];
+                var unviewed = [];
                 for (var i = 0; i < result.playlistMovies.length; i++) {
                     if (result.playlistMovies[i].viewed == true) {
                         viewed.push(result.playlistMovies[i]);
@@ -41,8 +41,8 @@ router.get("/", (req, res) => {
 //CLEAR PLAYLIST
 router.delete("/:playlistId", (req, res) => {
     //method to clear out playlist
-    let playlistId = req.params.playlistId;
-    let clearList = playlist.clearPlaylist(playlistId);
+    var playlistId = req.params.playlistId;
+    var clearList = playlist.clearPlaylist(playlistId);
     clearList.then((emptyList) => {
         res.json({ success: true });
     }).catch((error) => {
@@ -52,10 +52,10 @@ router.delete("/:playlistId", (req, res) => {
 
 //CHECK-OFF MOVIE FROM PLAYLIST
 router.put("/movie/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
+    var movieId = req.params.movieId;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            let markMovie = playlist.checkOffMovie(playlistInfo._id, movieId);
+            var markMovie = playlist.checkOffMovie(playlistInfo._id, movieId);
             markMovie.then((result) => {
                 res.json({ success: true });
             }).catch((error) => {
@@ -67,12 +67,12 @@ router.put("/movie/:movieId", (req, res) => {
 
 //ADD REVIEW TO MOVIE IN PLAYLIST
 router.post("/reviews/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
-    let reviewData = req.body;
+    var movieId = req.params.movieId;
+    var reviewData = req.body;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
             reviewData.poster = user.profile;
-            let postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
+            var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
             postReview.then((result) => {
                 res.json({ success: true, result: result });
             });
@@ -84,12 +84,12 @@ router.post("/reviews/:movieId", (req, res) => {
 
 //REMOVE REVIEW FROM MOVIE IN PLAYLIST
 router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
-    let reviewId = req.params.reviewId;
-    let movieId = req.params.movieId;
+    var reviewId = req.params.reviewId;
+    var movieId = req.params.movieId;
     //method to delete review from playlist and movie collections
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            let removeReview = playlist.removeReviewFromPlaylist(playlistInfo._id, reviewId);
+            var removeReview = playlist.removeReviewFromPlaylist(playlistInfo._id, reviewId);
             removeReview.then((result) => {
                 //remove corresponding review from movies collection
                 movie.removeReviewByReviewId(movieId, reviewId).then((movie) => {
@@ -105,9 +105,9 @@ router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
 //UPDATE PLAYLIST TITLE
 router.put("/title/:playlistId", (req, res) => {
     //method to clear out playlist
-    let playlistId = req.params.playlistId;
-    let newTitle = req.body.title;
-    let setTitle = playlist.setNewTitle(playlistId, newTitle);
+    var playlistId = req.params.playlistId;
+    var newTitle = req.body.title;
+    var setTitle = playlist.setNewTitle(playlistId, newTitle);
     setTitle.then((result) => {
         res.json({ success: true });
     }).catch((error) => {
@@ -118,10 +118,10 @@ router.put("/title/:playlistId", (req, res) => {
 
 //REMOVE MOVIE FROM PLAYLIST
 router.delete("/movie/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
+    var movieId = req.params.movieId;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            let removeMovie = playlist.removeMovieByMovieId(playlistInfo._id, movieId);
+            var removeMovie = playlist.removeMovieByMovieId(playlistInfo._id, movieId);
             removeMovie.then((result) => {
                 res.json({ success: true });
             }).catch((error) => {
@@ -133,13 +133,13 @@ router.delete("/movie/:movieId", (req, res) => {
 
 //ADD MOVIE TO PLAYLIST
 router.post("/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
+    var movieId = req.params.movieId;
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         //check limit of playlist
-        let playlistInfo = playlist.getPlaylistByUserId(user._id);
+        var playlistInfo = playlist.getPlaylistByUserId(user._id);
         playlistInfo.then((userPlaylist) => {
             //check if movie already exists in playlist
-            let currentMovies = userPlaylist.playlistMovies;
+            var currentMovies = userPlaylist.playlistMovies;
             var index = currentMovies.map(function (e) { return e._id; }).indexOf(movieId);
             if (index == -1) { //movie not in playlist
                 if (userPlaylist.playlistMovies.length == 10) {
@@ -147,13 +147,13 @@ router.post("/:movieId", (req, res) => {
                 }
                 else {
                     //check if movie exists in collection
-                    let movieInfo = "";
+                    var movieInfo = "";
                     movie.getMovieById(movieId).then((details) => {
                         if (!details) { //get details using api
                             api.getMovieDetails(movieId).then((info) => {
                                 movieInfo = info;
                                 //insert movie into movie collection
-                                let addedMovie = movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
+                                var addedMovie = movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
                                 addedMovie.then((result) => {
                                 });
                             }).catch((error) => {
@@ -163,16 +163,16 @@ router.post("/:movieId", (req, res) => {
                         else {
                             movieInfo = details;
                         }
-                        let userId = user._id;
-                        let title = movieInfo.title;
-                        let overview;
+                        var userId = user._id;
+                        var title = movieInfo.title;
+                        var overview;
                         if (movieInfo.description) {
                             overview = movieInfo.description;
                         }
                         else {
                             overview = movieInfo.overview;
                         }
-                        let newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
+                        var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
                         newList.then((addedMovie) => {
                             res.json({ success: true });
                         });

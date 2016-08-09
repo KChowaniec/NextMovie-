@@ -1,15 +1,15 @@
-let ids = [];
-const api = require("./api");
+var ids = [];
+var api = require("./api");
 var directorId;
 
-let exportedMethods = {
+var exportedMethods = {
 
     formatReleaseDate(movielist) {
         for (var i = 0; i < movielist.length; i++) {
             if (!movielist[i].release_date == '') {
-                let parsedDate = Date.parse(movielist[i].release_date);
-                let newDate = new Date(parsedDate);
-                let formatDate = (newDate.getMonth() + 1) + "/" + newDate.getDay() + "/" + newDate.getFullYear();
+                var parsedDate = Date.parse(movielist[i].release_date);
+                var newDate = new Date(parsedDate);
+                var formatDate = (newDate.getMonth() + 1) + "/" + newDate.getDay() + "/" + newDate.getFullYear();
                 movielist[i].release_date = formatDate;
             }
         }
@@ -17,9 +17,9 @@ let exportedMethods = {
     },
 
     getKeywordIds(keywords) {
-        let ids = [];
+        var ids = [];
         for (var i = 0; i < keywords.length; i++) {
-            let wordId = this.getKeywordIdByName(keywords[i]);
+            var wordId = this.getKeywordIdByName(keywords[i]);
             wordId.then((keywordId) => {
                 if (keywordId.total_results > 0) {
                     ids.push(keywordId.results[0].id);

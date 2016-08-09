@@ -6,11 +6,11 @@ Description:
 This module exports the form methods 
 */
 
-const form = require("./form");
-const users = require("./users");
-const playlist = require("./playlist");
-const movie = require("./movie");
-const api = require("./api");
+var form = require("./form");
+var users = require("./users");
+var playlist = require("./playlist");
+var movie = require("./movie");
+var api = require("./api");
 
 module.exports = {
     form: form,

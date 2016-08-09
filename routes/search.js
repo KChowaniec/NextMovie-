@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const data = require("../data");
-const form = data.form;
-const api = data.api;
-const user = data.users;
-let userId = " ";
+var express = require('express');
+var router = express.Router();
+var data = require("../data");
+var form = data.form;
+var api = data.api;
+var user = data.users;
+var userId = " ";
 
 router.get("/", (req, res) => {
     //check for user preferences (if any)
@@ -39,20 +39,20 @@ router.get("/preferences", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    let title = req.body.title;
-    let actors = req.body.actors;
-    let genres = req.body.genre;
-    let crew = req.body.crew;
-    let rating = req.body.rating;
-    let evaluation = req.body.evaluation;
-    let year = parseInt(req.body.releaseYear);
-    let keywords = req.body.keywords;
+    var title = req.body.title;
+    var actors = req.body.actors;
+    var genres = req.body.genre;
+    var crew = req.body.crew;
+    var rating = req.body.rating;
+    var evaluation = req.body.evaluation;
+    var year = parseInt(req.body.releaseYear);
+    var keywords = req.body.keywords;
 
-    let parseActors = [];
-    let parseWords = [];
-    let parseGenre = [];
-    let aIds = [];
-    let kIds = [];
+    var parseActors = [];
+    var parseWords = [];
+    var parseGenre = [];
+    var aIds = [];
+    var kIds = [];
 
     if (genres) {
         if (typeof genres === "object") { //multiple genres selected
@@ -91,19 +91,19 @@ router.post("/", (req, res) => {
     }
 
     Promise.all([crewName, actorIds, keywordIds]).then(values => {
-        let crewId;
+        var crewId;
         if (values[0]) {
             crewId = values[0].results[0].id;
         }
-        //let actorIds = values[0].results[1];
+        //var actorIds = values[0].results[1];
         //console.log(actorIds);
 
         //SEARCH BY MOVIE TITLE
         if (title) {
-            let result = api.searchByTitle(title);
+            var result = api.searchByTitle(title);
             result.then((movies) => {
-                let movielist = form.formatReleaseDate(movies.results);
-                let total = movies.total_results;
+                var movielist = form.formatReleaseDate(movies.results);
+                var total = movies.total_results;
                 res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
             }).catch((e) => {
                 res.render("search/form", {
@@ -115,11 +115,11 @@ router.post("/", (req, res) => {
 
         //SEARCH BY CRITERIA
         else {
-            let criteria = api.createSearchString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
-            let result = api.searchByCriteria(criteria);
+            var criteria = api.createSearchString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
+            var result = api.searchByCriteria(criteria);
             result.then((movies) => {
-                let movielist = form.formatReleaseDate(movies.results);
-                let total = movies.total_results;
+                var movielist = form.formatReleaseDate(movies.results);
+                var total = movies.total_results;
                 res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
             }).catch((e) => {
                 res.render("search/form", {
