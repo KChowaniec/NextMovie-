@@ -149,7 +149,6 @@ function bindDelectBtn(){
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
             
             var url = "/user/delete_";
-            var tableId = "";
             var restTableId = "";
             if (attr_key == "Genre"){
                 url += "genre";
@@ -159,6 +158,9 @@ function bindDelectBtn(){
                 restTableId = "age_rating_";
             } else if (attr_key == "releaseYear"){
                 url += attr_key;
+            } else if (attr_key == "keywords"){
+                url += attr_key;
+                restTableId = "keywords_";
             }
             restTableId += "rest_table";
             
@@ -171,18 +173,24 @@ function bindDelectBtn(){
                 })
             };
             
-             $.ajax(requestConfig).then(function (responseMessage) {
-                 if (responseMessage.success){
-                     btnDom.parent().parent().remove();
-                     var newDom = "<li role='presentation'><a value=" + delete_val + ">" + delete_val + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
-                     $("#" + restTableId).append(newDom);
-                     
-                     bindDelectBtn();
-                     bindAddBtn();
-                 } else {
-                     
-                 }
-             });
+            $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.success){
+                    var search_val = btnDom.parent().parent().parent().next().find("input").val();
+                    btnDom.parent().parent().remove();
+                    if (attr_key = "keywords"){
+                        if (delete_val.indexOf(search_val) == -1){
+                            return;
+                        }
+                    } 
+                    var newDom = "<li role='presentation'><a value=" + delete_val + ">" + delete_val + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                    $("#" + restTableId).append(newDom);
+                    
+                    bindDelectBtn();
+                    bindAddBtn();
+                } else {
+                    
+                }
+            });
         });
     });
 }
@@ -210,7 +218,7 @@ function bindAddBtn(){
             } else if (attr_key == "keywords"){
                 url += attr_key;
                 tableId = "keywords_";
-            }
+            } 
             tableId += "table";
             
             var requestConfig = {

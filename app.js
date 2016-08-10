@@ -3,12 +3,10 @@ const bodyParser = require("body-parser");
 const app = express();
 const static = express.static(__dirname + '/public');
 const cookieParser = require('cookie-parser');
-
 const configRoutes = require("./routes");
-
 const exphbs = require('express-handlebars');
-
 const Handlebars = require('handlebars');
+const users = require('./data/users');
 
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
@@ -53,6 +51,13 @@ app.use(function(request, response, next) {
 		response.redirect("/login");
         return;
 	} 
+    
+    users.getUserBySessionId(request.cookies.next_movie).then((userObj) => {
+        if (!userObj){
+            response.redirect("/login");
+            return;
+        }
+    });
     
     next();
 });
