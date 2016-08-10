@@ -37,6 +37,36 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
     bindDelectBtn();
     bindAddBtn();
     
+    $(".add_year").bind("click", function(){
+        $("#release-year-error-container")[0].classList.add("hidden");
+        var addYear = $(this).parent().prev().val();
+        var now = new Date();
+        if (addYear < 1900 || addYear > now.getFullYear){
+            $("#release-year-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Year is not valid!";
+            $("#release-year-error-container")[0].classList.remove("hidden");
+            return;
+        }
+        
+        var requestConfig = {
+            method: "POST",
+            url: "/user/add_releaseYear",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                year: addYear
+            })
+        };
+        $.ajax(requestConfig).then(function (responseMessage) {
+            if (responseMessage.success){
+                var newDom = "<li role='presentation'><a value='" + addYear + "'>" + addYear + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
+                $("#year_table").append(newDom);
+                
+                bindDelectBtn();
+            } else {
+                
+            }
+        });
+    });
+    
     $("#preferences button.search_attr").each(function(){
         var that = this;
         $(that).bind("click", function(){
@@ -57,7 +87,11 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
                     var options_dom = "";
                     
                     for (var i = 0; i < rs.length; i++){
-                        options_dom += "<li role='presentation'><a value='" + rs[i].name + "'>" + rs[i].name + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                        if (attr_key == "person"){
+                            options_dom += "<li role='presentation'><a value='" + rs[i].id + "'>" + rs[i].name + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                        } else {
+                            options_dom += "<li role='presentation'><a value='" + rs[i].name + "'>" + rs[i].name + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                        }
                     }
                     $("#" + attr_key + "_rest_table").append(options_dom);
                     bindDelectBtn();
@@ -213,13 +247,12 @@ function bindAddBtn(){
             } else if (attr_key == "ageRating"){
                 url += attr_key;
                 tableId = "age_rating_";
-            } else if (attr_key == "releaseYear"){
-                url += attr_key;
             } else if (attr_key == "keywords"){
                 url += attr_key;
                 tableId = "keywords_";
-            } 
-            tableId += "table";
+            } else if (attr_key == "person"){
+                url += attr_key;
+            }
             
             var requestConfig = {
                 method: "POST",
@@ -233,7 +266,12 @@ function bindAddBtn(){
              $.ajax(requestConfig).then(function (responseMessage) {
                  if (responseMessage.success){
                      btnDom.parent().parent().remove();
+                     if (attr_key == "person"){
+                         tableId = responseMessage.mark + "_";
+                         add_val = responseMessage.name;
+                     }
                      var newDom = "<li role='presentation'><a value='" + add_val + "'>" + add_val + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
+                     tableId += "table";
                      $("#" + tableId).append(newDom);
                      
                      bindDelectBtn();

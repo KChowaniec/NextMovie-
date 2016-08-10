@@ -334,38 +334,30 @@ router.post('/user/add_ageRating', function (req, res) {
 router.post('/user/delete_keywords', function (req, res) {
 	var deleteVal = req.body.value;
 	
-	api.getKeywordIdByName(deleteVal).then((keyword) => {
-		if (keyword.total_results > 0){
-			users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-				var keywordArr = userObj.preferences.keywords;
-				var newKeywordArr = [];
-				var flag = true;
-				for (var i = 0; i < keywordArr.length; i++){
-					if (keywordArr[i] == deleteVal){
-						flag = false;
-					} else {
-						newKeywordArr.push(keywordArr[i]);
-					}
-				}
-				if (flag){
-					res.json({ success: false, message: "This keyword value has not been added!" });
-					return;
-				}
-				
-				userObj.preferences.keywords = newKeywordArr;
-				users.updateUserById(userObj._id, userObj).then((newUser) => {
-					if (newUser){
-						res.json({ success: true , message: "Update success!"});
-					} 
-				}).catch((error) => {
-					res.json({ success: false, message: error });
-				});
-			});
-		} else {
-			res.json({ success: false, message: "Keyword not found!" });
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var keywordArr = userObj.preferences.keywords;
+		var newKeywordArr = [];
+		var flag = true;
+		for (var i = 0; i < keywordArr.length; i++){
+			if (keywordArr[i] == deleteVal){
+				flag = false;
+			} else {
+				newKeywordArr.push(keywordArr[i]);
+			}
 		}
-	}).catch((error) => {
-		res.json({ success: false, message: error });
+		if (flag){
+			res.json({ success: false, message: "This keyword value has not been added!" });
+			return;
+		}
+		
+		userObj.preferences.keywords = newKeywordArr;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
 	});
 });
 
@@ -402,6 +394,152 @@ router.post('/user/add_keywords', function (req, res) {
 		}
 	}).catch((error) => {
 		res.json({ success: false, message: error });
+	});
+});
+
+router.post('/user/add_releaseYear', function (req, res) {
+	var year = req.body.year;
+	var now = new Date();
+	
+	if (year < 1900 || year > now.getFullYear){
+		res.json({ success: false, message: "Year is not valid!" });
+		return;
+	}
+	
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var releaseYear = userObj.preferences.releaseYear;
+		var newReleaseYear = [];
+		var flag = true;
+		for (var i = 0; i < releaseYear.length; i++){
+			if (releaseYear[i] == year){
+				flag = false;
+			} else {
+				newReleaseYear.push(releaseYear[i]);
+			}
+		}
+		
+		if (!flag){
+			res.json({ success: false, message: "The year has been added!" });
+			return;
+		}
+		
+		newReleaseYear.push(year);
+		userObj.preferences.releaseYear = newReleaseYear;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
+router.post('/user/delete_releaseYear', function (req, res) {
+	var year = req.body.value;
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var releaseYear = userObj.preferences.releaseYear;
+		var newReleaseYear = [];
+		var flag = true;
+		for (var i = 0; i < releaseYear.length; i++){
+			if (releaseYear[i] == year){
+				flag = false;
+			} else {
+				newReleaseYear.push(releaseYear[i]);
+			}
+		}
+		
+		if (flag){
+			res.json({ success: false, message: "You did not add this year!" });
+			return;
+		}
+		
+		userObj.preferences.releaseYear = newReleaseYear;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
+router.post('/user/add_person', function (req, res) {
+	var addVal = req.body.value;
+	
+	api.getCreditByPersonId(addVal).then((person) => {
+		if (person.id == null || person.id == undefined){
+			res.json({ success: false, message: "Person doesn't existed!" });
+			return;
+		}
+		
+		addVal = person.name;
+		users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+			var actorArr = userObj.preferences.Actor;
+			var newActorArr = [];
+			var directorArr = userObj.preferences.Director;
+			var newDirectorArr = [];
+			var flag = true;
+			var mark = "";
+			if (person.movie_credits.cast.length > 0){
+				mark = "actor";
+				for (var i = 0; i < actorArr.length; i++){
+					if (actorArr[i] == addVal){
+						flag = false;
+					} else {
+						newActorArr.push(actorArr[i]);
+					}
+				}
+				if (!flag){
+					res.json({ success: false, message: "The actor has been added!" });
+					return;
+				}
+				
+				newActorArr.push(addVal);
+				userObj.preferences.Actor = newActorArr;
+			} else if (person.movie_credits.crew.length > 0){
+				for (var i = 0; i < person.movie_credits.crew.length; i++){
+					if (person.movie_credits.crew[i].job == "Director"){
+						flag = false;
+						break;
+					}
+				}
+				
+				if (flag){
+					res.json({ success: false, message: "The person is not Actor or Director!" });
+					return;
+				}
+				
+				flag = true;
+				mark = "director";
+				for (var i = 0; i < directorArr.length; i++){
+					if (directorArr[i] == addVal){
+						flag = false;
+					} else {
+						newDirectorArr.push(directorArr[i]);
+					}
+				}
+				if (!flag){
+					res.json({ success: false, message: "The director has been added!" });
+					return;
+				}
+				
+				newDirectorArr.push(addVal);
+				userObj.preferences.Director = newDirectorArr;
+			} else {
+				res.json({ success: false, message: "The person is not Actor or Director!" });
+				return;
+			}
+			
+			users.updateUserById(userObj._id, userObj).then((newUser) => {
+				if (newUser){
+					res.json({ success: true , mark: mark, name: addVal, message: "Update success!"});
+				} 
+			}).catch((error) => {
+				res.json({ success: false, message: error });
+			});
+		});
 	});
 });
 

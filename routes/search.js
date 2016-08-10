@@ -168,7 +168,15 @@ router.get("/keywords", (req, res) => {
 });
 
 router.get("/person", (req, res) => {
-    
+    api.searchPersonByName(req.query.value).then((result) => {
+        if (result.length > 0){
+            res.json({ success: true, results: result});
+        } else {
+            res.json({ success: false, message: "Person not found"});
+        }
+    }).catch((error) => {
+        res.json({ success: false, message: error });
+    });
 });
 
 module.exports = router;
