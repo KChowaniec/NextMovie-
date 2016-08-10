@@ -14,11 +14,11 @@ module.exports = function(app) {
   app.use("/search", routerSearch);
   app.use("*", (req, res) => {
         //res.sendStatus(404);
-        if (req.cookies.next_movie == undefined){
-            res.redirect("/login");
-        } 
-        else {
-            res.redirect("/user");
-        }
+        // if (req.cookies.next_movie == undefined){
+        //     res.redirect("/login");
+        // } 
+        // else {
+        //     res.redirect("/user");
+        // }
   })
 };

@@ -49,11 +49,9 @@ router.post("/", (req, res) => {
     let year = parseInt(req.body.releaseYear);
     let keywords = req.body.keywords;
 
-    let parseActors = [];
+    var parseActors = [];
     let parseWords = [];
     let parseGenre = [];
-    let aIds = [];
-    let kIds = [];
 
     if (genres) {
         if (typeof genres === "object") { //multiple genres selected
@@ -66,14 +64,30 @@ router.post("/", (req, res) => {
         }
     }
 
+    var fn = function getId(name) { // sample async action
+        return new Promise((fulfill, reject) => {
+            return api.getPersonIdByName(name).then((newId) => {
+                fulfill(parseInt(newId.results[0].id));
+            });
+        });
+    };
+
+    var wordLookup = function getKeywordId(name) {
+        return new Promise((fulfill, reject) => {
+            return api.getKeywordIdByName(name).then((newId) => {
+                fulfill(parseInt(newId.results[0].id));
+            });
+        });
+    };
+
     if (actors) {
         parseActors = actors.split(',');
-        if (parseActors.length == 0) { //only one actor entered
+        if (parseActors.length == 0) {
             parseActors.push(actors);
         }
 
-        var actorIds = form.getActorIds(parseActors);
-
+        var actorId = parseActors.map(fn);
+        var actorIds = Promise.all(actorId);
     }
 
     if (crew) {
@@ -87,17 +101,23 @@ router.post("/", (req, res) => {
         if (parseWords.length == 0) {
             parseWords.push(keywords);
         }
-        // console.log(parseWords);
-        var keywordIds = form.getKeywordIds(parseWords);
+        var keywordId = parseWords.map(wordLookup);
+        var wordIds = Promise.all(keywordId);
     }
 
-    Promise.all([crewName, actorIds, keywordIds]).then(values => {
-        let crewId, actorId, keywordId;
+    Promise.all([crewName, actorIds, wordIds]).then(values => {
+        let crewId, actorList = [], keywordList = [];
         if (values[0]) {
             crewId = values[0].results[0].id;
         }
-        //let actorIds = values[0].results[1];
-        //console.log(actorIds);
+        if (values[1]) {
+            actorList = values[1];
+        }
+
+        if (values[2]) {
+            keywordList = values[2];
+            console.log(keywordList);
+        }
 
         //SEARCH BY MOVIE TITLE
         if (title) {
@@ -108,7 +128,7 @@ router.post("/", (req, res) => {
 
         //SEARCH BY CRITERIA
         else {
-            let criteriaString = form.createQueryString(aIds, parseGenre, crewId, rating, evaluation, year, kIds);
+            let criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
             //redirect to new URL
             res.redirect("/search/results?" + criteriaString);
         }
