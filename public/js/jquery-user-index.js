@@ -37,12 +37,69 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
     bindDelectBtn();
     bindAddBtn();
     
+    $(".add_year").bind("click", function(){
+        $("#release-year-error-container")[0].classList.add("hidden");
+        var addYear = $(this).parent().prev().val();
+        var now = new Date();
+        if (addYear < 1900 || addYear > now.getFullYear){
+            $("#release-year-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Year is not valid!";
+            $("#release-year-error-container")[0].classList.remove("hidden");
+            return;
+        }
+        
+        var requestConfig = {
+            method: "POST",
+            url: "/user/add_releaseYear",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                year: addYear
+            })
+        };
+        $.ajax(requestConfig).then(function (responseMessage) {
+            if (responseMessage.success){
+                var newDom = "<li role='presentation'><a value='" + addYear + "'>" + addYear + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
+                $("#year_table").append(newDom);
+                
+                bindDelectBtn();
+            } else {
+                
+            }
+        });
+    });
+    
     $("#preferences button.search_attr").each(function(){
         var that = this;
         $(that).bind("click", function(){
             var search_val = $(this).parent().prev().val();
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
+            $("#" + attr_key + "_rest_table").children().remove();
             
+            var url = "/search/" + attr_key + "?value=" + search_val;
+            var requestConfig = {
+                method: "GET",
+                url: url,
+                contentType: 'application/json'
+            };
+            
+             $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.success){
+                    var rs = responseMessage.results;
+                    var options_dom = "";
+                    
+                    for (var i = 0; i < rs.length; i++){
+                        if (attr_key == "person"){
+                            options_dom += "<li role='presentation'><a value='" + rs[i].id + "'>" + rs[i].name + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                        } else {
+                            options_dom += "<li role='presentation'><a value='" + rs[i].name + "'>" + rs[i].name + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                        }
+                    }
+                    $("#" + attr_key + "_rest_table").append(options_dom);
+                    bindDelectBtn();
+                    bindAddBtn();
+                } else {
+                       
+                }
+            });
         });
     });
     
@@ -126,7 +183,6 @@ function bindDelectBtn(){
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
             
             var url = "/user/delete_";
-            var tableId = "";
             var restTableId = "";
             if (attr_key == "Genre"){
                 url += "genre";
@@ -136,6 +192,9 @@ function bindDelectBtn(){
                 restTableId = "age_rating_";
             } else if (attr_key == "releaseYear"){
                 url += attr_key;
+            } else if (attr_key == "keywords"){
+                url += attr_key;
+                restTableId = "keywords_";
             }
             restTableId += "rest_table";
             
@@ -148,18 +207,24 @@ function bindDelectBtn(){
                 })
             };
             
-             $.ajax(requestConfig).then(function (responseMessage) {
-                 if (responseMessage.success){
-                     btnDom.parent().parent().remove();
-                     var newDom = "<li role='presentation'><a value=" + delete_val + ">" + delete_val + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
-                     $("#" + restTableId).append(newDom);
-                     
-                     bindDelectBtn();
-                     bindAddBtn();
-                 } else {
-                     
-                 }
-             });
+            $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.success){
+                    var search_val = btnDom.parent().parent().parent().next().find("input").val();
+                    btnDom.parent().parent().remove();
+                    if (attr_key = "keywords"){
+                        if (delete_val.indexOf(search_val) == -1){
+                            return;
+                        }
+                    } 
+                    var newDom = "<li role='presentation'><a value=" + delete_val + ">" + delete_val + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                    $("#" + restTableId).append(newDom);
+                    
+                    bindDelectBtn();
+                    bindAddBtn();
+                } else {
+                    
+                }
+            });
         });
     });
 }
@@ -175,16 +240,19 @@ function bindAddBtn(){
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
             
             var url = "/user/add_";
+            var tableId = "";
             if (attr_key == "Genre"){
                 url += "genre";
                 tableId = "genre_";
             } else if (attr_key == "ageRating"){
                 url += attr_key;
                 tableId = "age_rating_";
-            } else if (attr_key == "releaseYear"){
+            } else if (attr_key == "keywords"){
+                url += attr_key;
+                tableId = "keywords_";
+            } else if (attr_key == "person"){
                 url += attr_key;
             }
-            tableId += "table";
             
             var requestConfig = {
                 method: "POST",
@@ -198,7 +266,12 @@ function bindAddBtn(){
              $.ajax(requestConfig).then(function (responseMessage) {
                  if (responseMessage.success){
                      btnDom.parent().parent().remove();
+                     if (attr_key == "person"){
+                         tableId = responseMessage.mark + "_";
+                         add_val = responseMessage.name;
+                     }
                      var newDom = "<li role='presentation'><a value='" + add_val + "'>" + add_val + "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></a></li>";
+                     tableId += "table";
                      $("#" + tableId).append(newDom);
                      
                      bindDelectBtn();

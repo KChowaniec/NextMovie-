@@ -209,6 +209,70 @@ var exportedMethods = {
                 });
             });
         });
+    },
+    
+    searchKeywordsByName(name){
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + "/search/keyword" + pathTail + "&query=" + name, function (res) {
+                var _data = '';
+                res.on('data', (d) => {
+                    _data += d;
+                });
+                
+                res.on('end', () => {
+                    var rs = JSON.parse(_data).results;
+                    var keywordArr = [];
+                    for (var i = 0; i < 10; i++){
+                        keywordArr.push(rs[i]);
+                    }
+                    
+                    fulfill(keywordArr);
+                });
+            });
+        });
+    },
+    
+    searchPersonByName(name){
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + "/search/person" + pathTail + "&query=" + name, function (res) {
+                var _data = '';
+                res.on('data', (d) => {
+                    _data += d;
+                });
+                
+                res.on('end', () => {
+                    var rs = JSON.parse(_data).results;
+                    var persons = [];
+                    var cnt = 10;
+                    if (rs.length < cnt) cnt = rs.length;
+                    for (var i = 0; i < cnt; i++){
+                        var person = {
+                            id: rs[i].id,
+                            name: rs[i].name,
+                        };
+                        persons.push(person);
+                    }
+                    
+                    fulfill(persons);
+                });
+            });
+        });
+    },
+    
+    getCreditByPersonId(id){
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + "/person/" + id + pathTail + "&append_to_response=movie_credits", function (res) {
+                var _data = '';
+                res.on('data', (d) => {
+                    _data += d;
+                });
+                
+                res.on('end', () => {
+                    var rs = JSON.parse(_data);
+                    fulfill(rs);
+                });
+            });
+        });
     }
 }
 

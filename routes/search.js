@@ -175,4 +175,28 @@ router.get("/results", (req, res) => { //call search methods using criteria pass
     }
 });
 
+router.get("/keywords", (req, res) => {
+    api.searchKeywordsByName(req.query.value).then((result) => {
+        if (result){
+            res.json({ success: true, results: result});
+        } else {
+            res.json({ success: false, message: "Keywords not found"});
+        }
+    }).catch((error) => {
+        res.json({ success: false, message: error });
+    });
+});
+
+router.get("/person", (req, res) => {
+    api.searchPersonByName(req.query.value).then((result) => {
+        if (result.length > 0){
+            res.json({ success: true, results: result});
+        } else {
+            res.json({ success: false, message: "Person not found"});
+        }
+    }).catch((error) => {
+        res.json({ success: false, message: error });
+    });
+});
+
 module.exports = router;
