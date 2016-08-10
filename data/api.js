@@ -209,7 +209,29 @@ var exportedMethods = {
                 });
             });
         });
+    },
+    
+    searchKeywordsByName(name){
+        return new Promise((fulfill, reject) => {
+            https.get(restHost + "/search/keyword" + pathTail + "&query=" + name, function (res) {
+                var _data = '';
+                res.on('data', (d) => {
+                    _data += d;
+                });
+                
+                res.on('end', () => {
+                    var rs = JSON.parse(_data).results;
+                    var keywordArr = [];
+                    for (var i = 0; i < 10; i++){
+                        keywordArr.push(rs[i]);
+                    }
+                    
+                    fulfill(keywordArr);
+                });
+            });
+        });
     }
+    
 }
 
 module.exports = exportedMethods; //export methods

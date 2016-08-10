@@ -153,3 +153,7 @@ button.close{
 .text-goes-here{
     text-align: center;
 }
+
+.mb-10{
+    margin-bottom: 10px;
+}

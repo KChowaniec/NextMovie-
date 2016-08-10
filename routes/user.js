@@ -5,6 +5,7 @@ var express = require('express');
 var users = require('../data/users');
 var movie = require('../data/movie');
 var playlist = require('../data/playlist');
+var api = require("../data/api");
 var router = express.Router();
 var xss = require('xss');
 var crypto = require('crypto');
@@ -352,6 +353,46 @@ router.post('/user/add_ageRating', function (req, res) {
 		}).catch((error) => {
 			res.json({ success: false, message: error });
 		});
+	});
+});
+
+router.post('/user/add_keywords', function (req, res) {
+	var addVal = req.body.value;
+	
+	api.getKeywordIdByName(addVal).then((keyword) => {
+		if (keyword){
+			users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+				if (userObj != "Users not found"){
+					var keywordArr = userObj.preferences.keywords;
+					var flag = true;
+					for (var i = 0; i < keywordArr.length; i++){
+						if (keywordArr[i] == keyword.name){
+							flag = false;
+							break;
+						}
+					}
+					if (!flag){
+						res.json({ success: false, message: "This keyword value has been added!" });
+						return;
+					}
+					
+					keywordArr.push(keyword.name);
+					users.updateUserById(userObj._id, userObj).then((newUser) => {
+						if (newUser){
+							res.json({ success: true , message: "Update success!"});
+						} 
+					}).catch((error) => {
+						res.json({ success: false, message: error });
+					});
+				} else {
+					res.json({ success: false, message: "User not found!" });
+				}
+			});
+		} else {
+			res.json({ success: false, message: "Keyword not found!" });
+		}
+	}).catch((error) => {
+		res.json({ success: false, message: error });
 	});
 });
 

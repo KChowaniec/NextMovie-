@@ -153,4 +153,20 @@ router.get("/results", (req, res) => { //call search methods using criteria pass
 
 });
 
+router.get("/keywords", (req, res) => {
+    api.searchKeywordsByName(req.query.value).then((result) => {
+        if (result){
+            res.json({ success: true, results: result});
+        } else {
+            res.json({ success: false, message: "Keywords not found"});
+        }
+    }).catch((error) => {
+        res.json({ success: false, message: error });
+    });
+});
+
+router.get("/person", (req, res) => {
+    
+});
+
 module.exports = router;

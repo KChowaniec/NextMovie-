@@ -42,7 +42,30 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
         $(that).bind("click", function(){
             var search_val = $(this).parent().prev().val();
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
+            $("#" + attr_key + "_rest_table").children().remove();
             
+            var url = "/search/" + attr_key + "?value=" + search_val;
+            var requestConfig = {
+                method: "GET",
+                url: url,
+                contentType: 'application/json'
+            };
+            
+             $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.success){
+                    var rs = responseMessage.results;
+                    var options_dom = "";
+                    
+                    for (var i = 0; i < rs.length; i++){
+                        options_dom += "<li role='presentation'><a value='" + rs[i].name + "'>" + rs[i].name + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
+                    }
+                    $("#" + attr_key + "_rest_table").append(options_dom);
+                    bindDelectBtn();
+                    bindAddBtn();
+                } else {
+                       
+                }
+            });
         });
     });
     
@@ -175,6 +198,7 @@ function bindAddBtn(){
             var attr_key = $(this).parent().parent().parent().parent().attr("id");
             
             var url = "/user/add_";
+            var tableId = "";
             if (attr_key == "Genre"){
                 url += "genre";
                 tableId = "genre_";
@@ -183,6 +207,9 @@ function bindAddBtn(){
                 tableId = "age_rating_";
             } else if (attr_key == "releaseYear"){
                 url += attr_key;
+            } else if (attr_key == "keywords"){
+                url += attr_key;
+                tableId = "keywords_";
             }
             tableId += "table";
             

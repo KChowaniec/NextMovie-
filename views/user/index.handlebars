@@ -61,7 +61,7 @@
         <div>
             <ul class="nav nav-tabs">
                 <li role="presentation" class="active"><a href="#Genre" aria-controls="genre" role="tab" data-toggle="tab">Genre</a></li>
-                <li role="presentation"><a href="#Person" aria-controls="Person" role="tab" data-toggle="tab">Person</a></li>
+                <li role="presentation"><a href="#person" aria-controls="Person" role="tab" data-toggle="tab">Person</a></li>
                 <li role="presentation"><a href="#keywords" aria-controls="keywords" role="tab" data-toggle="tab">Keywords</a></li>
                 <li role="presentation"><a href="#releaseYear" aria-controls="year" role="tab" data-toggle="tab">Year</a></li>
                 <li role="presentation"><a href="#ageRating" aria-controls="rating" role="tab" data-toggle="tab">Age Rating</a></li>
@@ -77,7 +77,7 @@
                     {{/if}}
                     </ul>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="Person">
+                <div role="tabpanel" class="tab-pane" id="person">
                     <h7>Actor:</h7>
                     <ul class="nav nav-pills" role="tablist" id="actor_table">
                     {{#if user.preferences.Actor.length}}
@@ -94,7 +94,7 @@
                         {{/each}}
                     {{/if}}
                     </ul>
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 mb-10">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for Person">
                             <span class="input-group-btn">
@@ -102,6 +102,8 @@
                             </span>
                         </div>
                     </div>
+                    <h7>Options:</h7>
+                    <ul class="nav nav-pills" role="tablist" id="person_rest_table"></ul>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="keywords">
                     <ul class="nav nav-pills" role="tablist" id="keywords_table">
@@ -111,7 +113,7 @@
                         {{/each}}
                     {{/if}}
                     </ul>
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 mb-10">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for Keyword">
                             <span class="input-group-btn">
@@ -119,6 +121,8 @@
                             </span>
                         </div>
                     </div>
+                    <h7>Options:</h7>
+                    <ul class="nav nav-pills" role="tablist" id="keywords_rest_table"></ul>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="releaseYear">
                     <ul class="nav nav-pills" role="tablist" id="year_table">
