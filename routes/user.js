@@ -21,9 +21,18 @@ router.get('/users', function (req, res) {
 });
 
 router.get('/login', function (req, res) {
-	res.render("layouts/login", {
-		partial: "jquery-login-scripts"
-	});
+	if (req.cookies.next_movie != undefined || req.cookies.next_movie != "" || req.cookies.next_movie != null) {
+		users.deleteSessionIdBySessionId(req.cookies.next_movie).then((info) => {
+			res.cookie("next_movie", "", { expires: new Date(Date.now()), httpOnly: true });
+			res.render("layouts/login", {
+				partial: "jquery-login-scripts"
+			});
+		});
+	} else {
+		res.render("layouts/login", {
+			partial: "jquery-login-scripts"
+		});
+	}
 });
 
 router.get('/register',function(req,res){
@@ -39,7 +48,7 @@ router.post('/user/register', function (req, res) {
 	var password=hash.digest("hex");
 	var name=req.body.name;
 	var email=req.body.email;
-	//When to fire the session?
+	
 	users.addUser(username,password,name,email).then((user) => {
 		
 		if (user != "failed") {
@@ -49,8 +58,15 @@ router.post('/user/register', function (req, res) {
 			playlistObj.user = user.profile;
 			playlistObj.playlistMovies = [];
 			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
-				res.json({ success: true });
-				return;
+				return obj;
+			}).then(() => {
+				user.password = user.hashedPassword;
+				user.username = user.profile.username;
+				users.verifyUser(user).then((userObj) => {
+					res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+					res.json({ success: true });
+					return;
+				});
 			});
 		} else {
 			res.json({ success: false, message: "Registration is failed" });
@@ -60,7 +76,7 @@ router.post('/user/register', function (req, res) {
 
 router.get('/user', function (req, res) {
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-		if (userObj) {
+		if (userObj != "Users not found") {
 			res.render("user/index", {
 				user: userObj,
 				partial: "jquery-user-index-scripts"

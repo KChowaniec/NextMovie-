@@ -27,6 +27,18 @@ var exportedMethods = {
             });
         });
     },
+    
+    getMovieByOriginId(id){
+        return Movie().then((movieCollection) => {
+            return movieCollection.findOne({ id: id }).then((movieObj) => {
+                // if (!movieObj) return "Movie not found";
+                return movieObj;
+            }).catch((error) => {
+                console.log("error");
+                throw error;
+            });
+        });
+    },
 
     addMovieGeneral(obj) {
         return Movie().then((movieCollection) => {

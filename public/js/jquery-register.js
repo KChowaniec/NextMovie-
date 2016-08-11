@@ -41,8 +41,11 @@
 
         $.ajax(requestConfig).then(function (responseMessage) {
                 if (responseMessage.success){
+                    /*
                     $("#error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "success";
                     $("#error-container")[0].classList.remove("hidden");
+                    */
+                    window.location.replace("user");
                 } else {
                     $("#error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
                     $("#error-container")[0].classList.remove("hidden");    

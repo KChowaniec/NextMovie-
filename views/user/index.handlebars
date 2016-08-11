@@ -60,7 +60,7 @@
         <h5>Preferences: </h5>
         <div>
             <ul class="nav nav-tabs">
-                <li role="presentation" class="active"><a href="#Genre" aria-controls="genre" role="tab" data-toggle="tab">Genre</a></li>
+                <li role="presentation" class="active"><a href="#genre" aria-controls="genre" role="tab" data-toggle="tab">Genre</a></li>
                 <li role="presentation"><a href="#person" aria-controls="Person" role="tab" data-toggle="tab">Person</a></li>
                 <li role="presentation"><a href="#keywords" aria-controls="keywords" role="tab" data-toggle="tab">Keywords</a></li>
                 <li role="presentation"><a href="#releaseYear" aria-controls="year" role="tab" data-toggle="tab">Year</a></li>
@@ -68,7 +68,7 @@
             </ul>
             
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="Genre">
+                <div role="tabpanel" class="tab-pane active" id="genre">
                     <ul class="nav nav-pills" role="tablist" id="genre_table">
                     {{#if user.preferences.Genre.length}}
                         {{#each user.preferences.Genre}}
@@ -76,6 +76,12 @@
                         {{/each}}
                     {{/if}}
                     </ul>
+                    <h7>Options:</h7>
+                    <ul class="nav nav-pills" role="tablist" id="genre_rest_table"></ul>
+                    <div class="form-group hidden" id="genre-error-container">
+                        <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
+                        </div>
+                    </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="person">
                     <h7>Actor:</h7>
@@ -148,7 +154,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group hidden" id="release-year-error-container">
+                    <div class="form-group hidden" id="releaseYear-error-container">
                         <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
                         </div>
                     </div>
@@ -161,6 +167,12 @@
                         {{/each}}
                     {{/if}}
                     </ul>
+                    <h7>Options:</h7>
+                    <ul class="nav nav-pills" role="tablist" id="age_rating_rest_table"></ul>
+                    <div class="form-group hidden" id="ageRating-error-container">
+                        <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
+                        </div>
+                    </div>    
                 </div>
             </div>
         <div>

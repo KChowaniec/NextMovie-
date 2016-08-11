@@ -187,6 +187,12 @@ var exportedMethods = {
                 return error;
             });
         });
+    },
+    
+    deleteSessionIdBySessionId(id){
+        return Users().then((userCollection) => {
+            return userCollection.update({ sessionId: id }, { $unset: { "sessionId": "" } });
+        });
     }
 }
 

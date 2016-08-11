@@ -11,40 +11,38 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
 
 (function ($) {
     var genre_val = [];
-    $("#Genre li a").each(function(){
+    $("#genre li a").each(function(){
         genre_val.push($(this).attr("value"));
     });
     filterAttr(genre, genre_val);
-    var genre_rest_dom = "<h7>Options:</h7><ul class='nav nav-pills' role='tablist' id='genre_rest_table'>";
+    var genre_rest_dom = "";
     for (var i = 0; i < genre.length; i++){
         genre_rest_dom += "<li role='presentation'><a value='" + genre[i] + "'>" + genre[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
     }
-    genre_rest_dom += "</ul>";
-    $("#Genre").append(genre_rest_dom);
+    $("#genre_rest_table").append(genre_rest_dom);
     
     var age_rating_val = [];
     $("#ageRating li a").each(function(){
         age_rating_val.push($(this).attr("value"));
     });
     filterAttr(age_rating, age_rating_val);
-    var age_rating_rest_dom = "<h7>Options:</h7><ul class='nav nav-pills' role='tablist' id='age_rating_rest_table'>";
+    var age_rating_rest_dom = "";
     for (var i = 0; i < age_rating.length; i++){
         age_rating_rest_dom += "<li role='presentation'><a value=" + age_rating[i] + ">" + age_rating[i] + "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span></a></li>";
     }
-    age_rating_rest_dom += "</ul>";
-    $("#ageRating").append(age_rating_rest_dom);
+    $("#age_rating_rest_table").append(age_rating_rest_dom);
     
     bindDelectBtn();
     bindAddBtn();
     
     $(".add_year").bind("click", function(){
-        $(".alert-danger").parent().classList.add("hidden");
-        $("#release-year-error-container")[0].classList.add("hidden");
+        $(".alert-danger").parent()[0].classList.add("hidden");
+        $("#releaseYear-error-container")[0].classList.add("hidden");
         var addYear = $(this).parent().prev().val();
         var now = new Date();
         if (addYear < 1900 || addYear > now.getFullYear){
-            $("#release-year-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Year is not valid!";
-            $("#release-year-error-container")[0].classList.remove("hidden");
+            $("#releaseYear-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Year is not valid!";
+            $("#releaseYear-error-container")[0].classList.remove("hidden");
             return;
         }
         
@@ -63,14 +61,14 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
                 
                 bindDelectBtn();
             } else {
-                $("#release-year-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
-                $("#release-year-error-container")[0].classList.remove("hidden");    
+                $("#releaseYear-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                $("#releaseYear-error-container")[0].classList.remove("hidden");    
             }
         });
     });
     
     $("#preferences button.search_attr").each(function(){
-        $(".alert-danger").parent().classList.add("hidden");
+        $(".alert-danger").parent()[0].classList.add("hidden");
         var that = this;
         $(that).bind("click", function(){
             var search_val = $(this).parent().prev().val();
@@ -177,8 +175,8 @@ function filterAttr(dataSet, valStr){
 }
 
 function bindDelectBtn(){
+    $(".alert-danger").parent()[0].classList.add("hidden");
     $("#preferences button.close").each(function(){
-        $(".alert-danger").parent().classList.add("hidden");
         var that = this;
         $(that).unbind("click");
         
@@ -189,7 +187,7 @@ function bindDelectBtn(){
             
             var url = "/user/delete_";
             var restTableId = "";
-            if (attr_key == "Genre"){
+            if (attr_key == "genre"){
                 url += "genre";
                 restTableId = "genre_";
             } else if (attr_key == "ageRating"){
@@ -234,7 +232,8 @@ function bindDelectBtn(){
                     bindDelectBtn();
                     bindAddBtn();
                 } else {
-                    
+                    $("#" + attr_key + "-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                    $("#" + attr_key + "-error-container")[0].classList.remove("hidden");
                 }
             });
         });
@@ -242,7 +241,7 @@ function bindDelectBtn(){
 }
 
 function bindAddBtn(){
-    $(".alert-danger").parent().classList.add("hidden");
+    $(".alert-danger").parent()[0].classList.add("hidden");
     $("#preferences .glyphicon-plus").each(function(){
         var that = this;
         $(that).unbind("click");
@@ -254,7 +253,7 @@ function bindAddBtn(){
             
             var url = "/user/add_";
             var tableId = "";
-            if (attr_key == "Genre"){
+            if (attr_key == "genre"){
                 url += "genre";
                 tableId = "genre_";
             } else if (attr_key == "ageRating"){
@@ -290,7 +289,8 @@ function bindAddBtn(){
                      bindDelectBtn();
                      bindAddBtn();
                  } else {
-                     
+                     $("#" + attr_key + "-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                     $("#" + attr_key + "-error-container")[0].classList.remove("hidden");
                  }
              });
         });
