@@ -38,6 +38,7 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
     bindAddBtn();
     
     $(".add_year").bind("click", function(){
+        $(".alert-danger").parent().classList.add("hidden");
         $("#release-year-error-container")[0].classList.add("hidden");
         var addYear = $(this).parent().prev().val();
         var now = new Date();
@@ -62,12 +63,14 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
                 
                 bindDelectBtn();
             } else {
-                
+                $("#release-year-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                $("#release-year-error-container")[0].classList.remove("hidden");    
             }
         });
     });
     
     $("#preferences button.search_attr").each(function(){
+        $(".alert-danger").parent().classList.add("hidden");
         var that = this;
         $(that).bind("click", function(){
             var search_val = $(this).parent().prev().val();
@@ -97,7 +100,8 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
                     bindDelectBtn();
                     bindAddBtn();
                 } else {
-                       
+                    $("#" + attr_key + "-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                    $("#" + attr_key + "-error-container")[0].classList.remove("hidden");  
                 }
             });
         });
@@ -174,6 +178,7 @@ function filterAttr(dataSet, valStr){
 
 function bindDelectBtn(){
     $("#preferences button.close").each(function(){
+        $(".alert-danger").parent().classList.add("hidden");
         var that = this;
         $(that).unbind("click");
         
@@ -195,6 +200,13 @@ function bindDelectBtn(){
             } else if (attr_key == "keywords"){
                 url += attr_key;
                 restTableId = "keywords_";
+            } else if (attr_key == "person"){
+                if ($(this).parent().parent().parent().attr("id") == "actor_table"){
+                    url += "actor";
+                } else {
+                    url += "director";
+                }
+                restTableId = "person_";
             }
             restTableId += "rest_table";
             
@@ -209,10 +221,10 @@ function bindDelectBtn(){
             
             $.ajax(requestConfig).then(function (responseMessage) {
                 if (responseMessage.success){
-                    var search_val = btnDom.parent().parent().parent().next().find("input").val();
+                    var search_val = btnDom.parent().parent().parent().parent().find("input").val();
                     btnDom.parent().parent().remove();
-                    if (attr_key = "keywords"){
-                        if (delete_val.indexOf(search_val) == -1){
+                    if (attr_key == "keywords" || attr_key == "person"){
+                        if (delete_val.indexOf(search_val) == -1 || search_val == ""){
                             return;
                         }
                     } 
@@ -230,6 +242,7 @@ function bindDelectBtn(){
 }
 
 function bindAddBtn(){
+    $(".alert-danger").parent().classList.add("hidden");
     $("#preferences .glyphicon-plus").each(function(){
         var that = this;
         $(that).unbind("click");

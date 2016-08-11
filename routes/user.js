@@ -71,25 +71,6 @@ router.get('/user', function (req, res) {
 	});
 });
 
-/*
-router.post('/users', function (req, res) {
-	var obj = req.body;
-	users.addUsersGeneral(obj).then((userObj) => {
-		if (userObj) {
-			var playlistObj = {};
-			playlistObj.title = "My Playlist";
-			playlistObj.user = userObj.profile;
-			playlistObj.playlistMovies = [];
-			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
-				res.status(200).send(userObj);
-			});
-		} else {
-			res.sendStatus(404);
-		}
-	});
-});
-*/
-
 router.post('/users/playlist/:title', function (req, res) {
 	var obj = req.body;
 	users.addUsersAndPlaylist(req.params.title, obj).then((userObj) => {
@@ -539,6 +520,64 @@ router.post('/user/add_person', function (req, res) {
 			}).catch((error) => {
 				res.json({ success: false, message: error });
 			});
+		});
+	});
+});
+
+router.post('/user/delete_actor', function (req, res) {
+	var actor = req.body.value;
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var actorArr = userObj.preferences.Actor;
+		var newActorArr = [];
+		var flag = true;
+		for (var i = 0; i < actorArr.length; i++){
+			if (actorArr[i] == actor){
+				flag = false;
+			} else {
+				newActorArr.push(actorArr[i]);
+			}
+		}
+		if (flag){
+			res.json({ success: false, message: "You did not add this actor!" });
+			return;
+		}
+		
+		userObj.preferences.Actor = newActorArr;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
+router.post('/user/delete_director', function (req, res) {
+	var director = req.body.value;
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var directorArr = userObj.preferences.Director;
+		var newDirectorArr = [];
+		var flag = true;
+		for (var i = 0; i < directorArr.length; i++){
+			if (directorArr[i] == director){
+				flag = false;
+			} else {
+				newDirectorArr.push(directorArr[i]);
+			}
+		}
+		if (flag){
+			res.json({ success: false, message: "You did not add this director!" });
+			return;
+		}
+		
+		userObj.preferences.Director = newDirectorArr;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
 		});
 	});
 });
