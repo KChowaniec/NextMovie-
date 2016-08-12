@@ -19,7 +19,7 @@ router.get('/', function (req, res) {
 
 	router.get('/detail/:id', function (req, res) {
 		//check movie collection for this movie
-		movies.getMovieById(req.params.id).then((MovieObj) => {
+		movies.getMovieByOriginId(req.params.id).then((MovieObj) => {
 			if (MovieObj) {
 				res.render("movie/detail", {
 					movie: MovieObj,
@@ -30,6 +30,7 @@ router.get('/', function (req, res) {
 				//search using api
 				api.getMovieDetails(req.params.id).then((movie) => {
 					if (movie) {
+						movies.addMovieGeneral(movie);
 						res.render("movie/detail", {
 							movie: movie,
 							partial: "jquery-detail-scripts"

@@ -30,7 +30,7 @@ new Promise((fulfill, reject) => {
 }).then(() => {
     for (var i = 0; i < listOfMovie.length; i++) {
         movie.getMovieDetailsById(listOfMovie[i]).then((movieObj) => {
-            delete movieObj.id;
+            //delete movieObj.id;
             movie.addMovieGeneral(movieObj);
         });
     }

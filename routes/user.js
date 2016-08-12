@@ -21,9 +21,18 @@ router.get('/users', function (req, res) {
 });
 
 router.get('/login', function (req, res) {
-	res.render("layouts/login", {
-		partial: "jquery-login-scripts"
-	});
+	if (req.cookies.next_movie != undefined || req.cookies.next_movie != "" || req.cookies.next_movie != null) {
+		users.deleteSessionIdBySessionId(req.cookies.next_movie).then((info) => {
+			res.cookie("next_movie", "", { expires: new Date(Date.now()), httpOnly: true });
+			res.render("layouts/login", {
+				partial: "jquery-login-scripts"
+			});
+		});
+	} else {
+		res.render("layouts/login", {
+			partial: "jquery-login-scripts"
+		});
+	}
 });
 
 router.get('/register',function(req,res){
@@ -39,7 +48,7 @@ router.post('/user/register', function (req, res) {
 	var password=hash.digest("hex");
 	var name=req.body.name;
 	var email=req.body.email;
-	//When to fire the session?
+	
 	users.addUser(username,password,name,email).then((user) => {
 		
 		if (user != "failed") {
@@ -49,8 +58,15 @@ router.post('/user/register', function (req, res) {
 			playlistObj.user = user.profile;
 			playlistObj.playlistMovies = [];
 			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
-				res.json({ success: true });
-				return;
+				return obj;
+			}).then(() => {
+				user.password = user.hashedPassword;
+				user.username = user.profile.username;
+				users.verifyUser(user).then((userObj) => {
+					res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+					res.json({ success: true });
+					return;
+				});
 			});
 		} else {
 			res.json({ success: false, message: "Registration is failed" });
@@ -60,7 +76,7 @@ router.post('/user/register', function (req, res) {
 
 router.get('/user', function (req, res) {
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-		if (userObj) {
+		if (userObj != "Users not found") {
 			res.render("user/index", {
 				user: userObj,
 				partial: "jquery-user-index-scripts"
@@ -70,25 +86,6 @@ router.get('/user', function (req, res) {
 		}
 	});
 });
-
-/*
-router.post('/users', function (req, res) {
-	var obj = req.body;
-	users.addUsersGeneral(obj).then((userObj) => {
-		if (userObj) {
-			var playlistObj = {};
-			playlistObj.title = "My Playlist";
-			playlistObj.user = userObj.profile;
-			playlistObj.playlistMovies = [];
-			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
-				res.status(200).send(userObj);
-			});
-		} else {
-			res.sendStatus(404);
-		}
-	});
-});
-*/
 
 router.post('/users/playlist/:title', function (req, res) {
 	var obj = req.body;
@@ -539,6 +536,64 @@ router.post('/user/add_person', function (req, res) {
 			}).catch((error) => {
 				res.json({ success: false, message: error });
 			});
+		});
+	});
+});
+
+router.post('/user/delete_actor', function (req, res) {
+	var actor = req.body.value;
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var actorArr = userObj.preferences.Actor;
+		var newActorArr = [];
+		var flag = true;
+		for (var i = 0; i < actorArr.length; i++){
+			if (actorArr[i] == actor){
+				flag = false;
+			} else {
+				newActorArr.push(actorArr[i]);
+			}
+		}
+		if (flag){
+			res.json({ success: false, message: "You did not add this actor!" });
+			return;
+		}
+		
+		userObj.preferences.Actor = newActorArr;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
+router.post('/user/delete_director', function (req, res) {
+	var director = req.body.value;
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		var directorArr = userObj.preferences.Director;
+		var newDirectorArr = [];
+		var flag = true;
+		for (var i = 0; i < directorArr.length; i++){
+			if (directorArr[i] == director){
+				flag = false;
+			} else {
+				newDirectorArr.push(directorArr[i]);
+			}
+		}
+		if (flag){
+			res.json({ success: false, message: "You did not add this director!" });
+			return;
+		}
+		
+		userObj.preferences.Director = newDirectorArr;
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
 		});
 	});
 });

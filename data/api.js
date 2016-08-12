@@ -2,6 +2,7 @@ var https = require("https");
 var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";
 var imgHost = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 var restHost = "https://api.themoviedb.org/3";
+var uuid = require("node-uuid");
 
 var exportedMethods = {
     createSearchString(actors, genre, crew, rating, evaluation, year, keywords) {
@@ -32,7 +33,8 @@ var exportedMethods = {
                 response.on('end', function () {
                     var parsed = JSON.parse(body);
                     var movie = {};
-                    movie._id = movieId;
+                    movie._id = uuid.v4();//save the origin id and our own id
+                    movie.id = movieId;
                     movie.title = parsed.title;
                     movie.description = parsed.overview;
                     var date = new Date(parsed.release_date);
