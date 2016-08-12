@@ -147,7 +147,7 @@ var exportedMethods = {
                 preferences: {
                     Actor: [],
                     Genre: [],
-                    Director: [],
+                    Crew: [],
                     releaseYear: [],
                     ageRating: [],
                     keywords: []
