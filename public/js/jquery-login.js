@@ -1,4 +1,6 @@
 (function ($) {
+    $("#site_nav").remove();
+    
     var loginForm = $("#login"),
         usernameInput = $("#inputUsername"),
         passwordInput = $("#inputPassword");

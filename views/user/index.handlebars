@@ -92,10 +92,10 @@
                         {{/each}}
                     {{/if}}
                     </ul>
-                    <h7>Director:</h7>
-                    <ul class="nav nav-pills" role="tablist" id="director_table">
-                    {{#if user.preferences.Director.length}}
-                        {{#each user.preferences.Director}}
+                    <h7>Crew:</h7>
+                    <ul class="nav nav-pills" role="tablist" id="crew_table">
+                    {{#if user.preferences.Crew.length}}
+                        {{#each user.preferences.Crew}}
                             <li role="presentation"><a value="{{this}}">{{this}}<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></li>
                         {{/each}}
                     {{/if}}

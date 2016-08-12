@@ -5,12 +5,8 @@ var directorId;
 var exportedMethods = {
 
     createQueryString(actors, genre, crew, rating, evaluation, year, keywords) {
-<<<<<<< HEAD
         var query = "";
         //console.log(keywords.length);
-=======
-        let query = "";
->>>>>>> e1d6574373dc614fe95e2b8175b2023008852bfe
         if (rating) query = query + "certification_country=US";
         if (evaluation === "equal") query = query + "&certification=" + rating;
         if (evaluation === "lte") query = query + "&certification.lte=" + rating;

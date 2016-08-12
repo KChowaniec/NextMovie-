@@ -48,7 +48,8 @@ app.set('view engine', 'handlebars');
 
 
 app.use(function (request, response, next) {
-    if ((request.cookies.next_movie == undefined || (new Date(request.cookies.next_movie.expires) < new Date(Date.now()))) && request.originalUrl != "/login" && request.originalUrl != "/user/login") {
+    if ((request.cookies.next_movie == undefined || (new Date(request.cookies.next_movie.expires) < new Date(Date.now()))) 
+        && request.originalUrl != "/login" && request.originalUrl != "/user/login" && request.originalUrl != "/user/register") {
         response.redirect("/login");
         return;
     } 
