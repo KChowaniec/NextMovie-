@@ -13,12 +13,6 @@ module.exports = function(app) {
   app.use("/playlist",routerPlaylist);
   app.use("/search", routerSearch);
   app.use("*", (req, res) => {
-        //res.sendStatus(404);
-        // if (req.cookies.next_movie == undefined){
-        //     res.redirect("/login");
-        // } 
-        // else {
-        //     res.redirect("/user");
-        // }
+        res.redirect("/user");
   })
 };
