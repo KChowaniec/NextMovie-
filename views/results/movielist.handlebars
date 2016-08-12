@@ -1,13 +1,17 @@
 <div class="results" id={{userId}}>
     <h1>Search Results</h1>
-  <div class="col-sm-12">
+  <div class="col-sm-12" >
       <h4>{{ total }} movies match your search criteria </h4>
+      {{#if pages}}
+      <ul class="pagination" id={{pages}}>
+    </ul>
+    {{/if}}
   </div>
     {{#if movies.length}}
         <ul class="list-unstyled">
             {{#each movies}}
                 {{#if this.poster_path}}
-                <div id="movie">
+                <div class="movie">
                     <li movieId="{{this.id}}">
                         <img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2{{this.poster_path}}" />
                             <div class="buttons">
@@ -28,6 +32,7 @@
                         </div>
                     </div>
                     </li>
+                    <br style="clear: both;" />
                     </div>
                 {{/if}}
             {{/each}}

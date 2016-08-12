@@ -354,11 +354,14 @@ var exportedMethods = {
                     }
                     movie.cast = castVal;
 
+                    var crewVal = [];
                     for (var i = 0; i < rs.credits.crew.length; i++) {
                         if (rs.credits.crew[i].job == "Director") {
                             movie.director = rs.credits.crew[i].name;
-                        }
+                        } 
+                        crewVal.push(rs.credits.crew[i].name);
                     }
+                    movie.crew = crewVal;
 
                     for (var i = 0; i < rs.release_dates.results.length; i++) {
                         if (rs.release_dates.results[i].iso_3166_1 == "US") {

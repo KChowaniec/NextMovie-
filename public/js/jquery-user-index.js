@@ -202,7 +202,7 @@ function bindDelectBtn(){
                 if ($(this).parent().parent().parent().attr("id") == "actor_table"){
                     url += "actor";
                 } else {
-                    url += "director";
+                    url += "crew";
                 }
                 restTableId = "person_";
             }
