@@ -5,18 +5,30 @@ var directorId;
 var exportedMethods = {
 
     createQueryString(actors, genre, crew, rating, evaluation, year, keywords) {
+<<<<<<< HEAD
         var query = "";
         //console.log(keywords.length);
+=======
+        let query = "";
+>>>>>>> e1d6574373dc614fe95e2b8175b2023008852bfe
         if (rating) query = query + "certification_country=US";
         if (evaluation === "equal") query = query + "&certification=" + rating;
         if (evaluation === "lte") query = query + "&certification.lte=" + rating;
         if (actors && actors.length > 0) query = query + "&with_cast=" + actors.join('|');
-        if (year) query = query + "&primary_release_year=" + year;
+        if (year) {
+            query = query + "&primary_release_year=" + year;
+        }
+        // else if (!year) {
+        //     let currentDate = new Date();
+        //     let formatDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDay();
+        //     console.log(formatDate);
+        //     query = query = "&primary_release_date.lte=" + formatDate;
+        // }
         if (genre && genre.length > 0) query = query + "&with_genres=" + genre.join('|');
         if (keywords && keywords.length > 0) query = query + "&with_keywords=" + keywords.join('|');
         if (crew) query = query + "&with_crew=" + crew;
 
-        query = query + "&sort_by=vote_average.desc"; //sort results by movies with highest rating
+        query = query + "&sort_by=primary_release_date.desc"; //sort results by most recent movies
         return query;
     },
 

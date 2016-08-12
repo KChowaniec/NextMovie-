@@ -1,10 +1,9 @@
 .movie_info{
-    margin-bottom: 100px;   
     list-style-type: none;
-}
+  }
 
 img {
-    float: left;
+    text-align: left;
     height: auto; 
     width: auto; 
     max-width: 300px; 
@@ -72,6 +71,43 @@ img {
     border-radius: 10px;
 }
 
+.movie{
+    margin-bottom: 50px;
+}
+
+/*ul.pagination li a {
+    border-radius: 5px;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}*/
+
+ul.pagination li {display: inline;}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0 4px;
+}
+
+ul.pagination li a.active {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+}
+
+ul.pagination li a:hover:not(.active) {background-color: #ddd;}
+
+ul.pagination li a.active {
+    border-radius: 5px;
+}
+
 #search{
     background-color: #4CAF50; 
     border: none;
@@ -81,6 +117,15 @@ img {
     text-decoration: none;
     display: inline-block;
     font-size: 20px;
+}
+
+/*.results{
+    column-count: 2;
+    column-width: 50px;
+    column-gap: 10px;
+}*/
+.col-sm-12{
+    column-span: all;
 }
 
 ul, li{
