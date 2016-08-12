@@ -174,9 +174,9 @@ var exportedMethods = {
             });
         });
     },
-    searchByTitle(title) {
+    searchByTitle(title, page) {
         return new Promise((fulfill, reject) => {
-            https.get(restHost + "/search/movie" + pathTail + "&query=" + title + "&include_adult=false", function (response) {
+            https.get(restHost + "/search/movie" + pathTail + "&query=" + title + "&include_adult=false&page=" + page, function (response) {
                 response.setEncoding('utf8');
                 var body = '';
                 response.on('data', function (d) {
@@ -192,9 +192,9 @@ var exportedMethods = {
             });
         });
     },
-    searchByCriteria(searchString) {
+    searchByCriteria(searchString, page) {
         return new Promise((fulfill, reject) => {
-            https.get(restHost + "/discover/movie" + pathTail + searchString, function (response) {
+            https.get(restHost + "/discover/movie" + pathTail + searchString + "&page=" + page, function (response) {
                 response.setEncoding('utf8');
                 var body = '';
                 response.on('data', function (d) {
@@ -210,63 +210,63 @@ var exportedMethods = {
             });
         });
     },
-    
-    searchKeywordsByName(name){
+
+    searchKeywordsByName(name) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/keyword" + pathTail + "&query=" + name, function (res) {
                 var _data = '';
                 res.on('data', (d) => {
                     _data += d;
                 });
-                
+
                 res.on('end', () => {
                     var rs = JSON.parse(_data).results;
                     var keywordArr = [];
-                    for (var i = 0; i < 10; i++){
+                    for (var i = 0; i < 10; i++) {
                         keywordArr.push(rs[i]);
                     }
-                    
+
                     fulfill(keywordArr);
                 });
             });
         });
     },
-    
-    searchPersonByName(name){
+
+    searchPersonByName(name) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/person" + pathTail + "&query=" + name, function (res) {
                 var _data = '';
                 res.on('data', (d) => {
                     _data += d;
                 });
-                
+
                 res.on('end', () => {
                     var rs = JSON.parse(_data).results;
                     var persons = [];
                     var cnt = 10;
                     if (rs.length < cnt) cnt = rs.length;
-                    for (var i = 0; i < cnt; i++){
+                    for (var i = 0; i < cnt; i++) {
                         var person = {
                             id: rs[i].id,
                             name: rs[i].name,
                         };
                         persons.push(person);
                     }
-                    
+
                     fulfill(persons);
                 });
             });
         });
     },
-    
-    getCreditByPersonId(id){
+
+    getCreditByPersonId(id) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/person/" + id + pathTail + "&append_to_response=movie_credits", function (res) {
                 var _data = '';
                 res.on('data', (d) => {
                     _data += d;
                 });
-                
+
                 res.on('end', () => {
                     var rs = JSON.parse(_data);
                     fulfill(rs);

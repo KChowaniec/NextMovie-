@@ -123,20 +123,65 @@ router.post("/", (req, res) => {
         if (title) {
             let criteriaString = "title=" + title;
             //redirect to new URL
-            res.redirect("/search/results?" + criteriaString);
+            res.redirect("/search/results/1?" + criteriaString);
         }
 
         //SEARCH BY CRITERIA
         else {
             let criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
             //redirect to new URL
-            res.redirect("/search/results?" + criteriaString);
+            res.redirect("/search/results/1?" + criteriaString);
         }
     });
 });
 
-router.get("/results", (req, res) => { //call search methods using criteria passed in
+// router.post("/results", (req, res) => {
+//     var page;
+//     let queryData = url.parse(req.url, true).query;
+//     let queryString = "";
+//     let title;
+//     Object.keys(queryData).forEach(function (key, index) {
+//         if (key == "title") {
+//             title = queryData[key];
+//         }
+//         else {
+//             queryString = queryString + "&" + key + "=" + queryData[key];
+//         }
+//     });
+//     if (title !== undefined) { //search by title
+//         let result = api.searchByTitle(title, page);
+//         result.then((movies) => {
+//             let movielist = form.formatReleaseDate(movies.results);
+//             let total = movies.total_results;
+//             let pages = movies.total_pages;
+//             res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
+//         }).catch((e) => {
+//             res.render("search/form", {
+//                 title: title, actors: actors, genres: genre, crew: crew,
+//                 evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
+//             });
+//         });
+//     }
+//     else { //search by criteria
+//         let result = api.searchByCriteria(queryString, page);
+//         result.then((movies) => {
+//             let pages = movies.total_pages;
+//             let movielist = form.formatReleaseDate(movies.results);
+//             let total = movies.total_results;
+//             res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
+//         }).catch((e) => {
+//             res.render("search/form", {
+//                 title: title, actors: actors, genres: genre, crew: crew,
+//                 evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
+//             });
+//         });
+//     }
+// });
+
+router.get("/results/:pageId", (req, res) => { //call search methods using criteria passed in
+    var page = req.params.pageId;
     let queryData = url.parse(req.url, true).query;
+    console.log(queryData);
     let queryString = "";
     let title;
     Object.keys(queryData).forEach(function (key, index) {
@@ -148,11 +193,12 @@ router.get("/results", (req, res) => { //call search methods using criteria pass
         }
     });
     if (title !== undefined) { //search by title
-        let result = api.searchByTitle(title);
+        let result = api.searchByTitle(title, page);
         result.then((movies) => {
             let movielist = form.formatReleaseDate(movies.results);
             let total = movies.total_results;
-            res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
+            let pages = movies.total_pages;
+            res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
         }).catch((e) => {
             res.render("search/form", {
                 title: title, actors: actors, genres: genre, crew: crew,
@@ -161,11 +207,13 @@ router.get("/results", (req, res) => { //call search methods using criteria pass
         });
     }
     else { //search by criteria
-        let result = api.searchByCriteria(queryString);
+        let result = api.searchByCriteria(queryString, page);
         result.then((movies) => {
+           // console.log(movies);
+            let pages = movies.total_pages;
             let movielist = form.formatReleaseDate(movies.results);
             let total = movies.total_results;
-            res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
+            res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
         }).catch((e) => {
             res.render("search/form", {
                 title: title, actors: actors, genres: genre, crew: crew,
@@ -177,10 +225,10 @@ router.get("/results", (req, res) => { //call search methods using criteria pass
 
 router.get("/keywords", (req, res) => {
     api.searchKeywordsByName(req.query.value).then((result) => {
-        if (result){
-            res.json({ success: true, results: result});
+        if (result) {
+            res.json({ success: true, results: result });
         } else {
-            res.json({ success: false, message: "Keywords not found"});
+            res.json({ success: false, message: "Keywords not found" });
         }
     }).catch((error) => {
         res.json({ success: false, message: error });
@@ -189,10 +237,10 @@ router.get("/keywords", (req, res) => {
 
 router.get("/person", (req, res) => {
     api.searchPersonByName(req.query.value).then((result) => {
-        if (result.length > 0){
-            res.json({ success: true, results: result});
+        if (result.length > 0) {
+            res.json({ success: true, results: result });
         } else {
-            res.json({ success: false, message: "Person not found"});
+            res.json({ success: false, message: "Person not found" });
         }
     }).catch((error) => {
         res.json({ success: false, message: error });
