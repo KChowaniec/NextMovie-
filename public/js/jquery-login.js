@@ -2,7 +2,13 @@
     var loginForm = $("#login"),
         usernameInput = $("#inputUsername"),
         passwordInput = $("#inputPassword");
-    
+    var register=$("#register");
+
+    register.click(function(event){
+         event.preventDefault();
+         window.location.href="/register";
+    });
+
     loginForm.submit(function(event) {
         event.preventDefault();
         $("#error-container")[0].classList.add("hidden");
