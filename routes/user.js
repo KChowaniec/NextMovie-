@@ -68,11 +68,11 @@ router.post('/user/register', function (req, res) {
 											user.password = user.hashedPassword;
 											user.username = user.profile.username;
 											users.verifyUser(user).then((userObj) => {
-											res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-											res.json({ success: true });
-											return;
+												res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+												res.json({ success: true });
+												return;
+											});
 										});
-									});
 								} else {
 									res.json({ success: false, message: "Registration is failed" });
 								}
