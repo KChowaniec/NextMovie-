@@ -44,34 +44,52 @@ router.get('/register',function(req,res){
 router.post('/user/register', function (req, res) {
 	var username=req.body.username;
 	var hash=crypto.createHash("sha1");
+	var pass=req.body.password;
+	var confirm=req.body.confirm;
+	if(pass!=confirm)res.json({ success: false, message: "Registration is failed because the two passwords entered are not consistent" });
 	hash.update(req.body.password);
 	var password=hash.digest("hex");
 	var name=req.body.name;
 	var email=req.body.email;
+	users.checkUserExist(username).then(result=>{
+		if(result===false){
+			  users.checkEmailExist(email).then(result=>{
+					if(result===false){
+						    users.addUser(username,password,name,email).then((user) => {
+								if (user != "failed") {
+								//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+										var playlistObj = {};
+										playlistObj.title = "My Playlist";
+										playlistObj.user = user.profile;
+										playlistObj.playlistMovies = [];
+										playlist.addPlaylistGeneral(playlistObj).then((obj) => {
+											return obj;
+										}).then(() => {
+											user.password = user.hashedPassword;
+											user.username = user.profile.username;
+											users.verifyUser(user).then((userObj) => {
+											res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+											res.json({ success: true });
+											return;
+										});
+									});
+								} else {
+									res.json({ success: false, message: "Registration is failed" });
+								}
+							});
 	
-	users.addUser(username,password,name,email).then((user) => {
-		
-		if (user != "failed") {
-			//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-			var playlistObj = {};
-			playlistObj.title = "My Playlist";
-			playlistObj.user = user.profile;
-			playlistObj.playlistMovies = [];
-			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
-				return obj;
-			}).then(() => {
-				user.password = user.hashedPassword;
-				user.username = user.profile.username;
-				users.verifyUser(user).then((userObj) => {
-					res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-					res.json({ success: true });
-					return;
-				});
-			});
-		} else {
-			res.json({ success: false, message: "Registration is failed" });
+					} else{
+						res.json({ success: false, message: "Registration is failed because the email has already existed" });
+						throw "email alreay exists!"
+					}
+			})
+		} else{
+			res.json({ success: false, message: "Registration is failed because the username has already existed" });
+			throw "username already exists!"
 		}
-	});
+	})
+		
+
 }),
 
 router.get('/user', function (req, res) {
