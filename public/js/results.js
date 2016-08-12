@@ -16,19 +16,18 @@
         var pageString = "";
         var currentPage = location.pathname.substring((location.pathname.lastIndexOf('/') + 1));
         pageString += "<li><a href=''>«</a></li>";
-        console.log(max);
         if (!max) {
-            max = 10;
+            max = Math.ceil(currentPage / 10) * 10;
         }
-        for (var i = 1; i <= pages; i++) {
-            if (i <= max) {
-                if (currentPage == i) {
-                    pageString += "<li><a class='active' href='search/results/" + i + queryString + "'>" + i + "</a></li>";
-                }
-                else {
-                    pageString += "<li><a href='/search/results/" + i + queryString + "'>" + i + "</a></li>";
-                }
+        for (var i = (max - 9); i <= max; i++) {
+            // if (i <= max) {
+            if (currentPage == i) {
+                pageString += "<li><a class='active' href='search/results/" + i + queryString + "'>" + i + "</a></li>";
             }
+            else {
+                pageString += "<li><a href='/search/results/" + i + queryString + "'>" + i + "</a></li>";
+            }
+            //   }
         }
         if (max < pages) {
             pageString += "<li><a href=''>»</a></li>";
@@ -42,20 +41,25 @@
             event.preventDefault();
             pageul.empty();
             oldMax = max;
-            max = max + 10;
+            if (max + 10 <= pages) {
+                max = max + 10;
+            }
+            else {
+                max = pages;
+            }
             var pageString = "";
             var currentPage = location.pathname.substring((location.pathname.lastIndexOf('/') + 1));
             pageString += "<li><a href=''>«</a></li>";
 
-            for (var i = oldMax + 1; i <= pages; i++) {
-                if (i <= max) {
-                    if (currentPage == i) {
-                        pageString += "<li><a class='active' href='search/results/" + i + queryString + "'>" + i + "</a></li>";
-                    }
-                    else {
-                        pageString += "<li><a href='/search/results/" + i + queryString + "'>" + i + "</a></li>";
-                    }
+            for (var i = oldMax + 1; i <= max; i++) {
+                //  if (i <= max) {
+                if (currentPage == i) {
+                    pageString += "<li><a class='active' href='search/results/" + i + queryString + "'>" + i + "</a></li>";
                 }
+                else {
+                    pageString += "<li><a href='/search/results/" + i + queryString + "'>" + i + "</a></li>";
+                }
+                //  }
             }
             if (max < pages) {
                 pageString += "<li><a href=''>»</a></li>";
@@ -66,15 +70,6 @@
         else if (page == "«") {
             event.preventDefault();
         }
-        // var requestConfig = {
-        //     method: "GET",
-        //     url: '/search/results/' + pageNum + queryString,
-        //     contentType: 'application/json'
-        // };
-
-        // $.ajax(requestConfig).then(function (response) {
-        //     //  window.location.reload(true);
-        // });
 
     });
 

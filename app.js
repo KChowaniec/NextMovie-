@@ -8,10 +8,6 @@ const exphbs = require('express-handlebars');
 const Handlebars = require('handlebars');
 const users = require('./data/users');
 
-app.use("/public", static);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
     // Specify helpers which are only registered on this instance.
@@ -41,7 +37,9 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     next();
 };
 
-
+app.use("/public", static);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
 app.use(cookieParser());
 
@@ -53,14 +51,14 @@ app.set('view engine', 'handlebars');
 //         response.redirect("/login");
 //         return;
 //     } 
-
+    
 //     users.getUserBySessionId(request.cookies.next_movie).then((userObj) => {
 //         if (!userObj){
 //             response.redirect("/login");
 //             return;
 //         }
 //     });
-
+    
 //     next();
 // });
 
