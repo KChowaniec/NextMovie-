@@ -135,49 +135,6 @@ router.post("/", (req, res) => {
     });
 });
 
-// router.post("/results", (req, res) => {
-//     var page;
-//     let queryData = url.parse(req.url, true).query;
-//     let queryString = "";
-//     let title;
-//     Object.keys(queryData).forEach(function (key, index) {
-//         if (key == "title") {
-//             title = queryData[key];
-//         }
-//         else {
-//             queryString = queryString + "&" + key + "=" + queryData[key];
-//         }
-//     });
-//     if (title !== undefined) { //search by title
-//         let result = api.searchByTitle(title, page);
-//         result.then((movies) => {
-//             let movielist = form.formatReleaseDate(movies.results);
-//             let total = movies.total_results;
-//             let pages = movies.total_pages;
-//             res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
-//         }).catch((e) => {
-//             res.render("search/form", {
-//                 title: title, actors: actors, genres: genre, crew: crew,
-//                 evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
-//             });
-//         });
-//     }
-//     else { //search by criteria
-//         let result = api.searchByCriteria(queryString, page);
-//         result.then((movies) => {
-//             let pages = movies.total_pages;
-//             let movielist = form.formatReleaseDate(movies.results);
-//             let total = movies.total_results;
-//             res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
-//         }).catch((e) => {
-//             res.render("search/form", {
-//                 title: title, actors: actors, genres: genre, crew: crew,
-//                 evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
-//             });
-//         });
-//     }
-// });
-
 router.get("/results/:pageId", (req, res) => { //call search methods using criteria passed in
     var page = req.params.pageId;
     let queryData = url.parse(req.url, true).query;
