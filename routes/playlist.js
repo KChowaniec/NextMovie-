@@ -150,44 +150,39 @@ router.post("/:movieId", (req, res) => {
                     var movieInfo = "";
                     movie.getMovieById(movieId).then((details) => {
                         if (!details) { //get details using api
-                            api.getMovieDetails(movieId).then((info) => {
-                                //  movieInfo = info;
+                            var newMovie = api.getMovieDetails(movieId).then((info) => {
                                 //insert movie into movie collection
-                                var addedMovie = movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
-                                addedMovie.then((result) => {
-                                });
+                                movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
+                                return info;
                             }).catch((error) => {
                                 res.json({ success: false, error: error });
                             });
-
-                            Promise.all([addedMovie]).then(values => {
-                             //   console.log(values);
-                                movieInfo = values;
+                        }
+                        Promise.all([newMovie]).then(values => {
+                            if (values[0]) {
+                                movieInfo = values[0];
+                            }
+                            else {
+                                movieInfo = details;
+                            }
+                            var userId = user._id;
+                            var title = movieInfo.title;
+                            var overview;
+                            if (movieInfo.description) {
+                                overview = movieInfo.description;
+                            }
+                            else {
+                                overview = movieInfo.overview;
+                            }
+                            var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
+                            newList.then((addedMovie) => {
+                                res.json({ success: true });
                             });
-                        }
-                        else {
-                            movieInfo = details;
-                        }
 
-                        console.log(movieInfo);
-                        var userId = user._id;
-                        var title = movieInfo.title;
-                        var overview;
-                        if (movieInfo.description) {
-                            overview = movieInfo.description;
-                        }
-                        else {
-                            overview = movieInfo.overview;
-                        }
-                        var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
-                        newList.then((addedMovie) => {
-                            res.json({ success: true });
+                        }).catch((error) => {
+                            res.json({ success: false, error: error });
                         });
-
-                    }).catch((error) => {
-                        res.json({ success: false, error: error });
                     });
-                    //  });
                 }
             }
             else { //movie is already in playlist

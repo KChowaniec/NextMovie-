@@ -121,31 +121,6 @@
 
     });
 
-
-
-    // function locationHashChanged() {
-    //     var hash = window.location.hash;
-    //     var newHash = hash.replace("#", "");
-    //     newHash = parseInt(newHash);
-    //     console.log(newHash);
-    //     var requestConfig = {
-    //         method: "POST",
-    //         url: '/search/results',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({
-    //             hashPage: newHash
-    //         })
-    //     };
-
-    //     $.ajax(requestConfig).then(function (response) {
-    //         window.location.reload(true);
-    //     });
-    // }
-
-    // //call locationHashChanged function on window.onhashchange event
-    // window.onhashchange = locationHashChanged;
-
-
     addToPlaylist.click(function () {
         var movieId = this.id;
         var addMovie = {
