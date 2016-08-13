@@ -123,14 +123,14 @@ router.post("/", (req, res) => {
         if (title) {
             var criteriaString = "title=" + title;
             //redirect to new URL
-            res.redirect("/search/results?" + criteriaString);
+            res.redirect("/search/results/1?" + criteriaString);
         }
 
         //SEARCH BY CRITERIA
         else {
             var criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
             //redirect to new URL
-            res.redirect("/search/results?" + criteriaString);
+            res.redirect("/search/results/1?" + criteriaString);
         }
     });
 });

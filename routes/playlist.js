@@ -159,34 +159,35 @@ router.post("/:movieId", (req, res) => {
                             }).catch((error) => {
                                 res.json({ success: false, error: error });
                             });
+
+                            Promise.all([addedMovie]).then(values => {
+                             //   console.log(values);
+                                movieInfo = values;
+                            });
                         }
                         else {
                             movieInfo = details;
                         }
 
-                        // Promise.all([addedMovie]).then(values => {
-                        //     console.log(values);
-                           // movieInfo = values;
-                            //});
-                            console.log(movieInfo);
-                            var userId = user._id;
-                            var title = movieInfo.title;
-                            var overview;
-                            if (movieInfo.description) {
-                                overview = movieInfo.description;
-                            }
-                            else {
-                                overview = movieInfo.overview;
-                            }
-                            var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
-                            newList.then((addedMovie) => {
-                                res.json({ success: true });
-                            });
-
-                        }).catch((error) => {
-                            res.json({ success: false, error: error });
+                        console.log(movieInfo);
+                        var userId = user._id;
+                        var title = movieInfo.title;
+                        var overview;
+                        if (movieInfo.description) {
+                            overview = movieInfo.description;
+                        }
+                        else {
+                            overview = movieInfo.overview;
+                        }
+                        var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
+                        newList.then((addedMovie) => {
+                            res.json({ success: true });
                         });
-                  //  });
+
+                    }).catch((error) => {
+                        res.json({ success: false, error: error });
+                    });
+                    //  });
                 }
             }
             else { //movie is already in playlist
