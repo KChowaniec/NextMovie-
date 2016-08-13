@@ -44,34 +44,52 @@ router.get('/register',function(req,res){
 router.post('/user/register', function (req, res) {
 	var username=req.body.username;
 	var hash=crypto.createHash("sha1");
+	var pass=req.body.password;
+	var confirm=req.body.confirm;
+	if(pass!=confirm)res.json({ success: false, message: "Registration is failed because the two passwords entered are not consistent" });
 	hash.update(req.body.password);
 	var password=hash.digest("hex");
 	var name=req.body.name;
 	var email=req.body.email;
+	users.checkUserExist(username).then(result=>{
+		if(result===false){
+			  users.checkEmailExist(email).then(result=>{
+					if(result===false){
+						    users.addUser(username,password,name,email).then((user) => {
+								if (user != "failed") {
+								//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+										var playlistObj = {};
+										playlistObj.title = "My Playlist";
+										playlistObj.user = user.profile;
+										playlistObj.playlistMovies = [];
+										playlist.addPlaylistGeneral(playlistObj).then((obj) => {
+											return obj;
+										}).then(() => {
+											user.password = user.hashedPassword;
+											user.username = user.profile.username;
+											users.verifyUser(user).then((userObj) => {
+												res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
+												res.json({ success: true });
+												return;
+											});
+										});
+								} else {
+									res.json({ success: false, message: "Registration is failed" });
+								}
+							});
 	
-	users.addUser(username,password,name,email).then((user) => {
-		
-		if (user != "failed") {
-			//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-			var playlistObj = {};
-			playlistObj.title = "My Playlist";
-			playlistObj.user = user.profile;
-			playlistObj.playlistMovies = [];
-			playlist.addPlaylistGeneral(playlistObj).then((obj) => {
-				return obj;
-			}).then(() => {
-				user.password = user.hashedPassword;
-				user.username = user.profile.username;
-				users.verifyUser(user).then((userObj) => {
-					res.cookie("next_movie", userObj.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-					res.json({ success: true });
-					return;
-				});
-			});
-		} else {
-			res.json({ success: false, message: "Registration is failed" });
+					} else{
+						res.json({ success: false, message: "Registration is failed because the email has already existed" });
+						throw "email alreay exists!"
+					}
+			   })
+		} else{
+			res.json({ success: false, message: "Registration is failed because the username has already existed" });
+			throw "username already exists!"
 		}
-	});
+	})
+		
+
 }),
 
 router.get('/user', function (req, res) {
@@ -475,8 +493,8 @@ router.post('/user/add_person', function (req, res) {
 		users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
 			var actorArr = userObj.preferences.Actor;
 			var newActorArr = [];
-			var directorArr = userObj.preferences.Director;
-			var newDirectorArr = [];
+			var crewArr = userObj.preferences.Crew;
+			var newCrewArr = [];
 			var flag = true;
 			var mark = "";
 			if (person.movie_credits.cast.length > 0){
@@ -496,6 +514,7 @@ router.post('/user/add_person', function (req, res) {
 				newActorArr.push(addVal);
 				userObj.preferences.Actor = newActorArr;
 			} else if (person.movie_credits.crew.length > 0){
+				/*
 				for (var i = 0; i < person.movie_credits.crew.length; i++){
 					if (person.movie_credits.crew[i].job == "Director"){
 						flag = false;
@@ -507,25 +526,26 @@ router.post('/user/add_person', function (req, res) {
 					res.json({ success: false, message: "The person is not Actor or Director!" });
 					return;
 				}
+				*/
 				
 				flag = true;
-				mark = "director";
-				for (var i = 0; i < directorArr.length; i++){
-					if (directorArr[i] == addVal){
+				mark = "crew";
+				for (var i = 0; i < crewArr.length; i++){
+					if (crewArr[i] == addVal){
 						flag = false;
 					} else {
-						newDirectorArr.push(directorArr[i]);
+						newCrewArr.push(crewArr[i]);
 					}
 				}
 				if (!flag){
-					res.json({ success: false, message: "The director has been added!" });
+					res.json({ success: false, message: "The crew has been added!" });
 					return;
 				}
 				
-				newDirectorArr.push(addVal);
-				userObj.preferences.Director = newDirectorArr;
+				newCrewArr.push(addVal);
+				userObj.preferences.Crew = newCrewArr;
 			} else {
-				res.json({ success: false, message: "The person is not Actor or Director!" });
+				res.json({ success: false, message: "The person is not Actor or Crew!" });
 				return;
 			}
 			
@@ -569,25 +589,25 @@ router.post('/user/delete_actor', function (req, res) {
 	});
 });
 
-router.post('/user/delete_director', function (req, res) {
-	var director = req.body.value;
+router.post('/user/delete_crew', function (req, res) {
+	var crew = req.body.value;
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-		var directorArr = userObj.preferences.Director;
-		var newDirectorArr = [];
+		var crewArr = userObj.preferences.Crew;
+		var newCrewArr = [];
 		var flag = true;
-		for (var i = 0; i < directorArr.length; i++){
-			if (directorArr[i] == director){
+		for (var i = 0; i < crewArr.length; i++){
+			if (crewArr[i] == crew){
 				flag = false;
 			} else {
-				newDirectorArr.push(directorArr[i]);
+				newCrewArr.push(crewArr[i]);
 			}
 		}
 		if (flag){
-			res.json({ success: false, message: "You did not add this director!" });
+			res.json({ success: false, message: "You did not add this crew!" });
 			return;
 		}
 		
-		userObj.preferences.Director = newDirectorArr;
+		userObj.preferences.Crew = newCrewArr;
 		users.updateUserById(userObj._id, userObj).then((newUser) => {
 			if (newUser){
 				res.json({ success: true , message: "Update success!"});

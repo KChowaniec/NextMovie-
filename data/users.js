@@ -147,7 +147,7 @@ var exportedMethods = {
                 preferences: {
                     Actor: [],
                     Genre: [],
-                    Director: [],
+                    Crew: [],
                     releaseYear: [],
                     ageRating: [],
                     keywords: []
@@ -177,6 +177,31 @@ var exportedMethods = {
 
         });
     },
+
+    checkUserExist(username){
+         return Users().then((userCollection) => {
+            return userCollection.findOne({ "profile.username": username }).then((userObj) => {
+                if (!userObj) return false;
+                return true;
+            }).catch((error) => {
+                return error;
+            });
+
+        });
+    },
+
+    checkEmailExist(email){
+         return Users().then((userCollection) => {
+            return userCollection.findOne({ "profile.email": email }).then((userObj) => {
+                if (!userObj) return false;
+                return true;
+            }).catch((error) => {
+                return error;
+            });
+
+        });
+    },
+
     
     getUserBySessionIdAndPassword(sessionId, password){
         return Users().then((userCollection) => {

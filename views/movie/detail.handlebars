@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mb-10">
     <div class="col-md-8 col-md-offset-2">
         <div class="row"><h1 class="movie_name">{{movie.title}}</h1></div>
         <div class="row">
@@ -11,6 +11,7 @@
                         <li>Director: {{movie.director}}</li>
                         <li>Release Date: {{movie.releaseDate}}</li>
                         <li>Run Time: {{movie.runtime}}min</li>
+                        <li>Rate: {{movie.rated}}</li>
                         <li>Average Rating from The Movie DB.com:{{movie.averageRating}}/10</li>
                     </ul>
                     <button type="button" class = "add" class="btn btn-primary" id={{movie._id}}><span class="glyphicon glyphicon-plus-sign"></span>Add to My PlayList</button>
@@ -22,34 +23,51 @@
 
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <div class="description_box">
-            <h2>Description:</h2>
-            <div>{{movie.description}}</div>
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+            <li role="presentation"><a href="#cast" aria-controls="cast" role="tab" data-toggle="tab">Cast</a></li>
+            <li role="presentation"><a href="#crew" aria-controls="crew" role="tab" data-toggle="tab">Crew</a></li>
+            <li role="presentation"><a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">Reviews</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="description">
+                <div>{{movie.description}}</div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="cast">
+                {{#if movie.cast.length}}
+                    <ul class="nav nav-pills" role="tablist">
+                        {{#each movie.cast}}
+                            <li role="presentation"><a href="#">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="crew">
+                {{#if movie.crew.length}}
+                    <ul class="nav nav-pills" role="tablist">
+                        {{#each movie.crew}}
+                            <li role="presentation"><a href="#">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="reviews">
+                {{#if movie.allReviews.length}}
+                    <ul>
+                        {{#each movie.allReviews}}
+                            <li>
+                                <div>Comment: "{{this.comment}}"</div>
+                                <div>Rating: {{this.rating}}/5</div>
+                                <div>{{this.poster.name}} Edited, {{this.date}}</div>
+                            </li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+            </div>
         </div>
-        <div class="cast_box">
-            <h2>Cast:</h2>
-            {{#if movie.cast.length}}
-                <ul class="nav nav-pills" role="tablist">
-                    {{#each movie.cast}}
-                        <li role="presentation"><a href="#">{{this}}</a></li>
-                    {{/each}}
-                </ul>
-            {{/if}}
-        </div>
-        <div class="review_box">
-            <h2>Reviews:</h2>
-            {{#if movie.allReviews.length}}
-                <ul>
-                    {{#each movie.allReviews}}
-                        <li>
-                            <div>Comment: "{{this.comment}}"</div>
-                            <div>Rating: {{this.rating}}/5</div>
-                            <div>{{this.poster.name}} Edited, {{this.date}}</div>
-                        </li>
-                    {{/each}}
-                </ul>
-            {{/if}}
-        </div>
+        
+        
+        
     </div>
 </div>
 

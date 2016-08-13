@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const data = require("../data");
-const form = data.form;
-const api = data.api;
-const user = data.users;
-const url = require('url');
+var express = require('express');
+var router = express.Router();
+var data = require("../data");
+var form = data.form;
+var api = data.api;
+var user = data.users;
+var url = require('url');
 
 router.get("/", (req, res) => {
     //check for user preferences (if any)
@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/preferences", (req, res) => {
-    //get user preferences (if any)
+    //get user preferences (if any)f
     user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         user.getUserPreferences(userObj._id).then((preferences) => {
             preferences.actor = 'Brad Pitt';
@@ -40,18 +40,18 @@ router.get("/preferences", (req, res) => {
 
 
 router.post("/", (req, res) => {
-    let title = req.body.title;
-    let actors = req.body.actors;
-    let genres = req.body.genre;
-    let crew = req.body.crew;
-    let rating = req.body.rating;
-    let evaluation = req.body.evaluation;
-    let year = parseInt(req.body.releaseYear);
-    let keywords = req.body.keywords;
+    var title = req.body.title;
+    var actors = req.body.actors;
+    var genres = req.body.genre;
+    var crew = req.body.crew;
+    var rating = req.body.rating;
+    var evaluation = req.body.evaluation;
+    var year = parseInt(req.body.releaseYear);
+    var keywords = req.body.keywords;
 
     var parseActors = [];
-    let parseWords = [];
-    let parseGenre = [];
+    var parseWords = [];
+    var parseGenre = [];
 
     if (genres) {
         if (typeof genres === "object") { //multiple genres selected
@@ -106,7 +106,7 @@ router.post("/", (req, res) => {
     }
 
     Promise.all([crewName, actorIds, wordIds]).then(values => {
-        let crewId, actorList = [], keywordList = [];
+        var crewId, actorList = [], keywordList = [];
         if (values[0]) {
             crewId = values[0].results[0].id;
         }
@@ -121,16 +121,16 @@ router.post("/", (req, res) => {
 
         //SEARCH BY MOVIE TITLE
         if (title) {
-            let criteriaString = "title=" + title;
+            var criteriaString = "title=" + title;
             //redirect to new URL
-            res.redirect("/search/results/1?" + criteriaString);
+            res.redirect("/search/results?" + criteriaString);
         }
 
         //SEARCH BY CRITERIA
         else {
-            let criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
+            var criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
             //redirect to new URL
-            res.redirect("/search/results/1?" + criteriaString);
+            res.redirect("/search/results?" + criteriaString);
         }
     });
 });
@@ -141,6 +141,7 @@ router.get("/results/:pageId", (req, res) => { //call search methods using crite
     console.log(queryData);
     let queryString = "";
     let title;
+
     Object.keys(queryData).forEach(function (key, index) {
         if (key == "title") {
             title = queryData[key];
@@ -150,12 +151,11 @@ router.get("/results/:pageId", (req, res) => { //call search methods using crite
         }
     });
     if (title !== undefined) { //search by title
-        let result = api.searchByTitle(title, page);
+        var result = api.searchByTitle(title);
         result.then((movies) => {
-            let movielist = form.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            let pages = movies.total_pages;
-            res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
+            var movielist = form.formatReleaseDate(movies.results);
+            var total = movies.total_results;
+            res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
         }).catch((e) => {
             res.render("search/form", {
                 title: title, actors: actors, genres: genre, crew: crew,
@@ -164,13 +164,11 @@ router.get("/results/:pageId", (req, res) => { //call search methods using crite
         });
     }
     else { //search by criteria
-        let result = api.searchByCriteria(queryString, page);
+        var result = api.searchByCriteria(queryString);
         result.then((movies) => {
-           // console.log(movies);
-            let pages = movies.total_pages;
-            let movielist = form.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
+            var movielist = form.formatReleaseDate(movies.results);
+            var total = movies.total_results;
+            res.render("results/movielist", { movies: movielist, total: total, partial: "results-script" });
         }).catch((e) => {
             res.render("search/form", {
                 title: title, actors: actors, genres: genre, crew: crew,
@@ -182,10 +180,10 @@ router.get("/results/:pageId", (req, res) => { //call search methods using crite
 
 router.get("/keywords", (req, res) => {
     api.searchKeywordsByName(req.query.value).then((result) => {
-        if (result) {
-            res.json({ success: true, results: result });
+        if (result){
+            res.json({ success: true, results: result});
         } else {
-            res.json({ success: false, message: "Keywords not found" });
+            res.json({ success: false, message: "Keywords not found"});
         }
     }).catch((error) => {
         res.json({ success: false, message: error });
@@ -194,10 +192,10 @@ router.get("/keywords", (req, res) => {
 
 router.get("/person", (req, res) => {
     api.searchPersonByName(req.query.value).then((result) => {
-        if (result.length > 0) {
-            res.json({ success: true, results: result });
+        if (result.length > 0){
+            res.json({ success: true, results: result});
         } else {
-            res.json({ success: false, message: "Person not found" });
+            res.json({ success: false, message: "Person not found"});
         }
     }).catch((error) => {
         res.json({ success: false, message: error });

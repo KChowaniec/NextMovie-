@@ -30,10 +30,11 @@ router.get('/', function (req, res) {
 				//search using api
 				api.getMovieDetails(req.params.id).then((movie) => {
 					if (movie) {
-						movies.addMovieGeneral(movie);
-						res.render("movie/detail", {
-							movie: movie,
-							partial: "jquery-detail-scripts"
+						movies.addMovieGeneral(movie).then((obj) => {
+							res.render("movie/detail", {
+								movie: movie,
+								partial: "jquery-detail-scripts"
+							});
 						});
 					}
 				}).catch((error) => {

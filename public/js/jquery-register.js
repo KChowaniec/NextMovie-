@@ -26,6 +26,7 @@
         var password = passwordInput.val();
         var name=nameInput.val();
         var email=emailInput.val();
+        var confirm=passwordConfirmInput.val();
        
         var requestConfig = {
                 method: "POST",
@@ -35,7 +36,8 @@
                     username: username,
                     password: password,
                     name:name,
-                    email:email
+                    email:email,
+                    confirm:confirm
                 })
             };
 

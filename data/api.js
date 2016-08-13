@@ -63,11 +63,14 @@ var exportedMethods = {
                     movie.cast = castVal;
 
                     var director = "";
+                    var crewVal = [];
                     for (var i = 0; i < parsed.credits.crew.length; i++) {
                         if (parsed.credits.crew[i].job == "Director") {
                             director = parsed.credits.crew[i].name;
                         }
+                        crewVal.push(parsed.credits.crew[i].name);
                     }
+                    movie.crew = crewVal;
                     movie.director = director;
 
                     var rating = "";
