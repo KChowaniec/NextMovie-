@@ -618,4 +618,23 @@ router.post('/user/delete_crew', function (req, res) {
 	});
 });
 
+router.post('/user/clear_preferences', function (req, res) {
+	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
+		userObj.preferences.Actor = [];
+		userObj.preferences.Genre = [];
+		userObj.preferences.Crew = [];
+		userObj.preferences.releaseYear = [];
+		userObj.preferences.ageRating = [];
+		userObj.preferences.keywords = [];
+		
+		users.updateUserById(userObj._id, userObj).then((newUser) => {
+			if (newUser){
+				res.json({ success: true , message: "Update success!"});
+			} 
+		}).catch((error) => {
+			res.json({ success: false, message: error });
+		});
+	});
+});
+
 module.exports = router;
