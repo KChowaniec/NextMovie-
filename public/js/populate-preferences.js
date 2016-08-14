@@ -40,7 +40,6 @@
                             max = ratings.indexOf(response.preferences.preferences.ageRating[i]);
                         }
                     }
-                    console.log(max);
                     $("#evaluation").val("lte").attr('selected', 'selected');
                     $("#rating").val(ratings[max]).attr('selected', 'selected');
                 }

@@ -12,8 +12,7 @@ router.get("/", (req, res) => {
     //get playlist information
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            // let playlistId = req.params.playlistId;
-            var info = playlist.getPlaylistById(playlistInfo._id);//playlist.getPlaylistById(playlistId);
+            var info = playlist.getPlaylistById(playlistInfo._id);
             info.then((result) => {
                 var viewed = [];
                 var unviewed = [];

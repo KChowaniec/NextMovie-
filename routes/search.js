@@ -28,7 +28,6 @@ router.get("/preferences", (req, res) => {
     //get user preferences (if any)
     user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         user.getUserPreferences(userObj._id).then((preferences) => {
-            console.log(preferences);
             if (Object.keys(preferences).length > 0) { //preferences defined
                 res.json({ success: true, preferences: preferences });
             }
@@ -166,7 +165,6 @@ router.get("/results/:pageId", (req, res) => { //call search methods using crite
     else { //search by criteria
         let result = api.searchByCriteria(queryString, page);
         result.then((movies) => {
-            // console.log(movies);
             let pages = movies.total_pages;
             let movielist = form.formatReleaseDate(movies.results);
             let total = movies.total_results;
