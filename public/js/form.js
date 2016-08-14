@@ -10,6 +10,8 @@
         $("#genre").val('');
         $("#crew").val('');
         $("#releaseYear").val('');
+        $("#rating").val("PG-13").attr('selected', 'selected');
+        $("evaluation").val("equal").attr('selected', 'selected');
         $("#keywords").val('');
         $("#title").val('');
 
