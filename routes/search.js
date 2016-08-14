@@ -25,10 +25,10 @@ router.get("/", (req, res) => {
 });
 
 router.get("/preferences", (req, res) => {
-    //get user preferences (if any)f
+    //get user preferences (if any)
     user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         user.getUserPreferences(userObj._id).then((preferences) => {
-            preferences.actor = 'Brad Pitt';
+            console.log(preferences);
             if (Object.keys(preferences).length > 0) { //preferences defined
                 res.json({ success: true, preferences: preferences });
             }
