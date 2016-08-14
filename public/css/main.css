@@ -12,7 +12,7 @@ img {
 .add, .details, .reviews{
     width: 10em;
     display: block;
-    background-color: #3498DB;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -49,7 +49,7 @@ img {
 .review, .remove-review{
     width: 10em;
     display: inline-block;
-    background-color: #3498DB;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -63,7 +63,7 @@ img {
 
 .update-title, .save-title{
     width: 10em;
-    background-color: #3498DB;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -97,7 +97,7 @@ ul.pagination li a {
 }
 
 ul.pagination li a.active {
-    background-color: #4CAF50;
+    background-color: #007dbb;
     color: white;
     border-radius: 5px;
 }
@@ -109,7 +109,7 @@ ul.pagination li a.active {
 }
 
 #search{
-    background-color: #4CAF50; 
+    background-color: #007dbb; 
     border: none;
     color: white;
     padding: 15px 32px;

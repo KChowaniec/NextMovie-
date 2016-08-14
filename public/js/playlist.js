@@ -26,8 +26,7 @@
         if (rating && review) {
             var date = new Date();
             //reformat date in MM/DD/YYYY format
-            var formatDate = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear();
-            console.log(formatDate);
+            var formatDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
             var requestConfig = {
                 method: "POST",
                 url: "/playlist/reviews/" + movieId,

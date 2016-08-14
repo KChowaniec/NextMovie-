@@ -18,7 +18,7 @@ var exportedMethods = {
         }
         else if (!year) {
             let currentDate = new Date();
-            let formatDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDay();
+            let formatDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
             query = query + "&primary_release_date.lte=" + formatDate;
         }
 
@@ -31,7 +31,7 @@ var exportedMethods = {
             if (!movielist[i].release_date == '') {
                 var parsedDate = Date.parse(movielist[i].release_date);
                 var newDate = new Date(parsedDate);
-                var formatDate = (newDate.getMonth() + 1) + "/" + newDate.getDay() + "/" + newDate.getFullYear();
+                var formatDate = (newDate.getMonth() + 1) + "/" + newDate.getDate() + "/" + newDate.getFullYear();
                 movielist[i].release_date = formatDate;
             }
         }

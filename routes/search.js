@@ -10,16 +10,16 @@ router.get("/", (req, res) => {
     //check for user preferences (if any)
     user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         user.getUserPreferences(userObj._id).then((preferences) => {
-            if (Object.keys(preferences).length > 0) { //preferences defined
-                res.render("search/form", {
-                    partial: "populate-preferences-script"
-                });
-            }
-            else { //no preferences defined
-                res.render("search/form", {
-                    partial: "form-validation"
-                });
-            }
+            // if (Object.keys(preferences).length > 0) { //preferences defined
+            res.render("search/form", {
+                partial: "populate-preferences-script"
+            });
+            // }
+            // else { //no preferences defined
+            //     res.render("search/form", {
+            //         partial: "form-validation"
+            //     });
+            // }
         });
     });
 });
@@ -137,7 +137,6 @@ router.post("/", (req, res) => {
 router.get("/results/:pageId", (req, res) => { //call search methods using criteria passed in
     var page = req.params.pageId;
     let queryData = url.parse(req.url, true).query;
-    console.log(queryData);
     let queryString = "";
     let title;
     Object.keys(queryData).forEach(function (key, index) {
