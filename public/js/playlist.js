@@ -13,6 +13,7 @@
     var saveTitle = $(".save-title");
     var playlistTitle = $("#playlist-title");
     var currentTitle = playlistTitle.text();
+    var updateReview = $(".update-review");
 
     myNewTaskForm.hide();
     updateListTitle.hide();
@@ -99,8 +100,22 @@
 
     });
 
+    updateReview.click(function () {
+        let movieId = this.id;
+        let form = $("#" + movieId + ".new-item-form");
+        let userRating = $(".user-rating").html().split(',');
+        let rating = parseFloat(userRating[0]);
+        let comment = userRating[1].replace(/"/g, '');
+
+        let ratingBox = $("#" + movieId + ".new-rating");
+        let commentBox = $("#" + movieId + ".new-review");
+        ratingBox.val(rating);
+        commentBox.val(comment);
+        form.toggle();
+    });
+
     addReview.click(function () {
-        //display review text box, change add review text to 'post', save to db and update page
+        //display review text box
         let movieId = this.id;
         let form = $("#" + movieId + ".new-item-form");
         form.toggle();

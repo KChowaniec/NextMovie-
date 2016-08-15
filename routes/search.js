@@ -8,19 +8,8 @@ var url = require('url');
 
 router.get("/", (req, res) => {
     //check for user preferences (if any)
-    user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-        user.getUserPreferences(userObj._id).then((preferences) => {
-            // if (Object.keys(preferences).length > 0) { //preferences defined
-            res.render("search/form", {
-                partial: "populate-preferences-script"
-            });
-            // }
-            // else { //no preferences defined
-            //     res.render("search/form", {
-            //         partial: "form-validation"
-            //     });
-            // }
-        });
+    res.render("search/form", {
+        partial: "populate-preferences-script"
     });
 });
 

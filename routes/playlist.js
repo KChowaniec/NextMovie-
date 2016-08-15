@@ -71,10 +71,23 @@ router.post("/reviews/:movieId", (req, res) => {
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
             reviewData.poster = user.profile;
-            var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-            postReview.then((result) => {
-                res.json({ success: true, result: result });
-            });
+            //check if review exists
+            let movies = playlistInfo.playlistMovies;
+            var currentMovie = movies.filter(function (e) { return e._id = movieId });
+            if (currentMovie[0].review) { //review already exists
+                //update process
+                reviewData._id = currentMovie[0].review._id;
+                var updateReview = playlist.updateMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
+                updateReview.then((result) => {
+                    res.json({ success: true, result: result });
+                });
+            }
+            else {
+                var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
+                postReview.then((result) => {
+                    res.json({ success: true, result: result });
+                });
+            }
         }).catch((error) => {
             res.json({ success: false, error: error });
         });

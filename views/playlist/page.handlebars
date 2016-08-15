@@ -28,8 +28,13 @@
             <label for="overview">{{this.overview}}</label>
             {{#if this.review}}
             <label for="review">Your Review:</label>
+            <div class ="user-rating">
             {{this.review.rating}}/5, "{{this.review.comment}}"
+            </div>
             <div class="playlist_buttons">
+            <button type="button" id={{this._id}} class="update-review" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>
+         Edit Review
+            </button>       
                <button type="button" id={{this.review._id}} class="remove-review" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>
          Remove Review
             </button>
@@ -40,7 +45,7 @@
             </button>
             {{/if}}
         <button type="button" id={{this._id}} class="delete" class="btn btn-default"><span class="glyphicon glyphicon-remove-sign"></span>
-        Remove
+        Remove Movie
             </div>
             <form class="new-item-form" id={{this._id}}>
             <label>Rating <input required class="new-rating" id={{this._id}} type="number" step="0.1" min="1" max="5"/>/5</label><br>
@@ -59,8 +64,13 @@
             <label for="title">{{this.title}}</label><br>
             {{#if this.review}}
             <label for="review">Your Review:</label>
+            <div class ="user-rating">
             {{this.review.rating}}/5, "{{this.review.comment}}"
+            </div>
             <div class="playlist_buttons">
+            <button type="button" id={{this._id}} class="update-review" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>
+         Edit Review
+            </button>  
                <button type="button" id={{this.review._id}} class="remove-review" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>
          Remove Review
             </button>

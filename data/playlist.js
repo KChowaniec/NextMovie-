@@ -147,7 +147,6 @@ var exportedMethods = {
         });
     },
 
-
     addMovieToPlaylistGeneral(id, obj) {   //add movie to the playlistMovies array by providing playlist id and the movie object.Node:the review id in the movie should be added first
         return Playlist().then((playlistCollection) => {
             //obj["review"]["_id"]=uuid.v4();
@@ -284,6 +283,28 @@ var exportedMethods = {
 
     },
 
+    updateMovieReviewToPlaylistAndMovie(playlistId, movieId, review) {
+        return Playlist().then((playlistCollection) => {
+            var obj = {
+                _id: review._id,
+                rating: review.rating,
+                date: review.date,
+                comment: review.comment
+            };
+            return playlistCollection.update({ _id: playlistId, "playlistMovies._id": movieId }, { $set: { "playlistMovies.$.review": obj } }).then(function () {
+                return obj;
+            }).then((obj) => {
+                obj["poster"] = review.poster;
+                return movies.updateReviewByReviewId(movieId, review._id, obj).then((reviewObj) => {
+                    return reviewObj;
+                });
+            }).catch((error) => {
+                console.log("error");
+                return { error: error };
+            });
+        });
+
+    },
 
     removeReviewFromPlaylist(playlistId, reviewId) {
         return Playlist().then((playlistCollection) => {
