@@ -5,6 +5,7 @@ var form = data.form;
 var api = data.api;
 var user = data.users;
 var url = require('url');
+var xss = require('xss');
 
 router.get("/", (req, res) => {
     //check for user preferences (if any)
@@ -28,14 +29,14 @@ router.get("/preferences", (req, res) => {
 
 
 router.post("/", (req, res) => {
-    let title = req.body.title;
-    let actors = req.body.actors;
-    let genres = req.body.genre;
-    let crew = req.body.crew;
-    let rating = req.body.rating;
-    let evaluation = req.body.evaluation;
-    let year = parseInt(req.body.releaseYear);
-    let keywords = req.body.keywords;
+    let title = xss(req.body.title)
+    let actors = xss(req.body.actors);
+    let genres = xss(req.body.genre);
+    let crew = xss(req.body.crew);
+    let rating = xss(req.body.rating);
+    let evaluation = xss(req.body.evaluation);
+    let year = parseInt(xss(req.body.releaseYear));
+    let keywords = xss(req.body.keywords);
 
     var parseActors = [];
     let parseWords = [];
@@ -125,7 +126,7 @@ router.post("/", (req, res) => {
 
 router.get("/results/:pageId", (req, res) => { //call search methods using criteria passed in
     var page = req.params.pageId;
-    let queryData = url.parse(req.url, true).query;
+    let queryData = (url.parse(xss(req.url), true).query);
     let queryString = "";
     let title;
     Object.keys(queryData).forEach(function (key, index) {

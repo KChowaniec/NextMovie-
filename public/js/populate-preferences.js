@@ -1,4 +1,3 @@
-
 (function ($, location) {
 
     //get preferences and populate them
@@ -7,6 +6,21 @@
         url: "search/preferences",
         contentType: 'application/json',
     };
+
+    //form submitted - validations
+    $("#search").click(function (event) {
+        //validate release year
+        let year = $("#releaseYear").val();
+        if (year) {
+            let today = new Date();
+            if (year < 1900 || year > today.getFullYear()) {
+                event.preventDefault();
+                $("#releaseYear-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Release Year is invalid";
+                $("#releaseYear-error-container")[0].classList.remove("hidden");
+            }
+        }
+
+    });
 
     $.ajax(requestConfig).then(function (response) {
         if (response.success == true) {
@@ -68,7 +82,7 @@
         $("#releaseYear").val('');
         $("#keywords").val('');
         $("#title").val('');
-
+        $("#releaseYear-error-container")[0].classList.add("hidden");
     });
 
 

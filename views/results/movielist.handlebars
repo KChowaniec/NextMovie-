@@ -1,10 +1,10 @@
-<div class="results" id={{userId}}>
+<div class="row">
     <h1>Search Results</h1>
   <div class="col-sm-12" >
       <h4>{{ total }} movies match your search criteria </h4>
       {{#if pages}}
       <p>Pages:</p>
-      <ul class="pagination" id={{pages}}>
+      <ul class="pagination pagination-lg" id={{pages}}>
     </ul>
     {{/if}}
   </div>
@@ -16,17 +16,17 @@
                     <li movieId="{{this.id}}">
                         <img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2{{this.poster_path}}" />
                             <div class="buttons">
-                            <button type="button" id={{this.id}} class="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span>
+                            <button type="button" class="add" id={{this.id}} ><span class="glyphicon glyphicon-plus-sign"></span>
                                 Add to Playlist
                             </button> 
-                           <button type="button" id={{this.id}} class="details" class="btn btn-default"><span class="glyphicon glyphicon-list-alt"></span>
+                           <button type="button" class="details"  id={{this.id}}><span class="glyphicon glyphicon-list-alt"></span>
                            Movie Details
                            </button>
                         </div>
                         <div class="movie_info">
                             <ul class="list-unstyled">
                                 <li><strong>Title:</strong> {{this.title}}</li>
-                                <li><strong>Average Rating from The Movie DB.com: </strong> {{this.vote_average}} /10</li>
+                                <li><strong>Rating from The Movie DB.com: </strong> {{this.vote_average}} /10</li>
                                 <li><strong>Release Date:</strong> {{this.release_date}}</li>
                                 <li><strong>Overview:</strong> {{this.overview}}</li>
                             </ul>

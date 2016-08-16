@@ -1,12 +1,10 @@
 (function ($, location) {
 
-    var mainElement = $("main");
-    var clearPlaylist = $(".clear");
+    var clearPlaylist = $(".clear-list button");
     var removeMovie = $(".delete");
     var addReview = $(".review");
     var checkOffMovie = $(".check-off");
-    var viewedMovies = $(".check");
-    var myNewTaskForm = $(".new-item-form");
+    var newReviewForm = $(".new-item-form");
     var updateTitle = $(".update-title");
     var newTitleBox = $(".update-title-box");
     var updateListTitle = $("#update-title");
@@ -15,10 +13,10 @@
     var currentTitle = playlistTitle.text();
     var updateReview = $(".update-review");
 
-    myNewTaskForm.hide();
+    newReviewForm.hide();
     updateListTitle.hide();
 
-    myNewTaskForm.submit(function (event) {
+    newReviewForm.submit(function (event) {
         event.preventDefault();
         let movieId = this.id;
         let rating = $("#" + movieId + ".new-rating").val();
@@ -41,9 +39,6 @@
 
             $.ajax(requestConfig).then(function (response) {
                 if (response.success == true) {
-                    console.log(response.result);
-                    //  var removeReview = $(".remove-review");
-                    // removeReview.show();
                     window.location.reload(true);
                 }
             });
@@ -147,7 +142,6 @@
 
             $.ajax(clearList).then(function (response) {
                 if (response.success == true) {
-                    // myNewTaskForm.load("../playlist/page");
                     window.location.reload(true);
                 }
             });
@@ -164,8 +158,10 @@
 
         $.ajax(removeMovie).then(function (response) {
             if (response.success == true) {
-                // var movie = $("li #" + movieId)
-                //movie.hide();
+
+                // var movie = $("#" + movieId + ".movie-item");
+                // console.log(movie);
+                // movie.remove();
                 window.location.reload(true);
             }
         });

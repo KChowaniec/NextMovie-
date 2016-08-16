@@ -68,16 +68,13 @@
         <label for="keywords">Keywords</label>
         <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Movie keywords" value="{{keywords}}">
       </div>
-   {{#if error }}
-      <div class="form-group">
-        <div class="alert alert-danger">
-          {{ error }}
-        </div>
-      </div>
-      {{/if}}
-      <div class="form-group">
-        <button type="submit" id="search" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search</button>
-        <button type="button" id="clear-form" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span> Clear Search</button>
+  <div class="form-group hidden" id="releaseYear-error-container">
+    <div class="alert alert-danger text-goes-here">
+   </div>
+  </div>
+         <div class="btn-group btn-group-lg"> 
+        <button type="submit" id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+        <button type="button" id="clear-form" class="btn btn-primary"><span class="glyphicon glyphicon-trash"></span> Clear Search</button>
       </div>
     </form>
   </div>

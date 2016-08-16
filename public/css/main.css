@@ -9,7 +9,7 @@ img {
     max-width: 300px; 
     max-height: 300px;
 }
-.add, .details, .reviews{
+.add, .details, .reviews, .post-review{
     width: 10em;
     display: block;
     background-color: #007dbb;
@@ -23,7 +23,7 @@ img {
 .delete{
     width: 10em;
     display: inline-block;
-    background-color: #C70039;
+    background-color: black;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -34,7 +34,7 @@ img {
 .clear{
     width: 10em;
     display: block;
-    background-color: black;
+    background-color: #C70039;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -44,6 +44,10 @@ img {
 
 .movie_title{
     font-size: 15px;
+}
+
+.post-review{
+    display: inline-block;
 }
 
 .review, .remove-review, .update-review{
@@ -57,7 +61,7 @@ img {
     border-radius: 10px;
 }
 
-#title-header{
+#playlist-title #title-header{
     display: inline-block;
 }
 
@@ -70,6 +74,7 @@ img {
     font-size: 15px;
     border-radius: 10px;
 }
+h1 .btn-group { display: inline-block; }
 
 .movie{
     margin-bottom: 50px;
@@ -98,22 +103,6 @@ ul.pagination li a.active {
     border-radius: 5px;
 }
 
-#search{
-    background-color: #007dbb; 
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-}
-
-/*.results{
-    column-count: 2;
-    column-width: 50px;
-    column-gap: 10px;
-}*/
 .col-sm-12{
     column-span: all;
 }

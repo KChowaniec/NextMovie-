@@ -4,7 +4,7 @@ var data = require("../data");
 var api = data.api;
 var playlist = data.playlist;
 var users = data.users;
-//const search = data.search;
+var xss = require('xss');
 var movie = data.movie;
 
 //GET PLAYLIST

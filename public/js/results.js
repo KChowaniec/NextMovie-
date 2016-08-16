@@ -2,9 +2,7 @@
 
     var mainElement = $("main");
     var addToPlaylist = $(".add");
-    var readReviews = $(".reviews");
     var moreDetails = $(".details");
-    var userId = $(".results").attr('id');
     var pages = $(".pagination").attr('id');
     var pageul = $(".pagination");
     var queryString = location.search;
