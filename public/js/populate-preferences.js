@@ -18,8 +18,12 @@
                 }
                 $("#actors").val(actors.join(','));
             }
-            if (response.preferences.preferences.Director) {
-                $("#crew").val(response.preferences.preferences.Director);
+            if (response.preferences.preferences.Crew) {
+                let crew = [];
+                for (var i = 0; i < response.preferences.preferences.Crew.length; i++) {
+                    crew.push(response.preferences.preferences.Crew[i]);
+                }
+                $("#crew").val(crew.join(','));
             }
             if (response.preferences.preferences.Genre) {
                 let genres = [];
@@ -82,6 +86,7 @@
         var parseActors = [];
         let parseWords = [];
         let parseGenre = [];
+        let parseCrew = [];
 
         if (genres) {
             if (typeof genres === "object") { //multiple genres selected
@@ -98,6 +103,13 @@
             parseActors = actors.split(',');
             if (parseActors.length == 0) {
                 parseActors.push(actors);
+            }
+        }
+
+        if (crew) {
+            parseCrew = crew.split(',');
+            if (parseCrew.length == 0) {
+                parseCrew.push(crew);
             }
         }
 
@@ -118,7 +130,7 @@
                 parseGenre: parseGenre,
                 parseWords: parseWords,
                 title: title,
-                crew: crew,
+                parseCrew: parseCrew,
                 rating: rating,
                 evaluation: evaluation,
                 releaseYear: year

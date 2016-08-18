@@ -1,3 +1,4 @@
+
 .movie_info{
     list-style-type: none;
   }
@@ -23,7 +24,7 @@ img {
 .delete{
     width: 10em;
     display: inline-block;
-    background-color: black;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -64,6 +65,11 @@ img {
     text-decoration: none;
     font-size: 15px;
     border-radius: 10px;
+}
+
+#search, #clear-form{
+    width: 170px;
+    font-size: 20px;
 }
 
 #playlist-title #title-header{
@@ -140,7 +146,7 @@ ul, li{
 
 .form-signin-heading{
     text-align: center;
-    color: #286090;
+    color: #007dbb;
 }
 
 .login_btn{
@@ -157,7 +163,7 @@ ul, li{
 
 .home_title{
     text-align: center;
-    color: #286090;
+    color: #007dbb;
 }
 
 button.close{
@@ -169,7 +175,7 @@ button.close{
 }
 
 #preferences .nav-pills{
-    border-bottom: 1px solid #286090;
+    border-bottom: 1px solid #007dbb;
     margin-bottom: 15px;
     min-height: 20px;
 }

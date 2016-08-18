@@ -19,7 +19,6 @@ var exportedMethods = {
     getMovieById(id) {
         return movie().then((movieCollection) => {
             return movieCollection.findOne({ _id: id }).then((movieObj) => {
-                // if (!movieObj) return "movie not found";
                 return movieObj;
             }).catch((error) => {
                 console.log("error");

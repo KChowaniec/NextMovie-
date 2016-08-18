@@ -12,7 +12,7 @@ var exportedMethods = {
         if (actors && actors.length > 0) query = query + "&with_cast=" + actors.join('|');
         if (genre && genre.length > 0) query = query + "&with_genres=" + genre.join('|');
         if (keywords && keywords.length > 0) query = query + "&with_keywords=" + keywords.join('|');
-        if (crew) query = query + "&with_crew=" + crew;
+        if (crew && crew.length > 0) query = query + "&with_crew=" + crew.join('|');
         if (year) {
             query = query + "&primary_release_year=" + year;
         }

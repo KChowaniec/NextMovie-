@@ -105,7 +105,7 @@ router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
             removeReview.then((result) => {
                 //remove corresponding review from movies collection
                 movie.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-                    res.json({ success: true });
+                    res.json({ success: true, movie: movieId });
                 });
             }).catch((error) => {
                 res.json({ success: false, error: error });

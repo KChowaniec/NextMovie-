@@ -32,7 +32,7 @@ router.post("/", (req, res) => {
     let title = req.body.title;
     let parseActors = req.body.parseActors;
     let parseGenre = req.body.parseGenre;
-    let crew = req.body.crew;
+    let parseCrew = req.body.parseCrew;
     let rating = req.body.rating;
     let evaluation = req.body.evaluation;
     let year = req.body.releaseYear;
@@ -59,21 +59,23 @@ router.post("/", (req, res) => {
         var actorIds = Promise.all(actorId);
     }
 
-    if (crew) {
-        var crewName = api.getPersonIdByName(crew);
-        crewName.then((crewId) => {
-            var personId = crewId.results[0].id;
-        });
+    if (parseCrew) {
+        var crewId = parseCrew.map(fn);
+        var crewIds = Promise.all(crewId);
+        // var crewName = api.getPersonIdByName(crew);
+        // crewName.then((crewId) => {
+        //     var personId = crewId.results[0].id;
+        // });
     }
     if (parseWords) {
         var keywordId = parseWords.map(wordLookup);
         var wordIds = Promise.all(keywordId);
     }
 
-    Promise.all([crewName, actorIds, wordIds]).then(values => {
-        let crewId, actorList = [], keywordList = [];
+    Promise.all([crewIds, actorIds, wordIds]).then(values => {
+        let crewList, actorList = [], keywordList = [];
         if (values[0]) {
-            crewId = values[0].results[0].id;
+            crewList = values[0];
         }
         if (values[1]) {
             actorList = values[1];
@@ -92,7 +94,7 @@ router.post("/", (req, res) => {
 
         //SEARCH BY CRITERIA
         else {
-            let criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
+            let criteriaString = form.createQueryString(actorList, parseGenre, crewList, rating, evaluation, year, keywordList);
             res.json({ success: true, query: criteriaString });
         }
     }).catch((error) => {

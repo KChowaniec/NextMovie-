@@ -1,6 +1,6 @@
 mongoCollections = require("../config/mongoCollections");
 Users = mongoCollections.users;
-var playlist = require('./Playlist');
+var playlist = require('./playlist');
 var uuid = require('node-uuid');
 
 var exportedMethods = {

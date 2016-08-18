@@ -12,7 +12,7 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
 (function ($) {
     var genre_val = [];
     $("#genre li a").each(function(){
-        genre_val.push($(this).attr("value"));
+        genre_val.push($(this).attr("id")); //attr("value"));
     });
     filterAttr(genre, genre_val);
     var genre_rest_dom = "";

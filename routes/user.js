@@ -74,13 +74,13 @@ router.get('/register', function (req, res) {
 									});
 								});
 							} else {
-								res.json({ success: false, message: "Registration is failed" });
+								res.json({ success: false, message: "Registration failed" });
 							}
 						});
 
 					} else {
 						res.json({ success: false, message: "Registration failed because the email already exists" });
-						throw "email alreay exists!"
+						throw "email already exists!"
 					}
 				})
 			} else {
@@ -485,7 +485,9 @@ router.post('/user/add_person', function (req, res) {
 
 	api.getCreditByPersonId(addVal).then((person) => {
 		if (person.id == null || person.id == undefined) {
-			res.json({ success: false, message: "Person doesn't existed!" });
+			res.json({ success: false, message: "Person doesn't exist!" });
+			//	return;
+			console.log(person);
 			return;
 		}
 
@@ -497,7 +499,8 @@ router.post('/user/add_person', function (req, res) {
 			var newCrewArr = [];
 			var flag = true;
 			var mark = "";
-			if (person.movie_credits.cast.length > 0) {
+
+			if (person.movie_credits.cast.length > 0 && person.movie_credits.cast.length > person.movie_credits.crew.length) {
 				mark = "actor";
 				for (var i = 0; i < actorArr.length; i++) {
 					if (actorArr[i] == addVal) {
@@ -514,20 +517,6 @@ router.post('/user/add_person', function (req, res) {
 				newActorArr.push(addVal);
 				userObj.preferences.Actor = newActorArr;
 			} else if (person.movie_credits.crew.length > 0) {
-				/*
-				for (var i = 0; i < person.movie_credits.crew.length; i++){
-					if (person.movie_credits.crew[i].job == "Director"){
-						flag = false;
-						break;
-					}
-				}
-				
-				if (flag){
-					res.json({ success: false, message: "The person is not Actor or Director!" });
-					return;
-				}
-				*/
-
 				flag = true;
 				mark = "crew";
 				for (var i = 0; i < crewArr.length; i++) {
