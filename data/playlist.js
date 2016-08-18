@@ -1,6 +1,6 @@
 mongoCollections = require("../config/mongoCollections");
 Playlist = mongoCollections.playlist;
-var movies = require('./Movie');
+var movies = require('./movie');
 var uuid = require('node-uuid');
 
 var exportedMethods = {
@@ -16,6 +16,7 @@ var exportedMethods = {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.findOne({ _id: id }).then((playlistObj) => {
                 if (!playlistObj) throw "Playlist not found";
+                console.log(playlistObj);
                 return playlistObj;
             }).catch((error) => {
                 return error;
@@ -139,6 +140,7 @@ var exportedMethods = {
                 return movieObj;
             }).then((movieObj) => {
                 return movies.addMovieGeneral(movieObj).then((Movie) => {
+                    console.log(Movie);
                     return Movie;
                 });
             }).catch((error) => {
@@ -225,7 +227,7 @@ var exportedMethods = {
     checkOffMovie(playlistId, movieId) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.update({ _id: playlistId, playlistMovies: { $elemMatch: { _id: movieId } } }, { $set: { "playlistMovies.$.viewed": true } }).then(function () {
-                return id;
+                return playlistId;
             });
         }).then(id => {
             return this.getPlaylistById(id);
@@ -272,11 +274,13 @@ var exportedMethods = {
                 return obj;
             }).then((obj) => {
                 obj["poster"] = review.poster;
-                return movies.addReviewToMovieGeneral(movieId, obj).then((Movie) => {
-                    return Movie;
-                });
+                return movies.addReviewToMovieGeneral(movieId, obj).then((movieInfo) => {
+                    console.log(movieInfo);
+                    return movieInfo;
+                }).catch((error) => {
+                    return { error: error };
+                })
             }).catch((error) => {
-                console.log("error");
                 return { error: error };
             });
         });

@@ -18,9 +18,9 @@
 
     newReviewForm.submit(function (event) {
         event.preventDefault();
-        let movieId = this.id;
-        let rating = $("#" + movieId + ".new-rating").val();
-        let review = $("#" + movieId + ".new-review").val();
+        let movieId = parseInt(this.id.split("form")[1]);
+        let rating = $("#rating" + movieId + ".new-rating").val();
+        let review = $("#review" + movieId + ".new-review").val();
 
         if (rating && review) {
             var date = new Date();
@@ -39,7 +39,18 @@
 
             $.ajax(requestConfig).then(function (response) {
                 if (response.success == true) {
-                    window.location.reload(true);
+                    console.log(response);
+                    // window.location.reload(true);
+                    // response.result
+                    let reviewSection = $("#user-rating" + movieId + ".user-rating");
+                    //  reviewSection.html(
+                    //  console.log(reviewSection.html());
+                    console.log(response.result);
+                    reviewSection[0] = response.result;
+                    reviewSection[1] = response.result;
+                    $("#add" + movieId + ".review").hide();
+                    $("#update" + movieId + ".update-review").show();
+                    $("#" + response.result._id + ".remove-review").show();
                 }
             });
         }
@@ -47,7 +58,7 @@
     });
 
     updateTitle.click(function () {
-        let playlistId = this.id;
+        let playlistId = this.id.split("update")[1];
         playlistTitle.hide();
         updateTitle.hide();
         updateListTitle.show();
@@ -55,7 +66,7 @@
     });
 
     saveTitle.click(function () {
-        let playlistId = this.id;
+        let playlistId = this.id.split("save")[1];
         let newTitle = newTitleBox.val();
         var requestConfig = {
             method: "PUT",
@@ -96,14 +107,14 @@
     });
 
     updateReview.click(function () {
-        let movieId = this.id;
-        let form = $("#" + movieId + ".new-item-form");
-        let userRating = $(".user-rating").html().split(',');
+        let movieId = parseInt(this.id.split("update")[1]);
+        let form = $("#form" + movieId + ".new-item-form");
+        let userRating = $("#user-rating" + movieId + ".user-rating").html().split(',');
         let rating = parseFloat(userRating[0]);
         let comment = userRating[1].replace(/"/g, '');
 
-        let ratingBox = $("#" + movieId + ".new-rating");
-        let commentBox = $("#" + movieId + ".new-review");
+        let ratingBox = $("#rating" + movieId + ".new-rating");
+        let commentBox = $("#review" + movieId + ".new-review");
         ratingBox.val(rating);
         commentBox.val(comment);
         form.toggle();
@@ -111,14 +122,14 @@
 
     addReview.click(function () {
         //display review text box
-        let movieId = this.id;
-        let form = $("#" + movieId + ".new-item-form");
+        let movieId = parseInt(this.id.split("add")[1]);
+        let form = $("#form" + movieId + ".new-item-form");
         form.toggle();
     });
 
     checkOffMovie.click(function () {
-        let movieId = this.id;
-
+        let movieId = parseInt(this.id.split("check")[1]);
+        console.log(movieId);
         var flagMovie = {
             method: "PUT",
             url: '/playlist/movie/' + movieId,
@@ -126,7 +137,15 @@
 
         $.ajax(flagMovie).then(function (response) {
             if (response.success == true) {
+                console.log("Success");
                 window.location.reload(true);
+                // let movieToWatch = $("ul.not_viewed > li #" + movieId);
+                // console.log(movieToWatch);
+                // movieToWatch.hide();
+                // let watchedMovie = $(".viewed");
+                // console.log(watchedMovie);
+                //   let newElement = "<li>"
+                // watchedMovie.append(newElement);
             }
         });
     });
@@ -149,8 +168,7 @@
     });
 
     removeMovie.click(function () {
-        let movieId = this.id;
-
+        let movieId = parseInt(this.id.split("remove")[1]);
         var removeMovie = {
             method: "DELETE",
             url: '/playlist/movie/' + movieId,
@@ -158,10 +176,6 @@
 
         $.ajax(removeMovie).then(function (response) {
             if (response.success == true) {
-
-                // var movie = $("#" + movieId + ".movie-item");
-                // console.log(movie);
-                // movie.remove();
                 window.location.reload(true);
             }
         });

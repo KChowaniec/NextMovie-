@@ -1,7 +1,8 @@
 <div class="row">
-    <h1>Search Results</h1>
+    <h1></h1>
+    <h2>Search Results</h2>
   <div class="col-sm-12" >
-      <h4>{{ total }} movies match your search criteria </h4>
+      <h3>{{ total }} movies match your search criteria </h3>
       {{#if pages}}
       <p>Pages:</p>
       <ul class="pagination pagination-lg" id={{pages}}>
@@ -11,19 +12,17 @@
     {{#if movies.length}}
         <ul class="list-unstyled">
             {{#each movies}}
-                {{#if this.poster_path}}
-                <div class="movie">
-                    <li movieId="{{this.id}}">
-                        <img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2{{this.poster_path}}" />
+                    <li class="movie-result" >
+                        <img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2{{this.poster_path}}" alt="movie poster" />
                             <div class="buttons">
-                            <button type="button" class="add" id={{this.id}} ><span class="glyphicon glyphicon-plus-sign"></span>
+                            <button type="button" class="add" id="add{{this.id}}"><span class="glyphicon glyphicon-plus-sign"></span>
                                 Add to Playlist
                             </button> 
-                           <button type="button" class="details"  id={{this.id}}><span class="glyphicon glyphicon-list-alt"></span>
+                           <button type="button" class="details" id="get{{this.id}}"><span class="glyphicon glyphicon-list-alt"></span>
                            Movie Details
                            </button>
                         </div>
-                        <div class="movie_info">
+                        <div class="movie_info" >
                             <ul class="list-unstyled">
                                 <li><strong>Title:</strong> {{this.title}}</li>
                                 <li><strong>Rating from The Movie DB.com: </strong> {{this.vote_average}} /10</li>
@@ -31,11 +30,7 @@
                                 <li><strong>Overview:</strong> {{this.overview}}</li>
                             </ul>
                         </div>
-                    </div>
                     </li>
-                    <br style="clear: both;" />
-                    </div>
-                {{/if}}
             {{/each}}
         </ul>
     {{/if}}

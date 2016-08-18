@@ -29,29 +29,14 @@ router.get("/preferences", (req, res) => {
 
 
 router.post("/", (req, res) => {
-    let title = xss(req.body.title)
-    let actors = xss(req.body.actors);
-    let genres = xss(req.body.genre);
-    let crew = xss(req.body.crew);
-    let rating = xss(req.body.rating);
-    let evaluation = xss(req.body.evaluation);
-    let year = parseInt(xss(req.body.releaseYear));
-    let keywords = xss(req.body.keywords);
-
-    var parseActors = [];
-    let parseWords = [];
-    let parseGenre = [];
-
-    if (genres) {
-        if (typeof genres === "object") { //multiple genres selected
-            for (var i = 0; i < genres.length; i++) {
-                parseGenre.push(parseInt(genres[i]));
-            }
-        }
-        else { //just one genre selected
-            parseGenre.push(parseInt(genres));
-        }
-    }
+    let title = req.body.title;
+    let parseActors = req.body.parseActors;
+    let parseGenre = req.body.parseGenre;
+    let crew = req.body.crew;
+    let rating = req.body.rating;
+    let evaluation = req.body.evaluation;
+    let year = req.body.releaseYear;
+    let parseWords = req.body.parseWords;
 
     var fn = function getId(name) { // sample async action
         return new Promise((fulfill, reject) => {
@@ -69,12 +54,7 @@ router.post("/", (req, res) => {
         });
     };
 
-    if (actors) {
-        parseActors = actors.split(',');
-        if (parseActors.length == 0) {
-            parseActors.push(actors);
-        }
-
+    if (parseActors) {
         var actorId = parseActors.map(fn);
         var actorIds = Promise.all(actorId);
     }
@@ -85,11 +65,7 @@ router.post("/", (req, res) => {
             var personId = crewId.results[0].id;
         });
     }
-    if (keywords) {
-        parseWords = keywords.split(',');
-        if (parseWords.length == 0) {
-            parseWords.push(keywords);
-        }
+    if (parseWords) {
         var keywordId = parseWords.map(wordLookup);
         var wordIds = Promise.all(keywordId);
     }
@@ -105,22 +81,22 @@ router.post("/", (req, res) => {
 
         if (values[2]) {
             keywordList = values[2];
-            console.log(keywordList);
         }
 
         //SEARCH BY MOVIE TITLE
         if (title) {
             let criteriaString = "title=" + title;
             //redirect to new URL
-            res.redirect("/search/results/1?" + criteriaString);
+            res.json({ success: true, query: criteriaString });
         }
 
         //SEARCH BY CRITERIA
         else {
             let criteriaString = form.createQueryString(actorList, parseGenre, crewId, rating, evaluation, year, keywordList);
-            //redirect to new URL
-            res.redirect("/search/results/1?" + criteriaString);
+            res.json({ success: true, query: criteriaString });
         }
+    }).catch((error) => {
+        res.json({ success: false, error: error });
     });
 });
 

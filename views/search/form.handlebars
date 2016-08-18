@@ -2,13 +2,13 @@
   <h1>Movie Preferences</h1>
   <div class="col-sm-12">
     <form id="server-form" method="post">
-      <h4>Search By Name</h4>
+      <h2>Search By Name</h2>
       <div class="form-group">
       <label for="title">Movie Name</label>
       <input type="text" class="form-control" id="title" name="title" placeholder="Movie Name" value="{{title}}">
       </div>
       <h3>OR...</h3><br>
-      <h4>Search By Criteria</h4>
+      <h2>Search By Criteria</h2>
       <div class="form-group">    
         <label for="actors">Actor(s):</label>
         <input type="text" class="form-control" id="actors" name="actors" placeholder="Preferred Actor(s), separated by comma (Ex. Brad Pitt, Matt Damon)" value="{{actors}}">
@@ -68,7 +68,7 @@
         <label for="keywords">Keywords</label>
         <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Movie keywords" value="{{keywords}}">
       </div>
-  <div class="form-group hidden" id="releaseYear-error-container">
+  <div class="form-group hidden" id="error-container">
     <div class="alert alert-danger text-goes-here">
    </div>
   </div>

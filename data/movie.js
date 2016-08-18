@@ -1,6 +1,6 @@
 
 mongoCollections = require("../config/mongoCollections");
-Movie = mongoCollections.movie;
+movie = mongoCollections.movie;
 var uuid = require('node-uuid');
 
 var https = require("https");
@@ -10,16 +10,16 @@ var restHost = "https://api.themoviedb.org/3";
 var exportedMethods = {
     //main operations related to movie
     getAllMovie() {
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.find({}).toArray();
         });
     },
     // This is a fun new syntax that was brought forth in ES6, where we can define
     // methods on an object with this shorthand!
     getMovieById(id) {
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.findOne({ _id: id }).then((movieObj) => {
-                // if (!movieObj) return "Movie not found";
+                // if (!movieObj) return "movie not found";
                 return movieObj;
             }).catch((error) => {
                 console.log("error");
@@ -27,11 +27,11 @@ var exportedMethods = {
             });
         });
     },
-    
-    getMovieByOriginId(id){
-        return Movie().then((movieCollection) => {
+
+    getMovieByOriginId(id) {
+        return movie().then((movieCollection) => {
             return movieCollection.findOne({ id: id }).then((movieObj) => {
-                // if (!movieObj) return "Movie not found";
+                // if (!movieObj) return "movie not found";
                 return movieObj;
             }).catch((error) => {
                 console.log("error");
@@ -41,8 +41,8 @@ var exportedMethods = {
     },
 
     addMovieGeneral(obj) {
-        return Movie().then((movieCollection) => {
-            obj["_id"] = uuid.v4();
+        return movie().then((movieCollection) => {
+            obj["_id"] = obj.id;
             var date = new Date(obj.releaseDate);
             var formatDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
             obj.releaseDate = formatDate;
@@ -70,7 +70,7 @@ var exportedMethods = {
             keywords: keywords,
             allReviews: []
         };
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.insertOne(obj).then((movieObj) => {
                 return movieObj.insertedId;
             }).then(newId => {
@@ -80,7 +80,7 @@ var exportedMethods = {
     },
 
     deleteMovieById(id) {
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.deleteOne({ _id: id }).then(function (deletionInfo) {
                 if (deletionInfo.deletedCount === 0) throw "Could not find the document with this id to delete";
                 return true;
@@ -91,7 +91,7 @@ var exportedMethods = {
     },
 
     updateMovieById(id, obj) {
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $set: obj }).then(function () {
                 //console.log(typeof this.getRecipeById(id));
                 return id;
@@ -107,7 +107,7 @@ var exportedMethods = {
     //operations related to review
 
     addReviewToMovieGeneral(id, obj) {   //add review to the allreviews array by providing movie id and the review object.Note: the review id should be added in the obj first
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $addToSet: { "allReviews": obj } }).then(function () {
                 return id;
             }).then(id => {
@@ -127,7 +127,7 @@ var exportedMethods = {
             date: date,
             comment: comment
         }
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $addToSet: { "allReviews": obj } }).then(function () {
                 return id;
             }).then(id => {
@@ -139,10 +139,10 @@ var exportedMethods = {
     },
 
 
-    getReviewByReviewId(mid, rid) {     //get the review from the Movie by providing the specified movie id and the review id
-        return Movie().then((movieCollection) => {
+    getReviewByReviewId(mid, rid) {     //get the review from the movie by providing the specified movie id and the review id
+        return movie().then((movieCollection) => {
             return movieCollection.findOne({ _id: mid }).then((movieObj) => {
-                if (!movieObj) throw "Movie with id " + mid + " doesn't exist!";
+                if (!movieObj) throw "movie with id " + mid + " doesn't exist!";
                 var reviewlist = movieObj.allReviews;
                 for (var i = 0; i < reviewlist.length; i++) {
                     if (reviewlist[i]._id == rid) return reviewlist[i];
@@ -158,7 +158,7 @@ var exportedMethods = {
     },
 
     removeReviewByReviewId(mId, rId) {   //delete specified review in the allReviews array by providing movie id and the review id
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: mId }, { $pull: { "allReviews": { _id: rId } } }).then(function () {
                 return mId;
             }).then(id => {
@@ -170,7 +170,7 @@ var exportedMethods = {
     },
 
     updateReviewByReviewId(mid, rid, obj) {   //delete specified review in the allReviews array by providing movie id and the review id
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: mid, allReviews: { $elemMatch: { _id: rid } } }, { $set: { "allReviews.$": obj } }).then(function () {
                 return mid;
             }).then((pid) => {
@@ -188,7 +188,7 @@ var exportedMethods = {
     //other operations
 
     updateAverageRating(mid, rating) {
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: mid }, { $set: { "averageRating": rating } }).then(function () {
                 return mid;
             }).then((mid) => {
@@ -204,7 +204,7 @@ var exportedMethods = {
     },
 
     addNewKeywords(id, keyword) {
-        return Movie().then((movieCollection) => {
+        return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $addToSet: { "keywords": keyword } }).then(function () {
                 return id;
             }).then(id => {
@@ -358,7 +358,7 @@ var exportedMethods = {
                     for (var i = 0; i < rs.credits.crew.length; i++) {
                         if (rs.credits.crew[i].job == "Director") {
                             movie.director = rs.credits.crew[i].name;
-                        } 
+                        }
                         crewVal.push(rs.credits.crew[i].name);
                     }
                     movie.crew = crewVal;
@@ -374,8 +374,8 @@ var exportedMethods = {
             });
         });
     },
-    
-    getAllGenre(){
+
+    getAllGenre() {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/genre/movie/list" + pathTail, (res) => {
                 res.setEncoding('utf8');
@@ -383,22 +383,22 @@ var exportedMethods = {
                 res.on('data', (d) => {
                     _data += d;
                 });
-                
+
                 res.on('end', () => {
                     var genreArr = [];
                     var rs = JSON.parse(_data).genres;
-                    
-                    for (var i = 0; i < rs.length; i++){
+
+                    for (var i = 0; i < rs.length; i++) {
                         genreArr.push(rs[i].name);
                     }
-                    
+
                     fulfill(genreArr);
                 });
             });
         });
     },
-    
-    getAllAgeRating(){
+
+    getAllAgeRating() {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/certification/movie/list" + pathTail, (res) => {
                 res.setEncoding('utf8');
@@ -406,15 +406,15 @@ var exportedMethods = {
                 res.on('data', (d) => {
                     _data += d;
                 });
-                
+
                 res.on('end', () => {
                     var ageArr = [];
                     var rs = JSON.parse(_data).certifications.US;
-                    
-                    for (var i = 0; i < rs.length; i++){
+
+                    for (var i = 0; i < rs.length; i++) {
                         ageArr.push(rs[i].certification);
                     }
-                    
+
                     fulfill(ageArr);
                 });
             });

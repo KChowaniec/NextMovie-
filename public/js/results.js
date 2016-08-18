@@ -17,6 +17,9 @@
             max = pages;
         }
         min = (Math.floor(currentPage / 10) * 10) + 1;
+        if (max == currentPage) {
+            min = max - 9;
+        }
 
         if (min > 1) {
             let nextPage = min - 10;
@@ -25,6 +28,7 @@
         else {
             min = 1;
         }
+
         for (var i = min; i <= max; i++) {
             if (currentPage == i) {
                 pageString += "<li><a class='active' href='search/results/" + i + queryString + "'>" + i + "</a></li>";
@@ -41,7 +45,7 @@
     }
 
     addToPlaylist.click(function () {
-        var movieId = this.id;
+        var movieId = parseInt(this.id.split("add")[1]);
         var addMovie = {
             method: "POST",
             url: '/playlist/' + movieId,
@@ -58,7 +62,7 @@
     });
 
     moreDetails.click(function () {
-        var movieId = this.id;
+        var movieId = parseInt(this.id.split("get")[1]);
         window.location = "/movies/detail/" + movieId;
     });
 })(jQuery);

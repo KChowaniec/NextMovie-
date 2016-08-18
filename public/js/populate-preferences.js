@@ -7,20 +7,6 @@
         contentType: 'application/json',
     };
 
-    //form submitted - validations
-    $("#search").click(function (event) {
-        //validate release year
-        let year = $("#releaseYear").val();
-        if (year) {
-            let today = new Date();
-            if (year < 1900 || year > today.getFullYear()) {
-                event.preventDefault();
-                $("#releaseYear-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Release Year is invalid";
-                $("#releaseYear-error-container")[0].classList.remove("hidden");
-            }
-        }
-
-    });
 
     $.ajax(requestConfig).then(function (response) {
         if (response.success == true) {
@@ -45,7 +31,7 @@
                 if (response.preferences.preferences.ageRating.length == 1) { //only 1 rating selected
                     $("#rating").val(response.preferences.preferences.ageRating).attr('selected', 'selected');
                 }
-                else {
+                else if (response.preferences.preferences.ageRating.length > 1) {
                     //pick highest rating preference and set option to less than or equal to
                     let ratings = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
                     let max = 0;
@@ -71,6 +57,88 @@
         }
     });
 
+    //form submitted - validations
+    $("#search").click(function (event) {
+        event.preventDefault();
+        //validate release year
+        let year = parseInt($("#releaseYear").val());
+        if (year) {
+            let today = new Date();
+            if (year < 1900 || year > today.getFullYear()) {
+                $("#error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = "Release Year is invalid";
+                $("#error-container")[0].classList.remove("hidden");
+                return;
+            }
+        }
+
+        let title = $("#title").val();
+        let actors = $("#actors").val();
+        let genres = $("#genre").val();
+        let crew = $("#crew").val();
+        let rating = $("#rating").val()
+        let evaluation = $("#evaluation").val()
+        let keywords = $("#keywords").val();
+
+        var parseActors = [];
+        let parseWords = [];
+        let parseGenre = [];
+
+        if (genres) {
+            if (typeof genres === "object") { //multiple genres selected
+                for (var i = 0; i < genres.length; i++) {
+                    parseGenre.push(parseInt(genres[i]));
+                }
+            }
+            else { //just one genre selected
+                parseGenre.push(parseInt(genres));
+            }
+        }
+
+        if (actors) {
+            parseActors = actors.split(',');
+            if (parseActors.length == 0) {
+                parseActors.push(actors);
+            }
+        }
+
+        if (keywords) {
+            parseWords = keywords.split(',');
+            if (parseWords.length == 0) {
+                parseWords.push(keywords);
+            }
+        }
+
+        //post to search route
+        var requestConfig = {
+            method: "POST",
+            url: "search/",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                parseActors: parseActors,
+                parseGenre: parseGenre,
+                parseWords: parseWords,
+                title: title,
+                crew: crew,
+                rating: rating,
+                evaluation: evaluation,
+                releaseYear: year
+            })
+        };
+
+
+        $.ajax(requestConfig).then(function (response) {
+            if (response.success == true) {
+                window.location = "/search/results/1?" + response.query;
+            }
+            else if (response.success == false) {
+                $("#error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = response.error;
+                $("#error-container")[0].classList.remove("hidden");
+            }
+        });
+
+    });
+
+
     //clear search criteria inputs
     $("#clear-form").click(function () {
         //clear/reset all input values
@@ -82,7 +150,7 @@
         $("#releaseYear").val('');
         $("#keywords").val('');
         $("#title").val('');
-        $("#releaseYear-error-container")[0].classList.add("hidden");
+        $("#error-container")[0].classList.add("hidden");
     });
 
 

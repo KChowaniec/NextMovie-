@@ -1,104 +1,102 @@
 <div class="row">
     <h1 id="playlist-title">{{ playlist.title }}</h1>
     <div id="title-header">
-       <button type="button" class="update-title" id={{playlist._id}}><span class="glyphicon glyphicon-pencil"></span>
+       <button type="button" class="update-title" id="update{{playlist._id}}"><span class="glyphicon glyphicon-pencil"></span>
          Change Playlist Name
         </button> 
     </div>
     <div id="update-title">
-    <input type="text" class="update-title-box" id={{playlist._id}}  required/>
-  <button type="button" class="save-title" id={{playlist._id}} ><span class="glyphicon glyphicon-floppy-disk"></span>
-         Save Name
+        <input type="text" class="update-title-box" required/>
+        <button type="button" class="save-title" id="save{{playlist._id}}" ><span class="glyphicon glyphicon-floppy-disk"></span>
+        Save Name
         </button> 
     </div>
     {{#if movies.length}}
         <div class="clear-list">
-        <button type="button" class="clear" id={{playlist._id}}><span class="glyphicon glyphicon-trash"></span>
-        Clear Playlist
+            <button type="button" class="clear" id={{playlist._id}}><span class="glyphicon glyphicon-trash"></span>
+            Clear Playlist
             </button>
-            </div><br>
+        </div><br>
         {{#if unviewed.length}}
         <div class="col-lg-6">
             <div class="panel panel-default fixed-panel">
-              <div class="panel-heading"><h4><strong>Movies to Watch</strong></h4></div>
-             <div class="panel-body">
-            {{#each unviewed}}
-            <ul class="not_viewed">
-             <li class="movie-item" id={{this._id}}>
-                <input type="checkbox" class="check-off" id= {{this._id}} >
-                <label for="check-off">Check-Off?</label><br>
-                <label for="title" class="movie_title">{{this.title}}</label>
-                <label for="overview">{{this.overview}}</label><br>
-                {{#if this.review}}
-                <label for="review">Your Review:</label>
-                <div class ="user-rating" id={{this._id}}>
-                {{this.review.rating}}/5, "{{this.review.comment}}"
+                <div class="panel-heading"><h2><strong>Movies to Watch</strong></h2></div>
+                <div class="panel-body">
+                    {{#each unviewed}}
+                    <ul class="not_viewed">
+                        <li class="movie-item" id={{this._id}}>
+                            <label for="check{{this._id}}">Check-Off?</label>
+                            <input type="checkbox" class="check-off" id= "check{{this._id}}">
+                            <p><strong>Title:</strong> {{this.title}}</p>
+                            <p><strong>About:</strong> {{this.overview}}</p>
+                            {{#if this.review}}
+                            <strong>Your Review:</strong>
+                            <div class ="user-rating" id="user-rating{{this._id}}">
+                            {{this.review.rating}}/5, "{{this.review.comment}}"
+                            </div>                    
+                            <button type="button" class="update-review" id="update{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
+                            Edit Review
+                            </button>     
+                            <button type="button" class="remove-review" id={{this.review._id}}><span class="glyphicon glyphicon-remove"></span>
+                            Remove Review
+                            </button>
+                            {{else}}
+                            <button type="button" class="review" id="add{{this._id}}"><span class="glyphicon glyphicon-plus"></span>
+                            Add Review
+                            </button>
+                            {{/if}}
+                            <button type="button" class="delete" id="remove{{this._id}}"><span class="glyphicon glyphicon-remove-sign"></span>
+                            Remove Movie
+                            </button>
+                            <form class="new-item-form" id="form{{this._id}}">
+                                <label>Rating <input required class="new-rating" id="rating{{this._id}}" type="number" step="0.1" min="1" max="5"/>/5</label><br>
+                                 <label>Review <textarea required class="new-review" id="review{{this._id}}"></textarea></label>
+                                <input type="submit" class="post-review" id="post{{this._id}}" value="Submit Review" />
+                            </form>
+                        </li>
+                     </ul>
+                    {{/each}}
                 </div>
-                    <button type="button" class="update-review" id={{this._id}} ><span class="glyphicon glyphicon-pencil"></span>
-                    Edit Review
-                    </button>       
-                    <button type="button" class="remove-review" id={{this.review._id}} ><span class="glyphicon glyphicon-remove"></span></span>
-                    Remove Review
-                    </button>
-                    {{else}}
-                    <button type="button" class="review" id={{this._id}}><span class="glyphicon glyphicon-plus"></span>
-                    Add Review
-                    </button>
-                     {{/if}}
-                    <button type="button" class="delete" id={{this._id}} ><span class="glyphicon glyphicon-remove-sign"></span>
-                    Remove Movie
-                    </button>
-                <form class="new-item-form" id={{this._id}}>
-                <label>Rating <input required class="new-rating" id={{this._id}} type="number" step="0.1" min="1" max="5"/>/5</label><br>
-                <label>Review <textarea required class="new-review" id = {{this._id}}></textarea></label>
-                <input type="submit" class="post-review" id = {{this._id}} value="Submit Review" />
-                </form>
-                </li>
-            </ul>
-            {{/each}}
-         </div>
-         </div>
-         </div>
+            </div>
+        </div>
         {{/if}}
-           {{#if viewed.length}}
-            <div class="col-lg-6">
+        {{#if viewed.length}}
+        <div class="col-lg-6">
             <div class="panel panel-default fixed-panel">
-            <div class="panel-heading"><h4><strong>Movies Viewed</strong></h4></div>
-            <div class="panel-body">
-            {{#each viewed}}
-            <ul class="viewed">
-                <li class="movie-item" id={{this._id}} >
-                <label for="title">{{this.title}}</label><br>
-                {{#if this.review}}
-                <label for="review">Your Review:</label>
-                <div class ="user-rating" id={{this._id}}>
-                {{this.review.rating}}/5, "{{this.review.comment}}"
+                <div class="panel-heading"><h2><strong>Movies Viewed</strong></h2></div>
+                <div class="panel-body">
+                    {{#each viewed}}
+                    <ul class="viewed">
+                        <li class="movie-item" id={{this._id}} >
+                            <p><strong>Title:</strong>{{this.title}}</p>
+                            {{#if this.review}}
+                            <strong>Your Review:</strong>
+                            <div class ="user-rating" id="user-rating{{this._id}}">
+                            {{this.review.rating}}/5, "{{this.review.comment}}"
+                            </div>
+                            <button type="button" class="update-review" id="update{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
+                            Edit Review
+                            </button>
+                            <button type="button" class="remove-review" id={{this.review._id}} ><span class="glyphicon glyphicon-pencil"></span>
+                            Remove Review
+                            </button>
+                            {{else}}
+                             <button type="button"  class="review" id="add{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
+                            Add Review
+                            </button>
+                            {{/if}}
+                            <form class="new-item-form" id="form{{this._id}}">
+                            <label>Rating <input required class="new-rating" id="rating{{this._id}}" type="number" step="0.1" min="1" max="5"/>/5</label><br>
+                            <label>Review <textarea required class="new-review" id="review{{this._id}}"></textarea></label>
+                            <input type="submit" class="post-review" id="post{{this._id}}" value="Submit Review" />
+                            </form>
+                        </li>
+                        </ul>
+                    {{/each}}
                 </div>
-                <button type="button" class="update-review" id={{this._id}} ><span class="glyphicon glyphicon-pencil"></span>
-                Edit Review
-                </button>  
-               <button type="button" class="remove-review" id={{this.review._id}} ><span class="glyphicon glyphicon-pencil"></span>
-                Remove Review
-                </button>
-                {{else}}
-                </button>
-                <button type="button"  class="review" id={{this._id}}><span class="glyphicon glyphicon-pencil"></span>
-                Add Review
-                </button>
-                {{/if}}
-                </div>
-            <form class="new-item-form" id={{this._id}}>
-            <label>Rating <input required class="new-rating" id={{this._id}} type="number" step="0.1" min="1" max="5"/>/5</label><br>
-            <label>Review <textarea required class="new-review" id = {{this._id}}></textarea></label>
-            <input type="submit" class="post-review" id = {{this._id}} value="Submit Review" />
-            </form>
-            </li>
-            </ul>
-            {{/each}}
+            </div>
         </div>
-        </div>
-        </div>
-        {{/if}}
+       {{/if}}
     {{else}}
     <h4>No movies are currently in your playlist</h4>
     {{/if}}

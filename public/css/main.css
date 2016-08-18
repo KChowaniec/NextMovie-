@@ -50,6 +50,11 @@ img {
     display: inline-block;
 }
 
+.movie-result{
+    clear: both;
+    margin-bottom: 50px;
+}
+
 .review, .remove-review, .update-review{
     width: 10em;
     display: inline-block;

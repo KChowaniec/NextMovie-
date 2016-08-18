@@ -79,12 +79,14 @@ router.post("/reviews/:movieId", (req, res) => {
                 reviewData._id = currentMovie[0].review._id;
                 var updateReview = playlist.updateMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
                 updateReview.then((result) => {
+                    console.log(result);
                     res.json({ success: true, result: result });
                 });
             }
             else {
                 var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
                 postReview.then((result) => {
+                    console.log(result);
                     res.json({ success: true, result: result });
                 });
             }
