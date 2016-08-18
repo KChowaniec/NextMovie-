@@ -4,7 +4,7 @@ var data = require("../data");
 var api = data.api;
 var playlist = data.playlist;
 var users = data.users;
-//const search = data.search;
+var xss = require('xss');
 var movie = data.movie;
 
 //GET PLAYLIST
@@ -12,8 +12,7 @@ router.get("/", (req, res) => {
     //get playlist information
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            // let playlistId = req.params.playlistId;
-            var info = playlist.getPlaylistById(playlistInfo._id);//playlist.getPlaylistById(playlistId);
+            var info = playlist.getPlaylistById(playlistInfo._id);
             info.then((result) => {
                 var viewed = [];
                 var unviewed = [];
@@ -72,10 +71,23 @@ router.post("/reviews/:movieId", (req, res) => {
     users.getUserBySessionId(req.cookies.next_movie).then((user) => {
         playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
             reviewData.poster = user.profile;
-            var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-            postReview.then((result) => {
-                res.json({ success: true, result: result });
-            });
+            //check if review exists
+            let movies = playlistInfo.playlistMovies;
+            var currentMovie = movies.filter(function (e) { return e._id === movieId });
+            if (currentMovie[0].review) { //review already exists
+                //update process
+                reviewData._id = currentMovie[0].review._id;
+                var updateReview = playlist.updateMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
+                updateReview.then((movieInfo) => {
+                    res.json({ success: true, result: xss(movieInfo) });
+                });
+            }
+            else {
+                var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
+                postReview.then((reviewInfo) => {
+                    res.json({ success: true, result: xss(reviewInfo) });
+                });
+            }
         }).catch((error) => {
             res.json({ success: false, error: error });
         });
@@ -150,25 +162,21 @@ router.post("/:movieId", (req, res) => {
                     var movieInfo = "";
                     movie.getMovieById(movieId).then((details) => {
                         if (!details) { //get details using api
-                            api.getMovieDetails(movieId).then((info) => {
-                                //  movieInfo = info;
+                            var newMovie = api.getMovieDetails(movieId).then((info) => {
                                 //insert movie into movie collection
-                                var addedMovie = movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
-                                addedMovie.then((result) => {
-                                });
+                                movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
+                                return info;
                             }).catch((error) => {
                                 res.json({ success: false, error: error });
                             });
                         }
-                        else {
-                            movieInfo = details;
-                        }
-
-                        // Promise.all([addedMovie]).then(values => {
-                        //     console.log(values);
-                           // movieInfo = values;
-                            //});
-                            console.log(movieInfo);
+                        Promise.all([newMovie]).then(values => {
+                            if (values[0]) {
+                                movieInfo = values[0];
+                            }
+                            else {
+                                movieInfo = details;
+                            }
                             var userId = user._id;
                             var title = movieInfo.title;
                             var overview;
@@ -186,7 +194,7 @@ router.post("/:movieId", (req, res) => {
                         }).catch((error) => {
                             res.json({ success: false, error: error });
                         });
-                  //  });
+                    });
                 }
             }
             else { //movie is already in playlist

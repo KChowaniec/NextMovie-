@@ -1,6 +1,6 @@
 mongoCollections = require("../config/mongoCollections");
 Playlist = mongoCollections.playlist;
-var movies = require('./Movie');
+var movies = require('./movie');
 var uuid = require('node-uuid');
 
 var exportedMethods = {
@@ -147,7 +147,6 @@ var exportedMethods = {
         });
     },
 
-
     addMovieToPlaylistGeneral(id, obj) {   //add movie to the playlistMovies array by providing playlist id and the movie object.Node:the review id in the movie should be added first
         return Playlist().then((playlistCollection) => {
             //obj["review"]["_id"]=uuid.v4();
@@ -166,7 +165,6 @@ var exportedMethods = {
             return playlistCollection.findOne({ _id: pid }).then((playlistObj) => {
                 if (!playlistObj) throw "Playlist with id " + pid + " doesn't exist!";
                 var movielist = playlistObj.playlistMovies;
-                console.log(movielist);
                 for (var i = 0; i < movielist.length; i++) {
                     if (movielist[i]._id == mid) return movielist[i];
                 }
@@ -226,7 +224,7 @@ var exportedMethods = {
     checkOffMovie(playlistId, movieId) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.update({ _id: playlistId, playlistMovies: { $elemMatch: { _id: movieId } } }, { $set: { "playlistMovies.$.viewed": true } }).then(function () {
-                return id;
+                return playlistId;
             });
         }).then(id => {
             return this.getPlaylistById(id);
@@ -273,8 +271,32 @@ var exportedMethods = {
                 return obj;
             }).then((obj) => {
                 obj["poster"] = review.poster;
-                return movies.addReviewToMovieGeneral(movieId, obj).then((Movie) => {
-                    return Movie;
+                return movies.addReviewToMovieGeneral(movieId, obj).then((movieInfo) => {
+                    return movieInfo;
+                }).catch((error) => {
+                    return { error: error };
+                })
+            }).catch((error) => {
+                return { error: error };
+            });
+        });
+
+    },
+
+    updateMovieReviewToPlaylistAndMovie(playlistId, movieId, review) {
+        return Playlist().then((playlistCollection) => {
+            var obj = {
+                _id: review._id,
+                rating: review.rating,
+                date: review.date,
+                comment: review.comment
+            };
+            return playlistCollection.update({ _id: playlistId, "playlistMovies._id": movieId }, { $set: { "playlistMovies.$.review": obj } }).then(function () {
+                return obj;
+            }).then((obj) => {
+                obj["poster"] = review.poster;
+                return movies.updateReviewByReviewId(movieId, review._id, obj).then((reviewObj) => {
+                    return reviewObj;
                 });
             }).catch((error) => {
                 console.log("error");
@@ -283,7 +305,6 @@ var exportedMethods = {
         });
 
     },
-
 
     removeReviewFromPlaylist(playlistId, reviewId) {
         return Playlist().then((playlistCollection) => {

@@ -9,10 +9,10 @@ img {
     max-width: 300px; 
     max-height: 300px;
 }
-.add, .details, .reviews{
+.add, .details, .reviews, .post-review{
     width: 10em;
     display: block;
-    background-color: #3498DB;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -23,7 +23,7 @@ img {
 .delete{
     width: 10em;
     display: inline-block;
-    background-color: #C70039;
+    background-color: black;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -34,7 +34,7 @@ img {
 .clear{
     width: 10em;
     display: block;
-    background-color: black;
+    background-color: #C70039;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -46,10 +46,19 @@ img {
     font-size: 15px;
 }
 
-.review, .remove-review{
+.post-review{
+    display: inline-block;
+}
+
+.movie-result{
+    clear: both;
+    margin-bottom: 50px;
+}
+
+.review, .remove-review, .update-review{
     width: 10em;
     display: inline-block;
-    background-color: #3498DB;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -57,33 +66,24 @@ img {
     border-radius: 10px;
 }
 
-#title-header{
+#playlist-title #title-header{
     display: inline-block;
 }
 
 .update-title, .save-title{
     width: 10em;
-    background-color: #3498DB;
+    background-color: #007dbb;
     color: white;
     text-align: center;
     text-decoration: none;
     font-size: 15px;
     border-radius: 10px;
 }
+h1 .btn-group { display: inline-block; }
 
 .movie{
     margin-bottom: 50px;
 }
-
-/*ul.pagination li a {
-    border-radius: 5px;
-}
-
-ul.pagination {
-    display: inline-block;
-    padding: 0;
-    margin: 0;
-}*/
 
 ul.pagination li {display: inline;}
 
@@ -97,7 +97,7 @@ ul.pagination li a {
 }
 
 ul.pagination li a.active {
-    background-color: #4CAF50;
+    background-color: #007dbb;
     color: white;
     border-radius: 5px;
 }
@@ -108,22 +108,6 @@ ul.pagination li a.active {
     border-radius: 5px;
 }
 
-#search{
-    background-color: #4CAF50; 
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-}
-
-/*.results{
-    column-count: 2;
-    column-width: 50px;
-    column-gap: 10px;
-}*/
 .col-sm-12{
     column-span: all;
 }

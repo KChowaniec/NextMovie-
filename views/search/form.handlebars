@@ -2,20 +2,20 @@
   <h1>Movie Preferences</h1>
   <div class="col-sm-12">
     <form id="server-form" method="post">
-      <h4>Search By Name</h4>
+      <h2>Search By Name</h2>
       <div class="form-group">
       <label for="title">Movie Name</label>
       <input type="text" class="form-control" id="title" name="title" placeholder="Movie Name" value="{{title}}">
       </div>
       <h3>OR...</h3><br>
-      <h4>Search By Criteria</h4>
+      <h2>Search By Criteria</h2>
       <div class="form-group">    
         <label for="actors">Actor(s):</label>
         <input type="text" class="form-control" id="actors" name="actors" placeholder="Preferred Actor(s), separated by comma (Ex. Brad Pitt, Matt Damon)" value="{{actors}}">
       </div>
             <div class="form-group">
         <label for="genre">Genre</label>
-        <select class="form-control" value="{{genre}}" id="genre" name="genre" multiple>
+        <select class="form-control"  id="genre" name="genre" multiple>
           <option value="28">Action</option>
           <option value="12">Adventure</option>
           <option value="16">Animation</option>
@@ -44,13 +44,13 @@
       </div>
          <div class="form-group">
           <label for="evaluation" id="text1">Rating
-        <select class="form-control" value="{{evaluation}}" id="evaluation" name="evaluation" required>
+        <select class="form-control" id="evaluation" name="evaluation">
           <option value="equal" selected="selected">Equal to</option>
           <option value="lte">Less than or equal to</option>
         </select>
         </label>
         <label for="rating" id="text2">
-        <select class="form-control" value="{{rating}}" id="rating" name="rating" required>
+        <select class="form-control" id="rating" name="rating">
           <option value="R">R</option>
           <option value="PG-13" selected="selected">PG-13</option>
           <option value="PG">PG</option>
@@ -68,16 +68,13 @@
         <label for="keywords">Keywords</label>
         <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Movie keywords" value="{{keywords}}">
       </div>
-   {{#if error }}
-      <div class="form-group">
-        <div class="alert alert-danger">
-          {{ error }}
-        </div>
-      </div>
-      {{/if}}
-      <div class="form-group">
-        <button type="submit" id="search" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search</button>
-        <button type="button" id="clear-form" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span> Clear Search</button>
+  <div class="form-group hidden" id="error-container">
+    <div class="alert alert-danger text-goes-here">
+   </div>
+  </div>
+         <div class="btn-group btn-group-lg"> 
+        <button type="submit" id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+        <button type="button" id="clear-form" class="btn btn-primary"><span class="glyphicon glyphicon-trash"></span> Clear Search</button>
       </div>
     </form>
   </div>

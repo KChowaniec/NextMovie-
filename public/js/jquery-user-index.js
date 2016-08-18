@@ -32,6 +32,22 @@ var age_rating = ["NR", "G", "PG", "PG-13", "R", "NC-17"];
     }
     $("#age_rating_rest_table").append(age_rating_rest_dom);
     
+    $("#clear_preferences").bind("click", function(){
+        var requestConfig = {
+            method: "POST",
+            url: "/user/clear_preferences",
+            contentType: 'application/json'
+        };
+        $.ajax(requestConfig).then(function (responseMessage) {
+            if (responseMessage.success){
+                window.location.replace("user");
+            } else { 
+                $("#clear-error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = responseMessage.message;
+                $("#clear-error-container")[0].classList.remove("hidden"); 
+            }
+        });
+    });
+    
     bindDelectBtn();
     bindAddBtn();
     

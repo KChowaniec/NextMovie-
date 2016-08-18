@@ -3,7 +3,6 @@
 
     addToPlaylist.click(function () {
         var movieId = this.id;
-        console.log(movieId);
         var addMovie = {
             method: "POST",
             url: '/playlist/' + movieId,

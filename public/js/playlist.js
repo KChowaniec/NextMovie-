@@ -1,50 +1,56 @@
 (function ($, location) {
 
-    var mainElement = $("main");
-    var clearPlaylist = $(".clear");
+    var clearPlaylist = $(".clear-list button");
     var removeMovie = $(".delete");
     var addReview = $(".review");
     var checkOffMovie = $(".check-off");
-    var viewedMovies = $(".check");
-    var myNewTaskForm = $(".new-item-form");
+    var newReviewForm = $(".new-item-form");
     var updateTitle = $(".update-title");
     var newTitleBox = $(".update-title-box");
     var updateListTitle = $("#update-title");
     var saveTitle = $(".save-title");
     var playlistTitle = $("#playlist-title");
     var currentTitle = playlistTitle.text();
+    var updateReview = $(".update-review");
 
-    myNewTaskForm.hide();
+    newReviewForm.hide();
     updateListTitle.hide();
 
-    myNewTaskForm.submit(function (event) {
+    newReviewForm.submit(function (event) {
         event.preventDefault();
-        let movieId = this.id;
-        let rating = $("#" + movieId + ".new-rating").val();
-        let review = $("#" + movieId + ".new-review").val();
+        let movieId = parseInt(this.id.split("form")[1]);
+        let rating = $("#rating" + movieId + ".new-rating").val();
+        let review = $("#review" + movieId + ".new-review").val();
 
         if (rating && review) {
             var date = new Date();
             //reformat date in MM/DD/YYYY format
-            var formatDate = (date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear();
-            console.log(formatDate);
+            var formatDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
             var requestConfig = {
                 method: "POST",
                 url: "/playlist/reviews/" + movieId,
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    rating: rating,
-                    comment: review,
+                    rating: parseFloat(rating),
+                    comment: review.trim(),
                     date: formatDate
                 })
             };
 
             $.ajax(requestConfig).then(function (response) {
                 if (response.success == true) {
-                    console.log(response.result);
-                    //  var removeReview = $(".remove-review");
-                    // removeReview.show();
-                    window.location.reload(true);
+                     window.location.reload(true);
+                    // let reviewSection = $("#user-rating" + movieId + ".user-rating");
+                    // reviewSection.hide();
+                    // let rating = parseFloat(response.result.rating);
+                    // let review = response.result.comment;
+                    // reviewSection.html("<strong>Your Review:</strong><br>" + rating + '/5, "' + review + '"');
+                    // reviewSection.show();
+                    // //console.log(reviewSection);
+                    // $("#add" + movieId + ".review").hide();
+                    // $("#form" + movieId + ".new-item-form").hide();
+                    // $("#update" + movieId + ".update-review").show();
+                    // $("#" + response.id + ".remove-review").show();
                 }
             });
         }
@@ -52,7 +58,7 @@
     });
 
     updateTitle.click(function () {
-        let playlistId = this.id;
+        let playlistId = this.id.split("update")[1];
         playlistTitle.hide();
         updateTitle.hide();
         updateListTitle.show();
@@ -60,7 +66,7 @@
     });
 
     saveTitle.click(function () {
-        let playlistId = this.id;
+        let playlistId = this.id.split("save")[1];
         let newTitle = newTitleBox.val();
         var requestConfig = {
             method: "PUT",
@@ -94,22 +100,41 @@
 
         $.ajax(removeReview).then(function (response) {
             if (response.success == true) {
-                window.location.reload(true);
+                // $("#form" + movieId + ".new-item-form").hide();
+                // $("#update" + movieId + ".update-review").hide();
+                // $("#" + reviewId + ".remove-review").hide();
+                // let reviewSection = $("#user-rating" + movieId + ".user-rating").hide();
+                // $("#add" + movieId + ".review").add();
+                 window.location.reload(true);
             }
         });
 
     });
 
+    updateReview.click(function () {
+        let movieId = parseInt(this.id.split("update")[1]);
+        let form = $("#form" + movieId + ".new-item-form");
+        let userRating = $("#user-rating" + movieId + ".user-rating").html().split(',');
+        let rating = parseFloat(userRating[0]);
+        let comment = userRating[1].replace(/"/g, '');
+
+        let ratingBox = $("#rating" + movieId + ".new-rating");
+        let commentBox = $("#review" + movieId + ".new-review");
+        ratingBox.val(rating);
+        commentBox.val(comment);
+        form.toggle();
+    });
+
     addReview.click(function () {
-        //display review text box, change add review text to 'post', save to db and update page
-        let movieId = this.id;
-        let form = $("#" + movieId + ".new-item-form");
+        //display review text box
+        let movieId = parseInt(this.id.split("add")[1]);
+        let form = $("#form" + movieId + ".new-item-form");
         form.toggle();
     });
 
     checkOffMovie.click(function () {
-        let movieId = this.id;
-
+        let movieId = parseInt(this.id.split("check")[1]);
+        console.log(movieId);
         var flagMovie = {
             method: "PUT",
             url: '/playlist/movie/' + movieId,
@@ -118,6 +143,23 @@
         $.ajax(flagMovie).then(function (response) {
             if (response.success == true) {
                 window.location.reload(true);
+                // let checkedOff = $("#" + movieId + ".movie-item");
+                // if ($("ul.not_viewed > li").length == 1) {
+                //     $("#unviewed").remove();
+                // }
+                // else {
+                //     checkedOff.remove();
+                // }
+                // let viewed = $("ul.viewed");
+                // viewed.append(checkedOff);
+                // $(".viewed").show();
+                // let movieToWatch = $("ul.not_viewed > li #" + movieId);
+                // console.log(movieToWatch);
+                // movieToWatch.hide();
+                // let watchedMovie = $(".viewed");
+                // console.log(watchedMovie);
+                //   let newElement = "<li>"
+                // watchedMovie.append(newElement);
             }
         });
     });
@@ -133,7 +175,6 @@
 
             $.ajax(clearList).then(function (response) {
                 if (response.success == true) {
-                    // myNewTaskForm.load("../playlist/page");
                     window.location.reload(true);
                 }
             });
@@ -141,8 +182,7 @@
     });
 
     removeMovie.click(function () {
-        let movieId = this.id;
-
+        let movieId = parseInt(this.id.split("remove")[1]);
         var removeMovie = {
             method: "DELETE",
             url: '/playlist/movie/' + movieId,
@@ -150,9 +190,16 @@
 
         $.ajax(removeMovie).then(function (response) {
             if (response.success == true) {
-                // var movie = $("li #" + movieId)
-                //movie.hide();
-                window.location.reload(true);
+                if ($("ul.not_viewed > li").length == 1) { //last movie in playlist
+                    $("#unviewed").remove();
+                    $(".clear").remove();
+                    $(".row").append("<h4>No movies are currently in your playlist</h4>");
+
+                }
+                else {
+                    $("#" + movieId + ".movie-item").remove();
+                }
+                // window.location.reload(true);
             }
         });
     });

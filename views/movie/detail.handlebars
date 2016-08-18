@@ -3,7 +3,7 @@
         <div class="row"><h1 class="movie_name">{{movie.title}}</h1></div>
         <div class="row">
             <div class="col-md-4">
-                <img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2{{movie.poster_path}}" width="100%">
+                <img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2{{movie.poster_path}}" alt="movie poster" width="100">
             </div>
             <div class="col-md-6 col-md-offset-1 movie_base_info">
                 <div class="row">
@@ -11,10 +11,10 @@
                         <li>Director: {{movie.director}}</li>
                         <li>Release Date: {{movie.releaseDate}}</li>
                         <li>Run Time: {{movie.runtime}}min</li>
-                        <li>Rate: {{movie.rated}}</li>
-                        <li>Average Rating from The Movie DB.com:{{movie.averageRating}}/10</li>
+                        <li>Rated: {{movie.rated}}</li>
+                        <li>Rating from The Movie DB.com:{{movie.averageRating}}/10</li>
                     </ul>
-                    <button type="button" class = "add" class="btn btn-primary" id={{movie._id}}><span class="glyphicon glyphicon-plus-sign"></span>Add to My PlayList</button>
+                    <button type="button" class = "add" id={{movie._id}}><span class="glyphicon glyphicon-plus-sign"></span>Add to My PlayList</button>
                 </div>
             </div>
         </div>

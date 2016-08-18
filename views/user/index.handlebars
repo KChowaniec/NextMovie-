@@ -1,7 +1,8 @@
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <h3 class="home_title">Welcome back, {{user.profile.name}}!</h3>
-        <h5>Base Info:</h5>
+        <h1></h1>
+        <h2 class="home_title">Welcome back, {{user.profile.name}}!</h2>
+        <h3>Base Info:</h3>
         <form class="form form-horizontal" id="password-form">
             <div class="form-group">
                 <label for="password" class="col-sm-2 control-label">Password: </label>
@@ -29,7 +30,7 @@
                 </div>
             </div>
             <div class="form-group hidden" id="password-result-container">
-                <div class="alert alert-success text-goes-here col-md-4 col-md-offset-4"">
+                <div class="alert alert-success text-goes-here col-md-4 col-md-offset-4">
                 </div>
             </div>
         </form>
@@ -53,20 +54,25 @@
             </div>
         </form>
         
-        <a href="/search"><button class="btn btn-lg btn-primary">Search Movies</button></a>
+        <button class="btn btn-lg btn-primary" onClick="location.href='/search'">Search Movies</button>
+        <button class="btn btn-lg btn-primary" id="clear_preferences">Clear Preferences</button>
+        <div class="form-group hidden" id="clear-error-container">
+            <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
+            </div>
+        </div>
     </div>
-</div>
+</div><br>
 
 <div class="row" id="preferences">
     <div class="col-md-8 col-md-offset-2">
-        <h5>Preferences: </h5>
+        <h3>Preferences (these will be used as your movie search defaults): </h3>
         <div>
             <ul class="nav nav-tabs">
                 <li role="presentation" class="active"><a href="#genre" aria-controls="genre" role="tab" data-toggle="tab">Genre</a></li>
-                <li role="presentation"><a href="#person" aria-controls="Person" role="tab" data-toggle="tab">Person</a></li>
+                <li role="presentation"><a href="#person" aria-controls="person" role="tab" data-toggle="tab">Person</a></li>
                 <li role="presentation"><a href="#keywords" aria-controls="keywords" role="tab" data-toggle="tab">Keywords</a></li>
-                <li role="presentation"><a href="#releaseYear" aria-controls="year" role="tab" data-toggle="tab">Year</a></li>
-                <li role="presentation"><a href="#ageRating" aria-controls="rating" role="tab" data-toggle="tab">Age Rating</a></li>
+                <li role="presentation"><a href="#releaseYear" aria-controls="releaseYear" role="tab" data-toggle="tab">Year</a></li>
+                <li role="presentation"><a href="#ageRating" aria-controls="ageRating" role="tab" data-toggle="tab">Age Rating</a></li>
             </ul>
             
             <div class="tab-content">
@@ -78,7 +84,7 @@
                         {{/each}}
                     {{/if}}
                     </ul>
-                    <h7>Options:</h7>
+                    <h4>Options:</h4>
                     <ul class="nav nav-pills" role="tablist" id="genre_rest_table"></ul>
                     <div class="form-group hidden" id="genre-error-container">
                         <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
@@ -86,7 +92,7 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="person">
-                    <h7>Actor:</h7>
+                    <h4>Actor:</h4>
                     <ul class="nav nav-pills" role="tablist" id="actor_table">
                     {{#if user.preferences.Actor.length}}
                         {{#each user.preferences.Actor}}
@@ -94,7 +100,7 @@
                         {{/each}}
                     {{/if}}
                     </ul>
-                    <h7>Crew:</h7>
+                    <h4>Crew:</h4>
                     <ul class="nav nav-pills" role="tablist" id="crew_table">
                     {{#if user.preferences.Crew.length}}
                         {{#each user.preferences.Crew}}
@@ -110,7 +116,7 @@
                             </span>
                         </div>
                     </div>
-                    <h7>Options:</h7>
+                    <h4>Options:</h4>
                     <ul class="nav nav-pills" role="tablist" id="person_rest_table"></ul>
                     <div class="form-group hidden" id="person-error-container">
                         <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
@@ -133,7 +139,7 @@
                             </span>
                         </div>
                     </div>
-                    <h7>Options:</h7>
+                    <h4>Options:</h4>
                     <ul class="nav nav-pills" role="tablist" id="keywords_rest_table"></ul>
                     <div class="form-group hidden" id="keywords-error-container">
                         <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
@@ -169,7 +175,7 @@
                         {{/each}}
                     {{/if}}
                     </ul>
-                    <h7>Options:</h7>
+                    <h4>Options:</h4>
                     <ul class="nav nav-pills" role="tablist" id="age_rating_rest_table"></ul>
                     <div class="form-group hidden" id="ageRating-error-container">
                         <div class="alert alert-danger text-goes-here col-md-4 col-md-offset-4">
