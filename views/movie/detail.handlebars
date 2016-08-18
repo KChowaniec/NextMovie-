@@ -25,6 +25,7 @@
     <div class="col-md-8 col-md-offset-2">
         <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+            <li role="presentation"><a href="#genre" aria-controls="genre" role="tab" data-toggle="tab">Genres</a></li>
             <li role="presentation"><a href="#cast" aria-controls="cast" role="tab" data-toggle="tab">Cast</a></li>
             <li role="presentation"><a href="#crew" aria-controls="crew" role="tab" data-toggle="tab">Crew</a></li>
             <li role="presentation"><a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">Reviews</a></li>
@@ -32,6 +33,15 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="description">
                 <div>{{movie.description}}</div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="genre">
+                {{#if movie.genre.length}}
+                    <ul class="nav nav-pills" role="tablist">
+                        {{#each movie.genre}}
+                            <li role="presentation"><a href="#">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
             </div>
             <div role="tabpanel" class="tab-pane" id="cast">
                 {{#if movie.cast.length}}
@@ -58,7 +68,7 @@
                             <li>
                                 <div>Comment: "{{this.comment}}"</div>
                                 <div>Rating: {{this.rating}}/5</div>
-                                <div>{{this.poster.name}} Edited, {{this.date}}</div>
+                                <div>{{this.poster.username}} Edited, {{this.date}}</div>
                             </li>
                         {{/each}}
                     </ul>
