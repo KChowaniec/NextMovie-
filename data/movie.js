@@ -144,10 +144,12 @@ var exportedMethods = {
             return movieCollection.findOne({ _id: mid }).then((movieObj) => {
                 if (!movieObj) throw "movie with id " + mid + " doesn't exist!";
                 var reviewlist = movieObj.allReviews;
-                for (var i = 0; i < reviewlist.length; i++) {
-                    if (reviewlist[i]._id == rid) return reviewlist[i];
+                if (reviewlist) {
+                    for (var i = 0; i < reviewlist.length; i++) {
+                        if (reviewlist[i]._id == rid) return reviewlist[i];
+                    }
+                    return "not find";
                 }
-                return "not find";
             }).catch((error) => {
                 return { error: error };
             });

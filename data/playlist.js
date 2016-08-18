@@ -16,7 +16,6 @@ var exportedMethods = {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.findOne({ _id: id }).then((playlistObj) => {
                 if (!playlistObj) throw "Playlist not found";
-                console.log(playlistObj);
                 return playlistObj;
             }).catch((error) => {
                 return error;
@@ -140,7 +139,6 @@ var exportedMethods = {
                 return movieObj;
             }).then((movieObj) => {
                 return movies.addMovieGeneral(movieObj).then((Movie) => {
-                    console.log(Movie);
                     return Movie;
                 });
             }).catch((error) => {
@@ -167,7 +165,6 @@ var exportedMethods = {
             return playlistCollection.findOne({ _id: pid }).then((playlistObj) => {
                 if (!playlistObj) throw "Playlist with id " + pid + " doesn't exist!";
                 var movielist = playlistObj.playlistMovies;
-                console.log(movielist);
                 for (var i = 0; i < movielist.length; i++) {
                     if (movielist[i]._id == mid) return movielist[i];
                 }
@@ -275,7 +272,6 @@ var exportedMethods = {
             }).then((obj) => {
                 obj["poster"] = review.poster;
                 return movies.addReviewToMovieGeneral(movieId, obj).then((movieInfo) => {
-                    console.log(movieInfo);
                     return movieInfo;
                 }).catch((error) => {
                     return { error: error };

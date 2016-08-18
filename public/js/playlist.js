@@ -31,26 +31,26 @@
                 url: "/playlist/reviews/" + movieId,
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    rating: rating,
-                    comment: review,
+                    rating: parseFloat(rating),
+                    comment: review.trim(),
                     date: formatDate
                 })
             };
 
             $.ajax(requestConfig).then(function (response) {
                 if (response.success == true) {
-                    console.log(response);
-                    // window.location.reload(true);
-                    // response.result
-                    let reviewSection = $("#user-rating" + movieId + ".user-rating");
-                    //  reviewSection.html(
-                    //  console.log(reviewSection.html());
-                    console.log(response.result);
-                    reviewSection[0] = response.result;
-                    reviewSection[1] = response.result;
-                    $("#add" + movieId + ".review").hide();
-                    $("#update" + movieId + ".update-review").show();
-                    $("#" + response.result._id + ".remove-review").show();
+                     window.location.reload(true);
+                    // let reviewSection = $("#user-rating" + movieId + ".user-rating");
+                    // reviewSection.hide();
+                    // let rating = parseFloat(response.result.rating);
+                    // let review = response.result.comment;
+                    // reviewSection.html("<strong>Your Review:</strong><br>" + rating + '/5, "' + review + '"');
+                    // reviewSection.show();
+                    // //console.log(reviewSection);
+                    // $("#add" + movieId + ".review").hide();
+                    // $("#form" + movieId + ".new-item-form").hide();
+                    // $("#update" + movieId + ".update-review").show();
+                    // $("#" + response.id + ".remove-review").show();
                 }
             });
         }
@@ -100,7 +100,12 @@
 
         $.ajax(removeReview).then(function (response) {
             if (response.success == true) {
-                window.location.reload(true);
+                // $("#form" + movieId + ".new-item-form").hide();
+                // $("#update" + movieId + ".update-review").hide();
+                // $("#" + reviewId + ".remove-review").hide();
+                // let reviewSection = $("#user-rating" + movieId + ".user-rating").hide();
+                // $("#add" + movieId + ".review").add();
+                 window.location.reload(true);
             }
         });
 
@@ -137,8 +142,17 @@
 
         $.ajax(flagMovie).then(function (response) {
             if (response.success == true) {
-                console.log("Success");
                 window.location.reload(true);
+                // let checkedOff = $("#" + movieId + ".movie-item");
+                // if ($("ul.not_viewed > li").length == 1) {
+                //     $("#unviewed").remove();
+                // }
+                // else {
+                //     checkedOff.remove();
+                // }
+                // let viewed = $("ul.viewed");
+                // viewed.append(checkedOff);
+                // $(".viewed").show();
                 // let movieToWatch = $("ul.not_viewed > li #" + movieId);
                 // console.log(movieToWatch);
                 // movieToWatch.hide();
@@ -176,7 +190,16 @@
 
         $.ajax(removeMovie).then(function (response) {
             if (response.success == true) {
-                window.location.reload(true);
+                if ($("ul.not_viewed > li").length == 1) { //last movie in playlist
+                    $("#unviewed").remove();
+                    $(".clear").remove();
+                    $(".row").append("<h4>No movies are currently in your playlist</h4>");
+
+                }
+                else {
+                    $("#" + movieId + ".movie-item").remove();
+                }
+                // window.location.reload(true);
             }
         });
     });

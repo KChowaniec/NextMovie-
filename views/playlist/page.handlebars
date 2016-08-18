@@ -18,7 +18,7 @@
             </button>
         </div><br>
         {{#if unviewed.length}}
-        <div class="col-lg-6">
+        <div class="col-lg-6" id="unviewed">
             <div class="panel panel-default fixed-panel">
                 <div class="panel-heading"><h2><strong>Movies to Watch</strong></h2></div>
                 <div class="panel-body">
@@ -30,8 +30,8 @@
                             <p><strong>Title:</strong> {{this.title}}</p>
                             <p><strong>About:</strong> {{this.overview}}</p>
                             {{#if this.review}}
-                            <strong>Your Review:</strong>
                             <div class ="user-rating" id="user-rating{{this._id}}">
+                            <strong>Your Review:</strong><br>
                             {{this.review.rating}}/5, "{{this.review.comment}}"
                             </div>                    
                             <button type="button" class="update-review" id="update{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
@@ -61,7 +61,7 @@
         </div>
         {{/if}}
         {{#if viewed.length}}
-        <div class="col-lg-6">
+        <div class="col-lg-6" id="viewed">
             <div class="panel panel-default fixed-panel">
                 <div class="panel-heading"><h2><strong>Movies Viewed</strong></h2></div>
                 <div class="panel-body">
@@ -77,11 +77,11 @@
                             <button type="button" class="update-review" id="update{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
                             Edit Review
                             </button>
-                            <button type="button" class="remove-review" id={{this.review._id}} ><span class="glyphicon glyphicon-pencil"></span>
+                            <button type="button" class="remove-review" id={{this.review._id}} ><span class="glyphicon glyphicon-remove"></span>
                             Remove Review
                             </button>
                             {{else}}
-                             <button type="button"  class="review" id="add{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
+                             <button type="button"  class="review" id="add{{this._id}}"><span class="glyphicon glyphicon-plus"></span>
                             Add Review
                             </button>
                             {{/if}}

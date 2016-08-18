@@ -73,21 +73,19 @@ router.post("/reviews/:movieId", (req, res) => {
             reviewData.poster = user.profile;
             //check if review exists
             let movies = playlistInfo.playlistMovies;
-            var currentMovie = movies.filter(function (e) { return e._id = movieId });
+            var currentMovie = movies.filter(function (e) { return e._id === movieId });
             if (currentMovie[0].review) { //review already exists
                 //update process
                 reviewData._id = currentMovie[0].review._id;
                 var updateReview = playlist.updateMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-                updateReview.then((result) => {
-                    console.log(result);
-                    res.json({ success: true, result: result });
+                updateReview.then((movieInfo) => {
+                    res.json({ success: true, result: xss(movieInfo) });
                 });
             }
             else {
                 var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-                postReview.then((result) => {
-                    console.log(result);
-                    res.json({ success: true, result: result });
+                postReview.then((reviewInfo) => {
+                    res.json({ success: true, result: xss(reviewInfo) });
                 });
             }
         }).catch((error) => {
