@@ -70,8 +70,8 @@
                         <li class="movie-item" id={{this._id}} ><br>
                             <p><strong>Title:</strong>{{this.title}}</p>
                             {{#if this.review}}
-                            <strong>Your Review:</strong><br>
                             <div class ="user-rating" id="user-rating{{this._id}}">
+                            <strong>Your Review:</strong><br>
                             {{this.review.rating}}/5, "{{this.review.comment}}"
                             </div>
                             <button type="button" class="update-review" id="update{{this._id}}"><span class="glyphicon glyphicon-pencil"></span>
