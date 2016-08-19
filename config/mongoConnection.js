@@ -1,3 +1,12 @@
+/*Program Title: mongoConnection.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script configures the nextMovie database using the data provided in all-config.json
+*/
+
+
+
 var MongoClient = require("mongodb").MongoClient;
 var config = require('../all-config.json');
 

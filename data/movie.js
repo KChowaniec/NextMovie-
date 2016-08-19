@@ -1,3 +1,9 @@
+/*Program Title: data/movie.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This module exports methods related to the movie collection
+*/
 
 mongoCollections = require("../config/mongoCollections");
 movie = mongoCollections.movie;
@@ -8,29 +14,27 @@ var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";
 var restHost = "https://api.themoviedb.org/3";
 
 var exportedMethods = {
-    //main operations related to movie
+    //get all movies
     getAllMovie() {
         return movie().then((movieCollection) => {
             return movieCollection.find({}).toArray();
         });
     },
-    // This is a fun new syntax that was brought forth in ES6, where we can define
-    // methods on an object with this shorthand!
+    // get movie by id
     getMovieById(id) {
         return movie().then((movieCollection) => {
             return movieCollection.findOne({ _id: id }).then((movieObj) => {
                 return movieObj;
             }).catch((error) => {
-                console.log("error");
                 throw error;
             });
         });
     },
 
+    //get movie by original id
     getMovieByOriginId(id) {
         return movie().then((movieCollection) => {
             return movieCollection.findOne({ id: id }).then((movieObj) => {
-                // if (!movieObj) return "movie not found";
                 return movieObj;
             }).catch((error) => {
                 console.log("error");
@@ -39,6 +43,7 @@ var exportedMethods = {
         });
     },
 
+    //add movie object
     addMovieGeneral(obj) {
         return movie().then((movieCollection) => {
             obj["_id"] = obj.id;
@@ -53,8 +58,8 @@ var exportedMethods = {
         });
     },
 
+    //add movie using specific parameters
     addMovie(movieId, title, description, genre, rated, releaseDate, runtime, director, cast, averageRating, keywords) {
-        //var movieId = uuid.v4();
         var obj = {
             _id: movieId,
             title: title,
@@ -78,6 +83,7 @@ var exportedMethods = {
         });
     },
 
+    //delete movie by id
     deleteMovieById(id) {
         return movie().then((movieCollection) => {
             return movieCollection.deleteOne({ _id: id }).then(function (deletionInfo) {
@@ -89,6 +95,7 @@ var exportedMethods = {
         })
     },
 
+    //update movie by id
     updateMovieById(id, obj) {
         return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $set: obj }).then(function () {
@@ -187,7 +194,7 @@ var exportedMethods = {
     },
 
     //other operations
-
+    //average rating
     updateAverageRating(mid, rating) {
         return movie().then((movieCollection) => {
             return movieCollection.update({ _id: mid }, { $set: { "averageRating": rating } }).then(function () {
@@ -204,6 +211,7 @@ var exportedMethods = {
         });
     },
 
+    //add keywords
     addNewKeywords(id, keyword) {
         return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $addToSet: { "keywords": keyword } }).then(function () {
@@ -238,6 +246,7 @@ var exportedMethods = {
         });
     },
 
+    //get keywords for movie
     getKeywordsByMovieId(id) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + id + "/keywords" + pathTail, (res) => {
@@ -254,6 +263,7 @@ var exportedMethods = {
         });
     },
 
+    //get reviews for movie
     getReviewsByMovieId(id) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + id + "/reviews" + pathTail, (res) => {
@@ -270,6 +280,7 @@ var exportedMethods = {
         });
     },
 
+    //get credits for movie
     getCreditsByMovieId(id) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + id + "/credits" + pathTail, (res) => {
@@ -286,6 +297,7 @@ var exportedMethods = {
         });
     },
 
+    //get popular movies
     getPopularMovies() {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/popular" + pathTail, (res) => {
@@ -302,6 +314,7 @@ var exportedMethods = {
         });
     },
 
+    //get upcoming movies
     getUpcomingMovies() {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/upcoming" + pathTail, (res) => {
@@ -318,6 +331,7 @@ var exportedMethods = {
         });
     },
 
+    //get details by id
     getMovieDetailsById(movie) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + movie.id + pathTail + "&append_to_response=keywords,credits,release_dates", (res) => {
@@ -376,6 +390,7 @@ var exportedMethods = {
         });
     },
 
+    //get all genres
     getAllGenre() {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/genre/movie/list" + pathTail, (res) => {
@@ -399,6 +414,7 @@ var exportedMethods = {
         });
     },
 
+    //get age ratings
     getAllAgeRating() {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/certification/movie/list" + pathTail, (res) => {

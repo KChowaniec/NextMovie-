@@ -1,3 +1,10 @@
+/*Program Title: mongoCollections.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script configures the database collections for the nextMovie application
+*/
+
 var dbConnection = require("./mongoConnection");
 
 /* This will allow you to have one reference to each collection per app */

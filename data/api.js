@@ -1,24 +1,21 @@
+/*Program Title: data/api.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This module exports methods related to the movie api
+*/
+
+
 var https = require("https");
 var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";
 var imgHost = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 var restHost = "https://api.themoviedb.org/3";
 var uuid = require("node-uuid");
 
+// //build search string using entered criteria
 var exportedMethods = {
-    createSearchString(actors, genre, crew, rating, evaluation, year, keywords) {
-        var query = "";
-        if (rating) query = query + "&certification_country=US";
-        if (evaluation === "equal") query = query + "&certification=" + rating;
-        else if (evaluation === "lte") query = query + "&certification.lte=" + rating;
-        if (year) query = query + "&primary_release_year=" + year;
-        if (genre.length > 0) query = query + "&with_genres=" + genre.join('|');
-        if (keywords.length > 0) query = query + "&with_keywords=" + keywords.join('|');
-        if (actors.length > 0) query = query + "&with_cast=" + actors.join('|');
-        if (crew) query = query + "&with_crew=" + crew;
 
-        query = query + "&sort_by=vote_average.desc"; //sort results by movies with highest rating
-        return query;
-    },
+    //get movie details
     getMovieDetails(movieId) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + movieId + pathTail + "&append_to_response=keywords,images,credits,release_dates", function (response) {
@@ -87,6 +84,7 @@ var exportedMethods = {
         });
     },
 
+    //get specific page of reults
     getPageOfResults(pageNum, url) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + url + "&page=" + pageNum, function (response) {
@@ -106,6 +104,7 @@ var exportedMethods = {
         });
     },
 
+    //get api movie reviews
     getMovieReviews(movieId) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + movieId + "/reviews" + pathTail, function (response) {
@@ -124,6 +123,8 @@ var exportedMethods = {
             });
         });
     },
+
+    //get specific movie credits
     getMovieCredits(movieId) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/movie/" + movieId + "/credits" + pathTail, function (response) {
@@ -143,6 +144,7 @@ var exportedMethods = {
         });
     },
 
+    //get person's id from their name
     getPersonIdByName(personName) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/person" + pathTail + "&query=" + personName + "&include_adult=false", function (response) {
@@ -161,6 +163,8 @@ var exportedMethods = {
             });
         });
     },
+
+    //get keyword if from its name
     getKeywordIdByName(keyword) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/keyword" + pathTail + "&query=" + keyword, function (response) {
@@ -179,6 +183,8 @@ var exportedMethods = {
             });
         });
     },
+
+    //search movies by title
     searchByTitle(title, page) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/movie" + pathTail + "&query=" + title + "&include_adult=false&page=" + page, function (response) {
@@ -197,6 +203,8 @@ var exportedMethods = {
             });
         });
     },
+
+    //search movies by criteria
     searchByCriteria(searchString, page) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/discover/movie" + pathTail + searchString + "&page=" + page, function (response) {
@@ -215,7 +223,7 @@ var exportedMethods = {
             });
         });
     },
-
+    //search keywords by name
     searchKeywordsByName(name) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/keyword" + pathTail + "&query=" + name, function (res) {
@@ -236,7 +244,7 @@ var exportedMethods = {
             });
         });
     },
-
+    //search person by name
     searchPersonByName(name) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/search/person" + pathTail + "&query=" + name, function (res) {
@@ -264,6 +272,7 @@ var exportedMethods = {
         });
     },
 
+    //get credits for person
     getCreditByPersonId(id) {
         return new Promise((fulfill, reject) => {
             https.get(restHost + "/person/" + id + pathTail + "&append_to_response=movie_credits", function (res) {

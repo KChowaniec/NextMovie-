@@ -1,3 +1,10 @@
+/*Program Title: js/results.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles the jquery for the movie search results page
+*/
+
 (function ($) {
 
     var mainElement = $("main");
@@ -44,6 +51,7 @@
         pageul.append(pageString);
     }
 
+    //add to playlist button clicked
     addToPlaylist.click(function () {
         var movieId = parseInt(this.id.split("add")[1]);
         var addMovie = {
@@ -61,6 +69,7 @@
         });
     });
 
+    //more details button clicked 
     moreDetails.click(function () {
         var movieId = parseInt(this.id.split("get")[1]);
         window.location = "/movies/detail/" + movieId;

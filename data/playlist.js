@@ -1,17 +1,24 @@
+/*Program Title: data/playlist.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This module exports methods related to the playlist collection
+*/
+
+
 mongoCollections = require("../config/mongoCollections");
 Playlist = mongoCollections.playlist;
 var movies = require('./movie');
 var uuid = require('node-uuid');
 
 var exportedMethods = {
-    //operations related to playlist
+    //get all playlists
     getAllPlaylist() {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.find({}).toArray();
         });
     },
-    // This is a fun new syntax that was brought forth in ES6, where we can define
-    // methods on an object with this shorthand!
+    //get playlist by playlist id
     getPlaylistById(id) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.findOne({ _id: id }).then((playlistObj) => {
@@ -23,6 +30,7 @@ var exportedMethods = {
         });
     },
 
+    //add general playlist object
     addPlaylistGeneral(obj) {
         return Playlist().then((playlistCollection) => {
             obj["_id"] = uuid.v4();
@@ -34,7 +42,7 @@ var exportedMethods = {
         });
     },
 
-
+    //add playlist using specific parameters
     addPlaylist(title, user) {
         return Playlist().then((playlistCollection) => {
             var playlistId = uuid.v4();
@@ -52,7 +60,7 @@ var exportedMethods = {
         });
     },
 
-
+    //get playlist by user id
     getPlaylistByUserId(userId) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.findOne({ "user._id": userId }).then((playlist) => {
@@ -65,6 +73,7 @@ var exportedMethods = {
 
     },
 
+    //delete playlist
     deletePlaylistById(id) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.deleteOne({ _id: id }).then(function (deletionInfo) {
@@ -76,7 +85,7 @@ var exportedMethods = {
         })
     },
 
-
+    //clear movies in playlist
     clearPlaylist(id) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.update({ _id: id }, { $pull: { "playlistMovies": {} } }).then(function () {
@@ -89,6 +98,7 @@ var exportedMethods = {
         });
     },
 
+    //update playlist
     updatePlaylistById(id, obj) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.update({ _id: id }, { $set: obj }).then(function () {
@@ -208,6 +218,7 @@ var exportedMethods = {
 
 
     //other operations
+    //update playlist title
     setNewTitle(playlistId, newTitle) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.updateOne({ _id: playlistId }, { $set: { "title": newTitle } }).then(function () {
@@ -221,6 +232,7 @@ var exportedMethods = {
 
     },
 
+    //check-off movie as 'viewed'
     checkOffMovie(playlistId, movieId) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.update({ _id: playlistId, playlistMovies: { $elemMatch: { _id: movieId } } }, { $set: { "playlistMovies.$.viewed": true } }).then(function () {
@@ -233,7 +245,7 @@ var exportedMethods = {
         })
     },
 
-
+    //add review to movie in playlist
     addMovieReviewToPlaylist(playlistId, movieId, review) {
         return Playlist().then((playlistCollection) => {
             var reviewId = uuid.v4();
@@ -283,6 +295,8 @@ var exportedMethods = {
 
     },
 
+
+    //cascading method to update movie review in playlist and movie collections
     updateMovieReviewToPlaylistAndMovie(playlistId, movieId, review) {
         return Playlist().then((playlistCollection) => {
             var obj = {
@@ -306,6 +320,7 @@ var exportedMethods = {
 
     },
 
+    //remove review from playlist
     removeReviewFromPlaylist(playlistId, reviewId) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.updateOne({ _id: playlistId, "playlistMovies.review._id": reviewId }, {
@@ -321,6 +336,7 @@ var exportedMethods = {
         });
     },
 
+    //get movie review
     getMovieReview(playlistId, reviewId) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.findOne({ _id: playlistId, "playlistMovies.review._id": reviewId }, { "playlistMovies.review": 1 }).then(function (result) {

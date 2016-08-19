@@ -1,3 +1,11 @@
+/*Program Title: routes/search.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles all /search routes
+*/
+
+
 var express = require('express');
 var router = express.Router();
 var data = require("../data");
@@ -8,7 +16,7 @@ var url = require('url');
 var xss = require('xss');
 
 router.get("/", (req, res) => {
-    //check for user preferences (if any)
+    //render search form and user preferences (if any)
     res.render("search/form", {
         partial: "populate-preferences-script"
     });
@@ -27,7 +35,7 @@ router.get("/preferences", (req, res) => {
     });
 });
 
-
+//post search criteria
 router.post("/", (req, res) => {
     let title = req.body.title;
     let parseActors = req.body.parseActors;
@@ -38,7 +46,8 @@ router.post("/", (req, res) => {
     let year = req.body.releaseYear;
     let parseWords = req.body.parseWords;
 
-    var fn = function getId(name) { // sample async action
+//helper functions
+    var fn = function getId(name) { 
         return new Promise((fulfill, reject) => {
             return api.getPersonIdByName(name).then((newId) => {
                 fulfill(parseInt(newId.results[0].id));
@@ -46,6 +55,7 @@ router.post("/", (req, res) => {
         });
     };
 
+//helper functions
     var wordLookup = function getKeywordId(name) {
         return new Promise((fulfill, reject) => {
             return api.getKeywordIdByName(name).then((newId) => {
@@ -54,24 +64,25 @@ router.post("/", (req, res) => {
         });
     };
 
+//get all actor ids
     if (parseActors) {
         var actorId = parseActors.map(fn);
         var actorIds = Promise.all(actorId);
     }
 
+//get all crew ids
     if (parseCrew) {
         var crewId = parseCrew.map(fn);
         var crewIds = Promise.all(crewId);
-        // var crewName = api.getPersonIdByName(crew);
-        // crewName.then((crewId) => {
-        //     var personId = crewId.results[0].id;
-        // });
     }
+
+    //get all keyword ids
     if (parseWords) {
         var keywordId = parseWords.map(wordLookup);
         var wordIds = Promise.all(keywordId);
     }
 
+//wait until all values are retrieved
     Promise.all([crewIds, actorIds, wordIds]).then(values => {
         let crewList, actorList = [], keywordList = [];
         if (values[0]) {
@@ -102,11 +113,13 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/results/:pageId", (req, res) => { //call search methods using criteria passed in
+//call search methods using criteria passed in
+router.get("/results/:pageId", (req, res) => { 
     var page = req.params.pageId;
     let queryData = (url.parse(xss(req.url), true).query);
     let queryString = "";
     let title;
+    //determine search criteria string
     Object.keys(queryData).forEach(function (key, index) {
         if (key == "title") {
             title = queryData[key];
@@ -145,6 +158,7 @@ router.get("/results/:pageId", (req, res) => { //call search methods using crite
     }
 });
 
+//get keywords
 router.get("/keywords", (req, res) => {
     api.searchKeywordsByName(req.query.value).then((result) => {
         if (result) {
@@ -157,6 +171,7 @@ router.get("/keywords", (req, res) => {
     });
 });
 
+//get person
 router.get("/person", (req, res) => {
     api.searchPersonByName(req.query.value).then((result) => {
         if (result.length > 0) {

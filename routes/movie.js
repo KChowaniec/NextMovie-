@@ -1,12 +1,17 @@
-/**
- * @author warri
- */
+/*Program Title: routes/movie.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles the /movie routes
+*/
+
 var express = require('express');
 var movies = require('../data/movie')
 var uuid = require('node-uuid');
 var api = require('../data/api');
 var router = express.Router();
 
+//get all movies
 router.get('/', function (req, res) {
   	 var list = movies.getAllMovie().then((Movielist) => {
 		if (Movielist) {
@@ -17,6 +22,7 @@ router.get('/', function (req, res) {
 	});
 }),
 
+	//get movie details
 	router.get('/detail/:id', function (req, res) {
 		//check movie collection for this movie
 		movies.getMovieByOriginId(req.params.id).then((MovieObj) => {
@@ -44,6 +50,7 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//add movie
 	router.post('/', function (req, res) {
 		var obj = req.body;
 		movies.addMovie(obj).then((MovieObj) => {
@@ -55,10 +62,10 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//update movie
 	router.put('/:id', function (req, res) {
 		movies.updateMovieById(req.params.id, req.body).then((MovieObj) => {
 			if (MovieObj) {
-				//console.log(MovieObj);
 				res.status(200).send(MovieObj);
 			} else {
 				res.sendStatus(404);
@@ -66,6 +73,7 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//delete movie
 	router.delete('/:id', function (req, res) {
 		movies.deleteMovieById(req.params.id).then((MovieObj) => {
 			if (MovieObj) {
@@ -76,6 +84,7 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//add review to movie
     router.post('/review/:id', function (req, res) {
 		var reviewObj = req.body;
 		reviewObj._id = uuid.v4();
@@ -89,6 +98,7 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//get reviews for movie
 	router.get('/review/:mid/:rid', function (req, res) {
 		movies.getReviewByReviewId(req.params.mid, req.params.rid).then((reviewObj) => {
 			if (reviewObj) {
@@ -100,6 +110,7 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//delete reviews for movie
 	router.delete('/review/:mid/:rid', function (req, res) {
 		movies.removeReviewByReviewId(req.params.mid, req.params.rid).then((movieObj) => {
 			if (movieObj) {
@@ -111,17 +122,16 @@ router.get('/', function (req, res) {
 		});
 	}),
 
+	//update reviews for movie
 	router.put('/review/:mid/:rid', function (req, res) {
 		movies.updateReviewByReviewId(req.params.mid, req.params.rid, req.body).then((reviewObj) => {
 			if (reviewObj) {
-				//console.log(PlaylistObj);
 				res.status(200).send(reviewObj);
 			} else {
 				res.sendStatus(404);
 			}
 		});
 	}),
-
 
 
 	module.exports = router;

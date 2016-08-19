@@ -1,3 +1,10 @@
+/*Program Title: js/playlist.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles the jquery for the playlist page
+*/
+
 (function ($, location) {
 
     var clearPlaylist = $(".clear-list button");
@@ -16,6 +23,7 @@
     newReviewForm.hide();
     updateListTitle.hide();
 
+    //submit new review for movie
     newReviewForm.submit(function (event) {
         event.preventDefault();
         let movieId = parseInt(this.id.split("form")[1]);
@@ -46,6 +54,7 @@
 
     });
 
+    //update playlist title
     updateTitle.click(function () {
         let playlistId = this.id.split("update")[1];
         playlistTitle.hide();
@@ -54,6 +63,7 @@
         newTitleBox.val(currentTitle);
     });
 
+    //save new playlist title
     saveTitle.click(function () {
         let playlistId = this.id.split("save")[1];
         let newTitle = newTitleBox.val();
@@ -97,6 +107,7 @@
 
     });
 
+    //update an existing review
     updateReview.click(function () {
         let movieId = parseInt(this.id.split("update")[1]);
         let form = $("#form" + movieId + ".new-item-form");
@@ -112,6 +123,7 @@
         form.toggle();
     });
 
+    //add a new review toggle
     addReview.click(function () {
         //display review text box
         let movieId = parseInt(this.id.split("add")[1]);
@@ -119,6 +131,7 @@
         form.toggle();
     });
 
+    //check a movie off
     checkOffMovie.click(function () {
         let movieId = parseInt(this.id.split("check")[1]);
         console.log(movieId);
@@ -134,6 +147,7 @@
         });
     });
 
+    //clear the playlist
     clearPlaylist.click(function () {
         let playlistId = this.id;
         let verify = confirm("Are you sure you want to remove all movies from your playlist?")
@@ -154,6 +168,7 @@
         }
     });
 
+    //remove a movie
     removeMovie.click(function () {
         let movieId = parseInt(this.id.split("remove")[1]);
         var removeMovie = {

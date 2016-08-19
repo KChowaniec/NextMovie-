@@ -1,3 +1,11 @@
+/*Program Title: js/populate-preferences.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles the jquery for the movie search form page
+*/
+
+
 (function ($, location) {
 
     //get preferences and populate them
@@ -74,7 +82,7 @@
                 return;
             }
         }
-
+        //get all entered values
         let title = $("#title").val();
         let actors = $("#actors").val();
         let genres = $("#genre").val();
@@ -139,10 +147,10 @@
 
 
         $.ajax(requestConfig).then(function (response) {
-            if (response.success == true) {
+            if (response.success == true) {//redirect to search results page
                 window.location = "/search/results/1?" + response.query;
             }
-            else if (response.success == false) {
+            else if (response.success == false) { //display error
                 $("#error-container")[0].getElementsByClassName("text-goes-here")[0].textContent = response.error;
                 $("#error-container")[0].classList.remove("hidden");
             }

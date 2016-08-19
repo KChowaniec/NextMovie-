@@ -1,3 +1,10 @@
+/*Program Title: routes/playlist.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles all /playlist routes
+*/
+
 var express = require('express');
 var router = express.Router();
 var data = require("../data");
@@ -186,6 +193,7 @@ router.post("/:movieId", (req, res) => {
                             else {
                                 overview = movieInfo.overview;
                             }
+                            //insert movie into playlist collection
                             var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
                             newList.then((addedMovie) => {
                                 res.json({ success: true });

@@ -1,3 +1,11 @@
+/*Program Title: routes/index.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script routes requests to the appropriate files
+*/
+
+
 var routerUser=require("./user");
 var routerMovie=require("./movie");
 var routerPlaylist=require("./playlist");
@@ -12,7 +20,7 @@ module.exports = function(app) {
   app.use("/movies",routerMovie);
   app.use("/playlist",routerPlaylist);
   app.use("/search", routerSearch);
-  app.use("*", (req, res) => {
+  app.use("*", (req, res) => { //any other routes, redirect to user page
         res.redirect("/user");
   })
 };

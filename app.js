@@ -1,3 +1,11 @@
+/*Program Title: app.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script configures and initializes the express server, express handlebars templating engine and middleware
+*/
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -47,7 +55,7 @@ app.use(cookieParser());
 app.engine('handlebars', handlebarsInstance.engine);
 app.set('view engine', 'handlebars');
 
-
+//middleware to ensure user is logged in
 app.use(function (request, response, next) {
     if ((request.cookies.next_movie == undefined || (new Date(request.cookies.next_movie.expires) < new Date(Date.now()))) 
         && request.originalUrl != "/login" && request.originalUrl != "/user/login" && request.originalUrl != "/user/register"

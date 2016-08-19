@@ -1,6 +1,10 @@
-/**
- * @author warri
- */
+/*Program Title: routes/user.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This script handles all user-related routes
+*/
+
 var express = require('express');
 var users = require('../data/users');
 var movie = require('../data/movie');
@@ -10,6 +14,7 @@ var router = express.Router();
 var xss = require('xss');
 var crypto = require('crypto');
 
+//get all users
 router.get('/users', function (req, res) {
   	 var list = users.getAllUser().then((userlist) => {
 		if (userlist) {
@@ -20,7 +25,9 @@ router.get('/users', function (req, res) {
 	});
 });
 
+//login page
 router.get('/login', function (req, res) {
+	//check if cookies are set
 	if (req.cookies.next_movie != undefined || req.cookies.next_movie != "" || req.cookies.next_movie != null) {
 		users.deleteSessionIdBySessionId(req.cookies.next_movie).then((info) => {
 			res.cookie("next_movie", "", { expires: new Date(Date.now()), httpOnly: true });
@@ -35,12 +42,14 @@ router.get('/login', function (req, res) {
 	}
 });
 
+//registration page
 router.get('/register', function (req, res) {
 	res.render("layouts/register", {
 		partial: "jquery-register-scripts"
 	});
 }),
 
+	//post user registration
 	router.post('/user/register', function (req, res) {
 		var username = req.body.username;
 		var hash = crypto.createHash("sha1");
@@ -51,13 +60,13 @@ router.get('/register', function (req, res) {
 		var password = hash.digest("hex");
 		var name = req.body.name;
 		var email = req.body.email;
+		//verify user exists
 		users.checkUserExist(username).then(result => {
 			if (result === false) {
 				users.checkEmailExist(email).then(result => {
 					if (result === false) {
 						users.addUser(username, password, name, email).then((user) => {
 							if (user != "failed") {
-								//res.cookie("next_movie", user.sessionId, { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
 								var playlistObj = {};
 								playlistObj.title = "My Playlist";
 								playlistObj.user = user.profile;
@@ -92,6 +101,7 @@ router.get('/register', function (req, res) {
 
 	}),
 
+	//get user information by session id
 	router.get('/user', function (req, res) {
 		users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
 			if (userObj != "User not found") {
@@ -105,11 +115,10 @@ router.get('/register', function (req, res) {
 		});
 	});
 
+//create user in user collection and new playlist entry
 router.post('/users/playlist/:title', function (req, res) {
 	var obj = req.body;
 	users.addUsersAndPlaylist(req.params.title, obj).then((userObj) => {
-		//obj["_id"]=uuid.v4();
-		//obj["profile"]["_id"]= obj["_id"];
 		users.addUsers(obj).then((userObj) => {
 			if (userObj) {
 				res.status(200).send(userObj);
@@ -120,6 +129,7 @@ router.post('/users/playlist/:title', function (req, res) {
 	});
 });
 
+//update user
 router.put('/users/:id', function (req, res) {
 	users.updateUserById(req.params.id, req.body).then((userObj) => {
 		if (userObj) {
@@ -131,6 +141,7 @@ router.put('/users/:id', function (req, res) {
 	});
 });
 
+//delete user
 router.delete('/users/:id', function (req, res) {
 	users.deleteUserById(req.params.id).then((userObj) => {
 		if (userObj) {
@@ -141,10 +152,12 @@ router.delete('/users/:id', function (req, res) {
 	});
 });
 
+//post user login
 router.post('/user/login', function (req, res) {
 	var userObj = {};
 	userObj.username = req.body.username;
 
+	//encrypt password
 	var hash = crypto.createHash("sha1");
 	hash.update(req.body.password);
 	var password = hash.digest("hex");
@@ -161,6 +174,7 @@ router.post('/user/login', function (req, res) {
 	});
 });
 
+//post user update email
 router.post('/user/update_email', function (req, res) {
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
 		userObj.profile.email = req.body.email;
@@ -176,6 +190,7 @@ router.post('/user/update_email', function (req, res) {
 	});
 });
 
+//post user update password
 router.post('/user/update_password', function (req, res) {
 	var newPassword = req.body.newPassword;
 	var confirmPassword = req.body.confirmPassword;
@@ -202,6 +217,7 @@ router.post('/user/update_password', function (req, res) {
 	});
 });
 
+//post user removes genre from preferences
 router.post('/user/delete_genre', function (req, res) {
 	var deleteVal = req.body.value;
 
@@ -227,6 +243,7 @@ router.post('/user/delete_genre', function (req, res) {
 	});
 });
 
+//post user adds genre to preferences
 router.post('/user/add_genre', function (req, res) {
 	var addVal = req.body.value;
 
@@ -274,6 +291,7 @@ router.post('/user/add_genre', function (req, res) {
 	});
 });
 
+//post user removes age rating from preferences
 router.post('/user/delete_ageRating', function (req, res) {
 	var deleteVal = req.body.value;
 
@@ -299,6 +317,7 @@ router.post('/user/delete_ageRating', function (req, res) {
 	});
 });
 
+//post user adds age rating to preferences
 router.post('/user/add_ageRating', function (req, res) {
 	var addVal = req.body.value;
 
@@ -346,6 +365,7 @@ router.post('/user/add_ageRating', function (req, res) {
 	});
 });
 
+//post user removes keywords from preferences
 router.post('/user/delete_keywords', function (req, res) {
 	var deleteVal = req.body.value;
 
@@ -376,6 +396,7 @@ router.post('/user/delete_keywords', function (req, res) {
 	});
 });
 
+//post user adds keywords to preferences
 router.post('/user/add_keywords', function (req, res) {
 	var addVal = req.body.value;
 
@@ -412,6 +433,7 @@ router.post('/user/add_keywords', function (req, res) {
 	});
 });
 
+//post user adds year to preferences
 router.post('/user/add_releaseYear', function (req, res) {
 	var year = req.body.year;
 	var now = new Date();
@@ -450,6 +472,7 @@ router.post('/user/add_releaseYear', function (req, res) {
 	});
 });
 
+//post user removes year from preferences
 router.post('/user/delete_releaseYear', function (req, res) {
 	var year = req.body.value;
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
@@ -480,14 +503,13 @@ router.post('/user/delete_releaseYear', function (req, res) {
 	});
 });
 
+//post user adds person to preferences
 router.post('/user/add_person', function (req, res) {
 	var addVal = req.body.value;
 
 	api.getCreditByPersonId(addVal).then((person) => {
 		if (person.id == null || person.id == undefined) {
 			res.json({ success: false, message: "Person doesn't exist!" });
-			//	return;
-			console.log(person);
 			return;
 		}
 
@@ -500,6 +522,7 @@ router.post('/user/add_person', function (req, res) {
 			var flag = true;
 			var mark = "";
 
+			//if person has both cast and crew credits, mark as actor if cast credits are more than crew credits
 			if (person.movie_credits.cast.length > 0 && person.movie_credits.cast.length > person.movie_credits.crew.length) {
 				mark = "actor";
 				for (var i = 0; i < actorArr.length; i++) {
@@ -516,7 +539,7 @@ router.post('/user/add_person', function (req, res) {
 
 				newActorArr.push(addVal);
 				userObj.preferences.Actor = newActorArr;
-			} else if (person.movie_credits.crew.length > 0) {
+			} else if (person.movie_credits.crew.length > 0) { //mark as crew
 				flag = true;
 				mark = "crew";
 				for (var i = 0; i < crewArr.length; i++) {
@@ -549,6 +572,7 @@ router.post('/user/add_person', function (req, res) {
 	});
 });
 
+//post user removes actor from preferences
 router.post('/user/delete_actor', function (req, res) {
 	var actor = req.body.value;
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
@@ -578,6 +602,7 @@ router.post('/user/delete_actor', function (req, res) {
 	});
 });
 
+//post user removes crew from preferences
 router.post('/user/delete_crew', function (req, res) {
 	var crew = req.body.value;
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
@@ -607,6 +632,7 @@ router.post('/user/delete_crew', function (req, res) {
 	});
 });
 
+//post user clears all preferences
 router.post('/user/clear_preferences', function (req, res) {
 	users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
 		userObj.preferences.Actor = [];

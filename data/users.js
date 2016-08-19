@@ -1,16 +1,23 @@
+/*Program Title: data/users.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This module exports methods related to the user collection
+*/
+
 mongoCollections = require("../config/mongoCollections");
 Users = mongoCollections.users;
 var playlist = require('./playlist');
 var uuid = require('node-uuid');
 
 var exportedMethods = {
+    //get all users
     getAllUser() {
         return Users().then((userCollection) => {
             return userCollection.find({}).toArray();
         });
     },
-    // This is a fun new syntax that was brought forth in ES6, where we can define
-    // methods on an object with this shorthand!
+    // get user by user id
     getUserById(id) {
         return Users().then((userCollection) => {
             return userCollection.findOne({ _id: id }).then((userObj) => {
@@ -22,6 +29,7 @@ var exportedMethods = {
         });
     },
 
+    //get user's preferences
     getUserPreferences(userId) {
         return Users().then((userCollection) => {
             return userCollection.findOne({ _id: userId }, { preferences: 1, _id: 0 }).then((userObj) => {
@@ -33,7 +41,7 @@ var exportedMethods = {
         });
     },
 
-
+    //add general user object
     addUsersGeneral(obj) {
         return Users().then((userCollection) => {
             obj["_id"] = uuid.v4();
@@ -46,6 +54,7 @@ var exportedMethods = {
         });
     },
 
+    //get user by session id
     getUserBySessionId(id) {
         return Users().then((userCollection) => {
             return userCollection.findOne({ sessionId: id }).then((userObj) => {
@@ -57,6 +66,7 @@ var exportedMethods = {
         });
     },
 
+    //add user using speciifc parameters
     addUsers(sessionId, hashedPassword, profile, preferences) {
         var userid = uuid.v4();
         profile["_id"] = userid;
@@ -107,6 +117,7 @@ var exportedMethods = {
         });
     },
 
+    //delete user
     deleteUserById(id) {
         return Users().then((userCollection) => {
             return userCollection.deleteOne({ _id: id }).then(function (deletionInfo) {
@@ -118,6 +129,7 @@ var exportedMethods = {
         })
     },
 
+    //update user
     updateUserById(id, obj) {
         return Users().then((userCollection) => {
             return userCollection.update({ _id: id }, { $set: obj }).then(function () {
@@ -131,6 +143,7 @@ var exportedMethods = {
         })
     },
 
+    //add user without preferences
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
             console.log("Adding user");
@@ -154,7 +167,7 @@ var exportedMethods = {
                 }
             };
             return userCollection.insertOne(obj).then((userObj) => {
-                if(!userObj) throw "failed";
+                if (!userObj) throw "failed";
                 return userObj.insertedId;
             }).then(newId => {
                 return this.getUserById(newId);
@@ -164,6 +177,7 @@ var exportedMethods = {
         });
     },
 
+    //verify user
     verifyUser(obj) {
         return Users().then((userCollection) => {
             return userCollection.findOne({ $and: [{ "profile.username": obj.username }, { hashedPassword: obj.password }] }).then((userObj) => {
@@ -178,8 +192,9 @@ var exportedMethods = {
         });
     },
 
-    checkUserExist(username){
-         return Users().then((userCollection) => {
+    //check if user exists
+    checkUserExist(username) {
+        return Users().then((userCollection) => {
             return userCollection.findOne({ "profile.username": username }).then((userObj) => {
                 if (!userObj) return false;
                 return true;
@@ -190,8 +205,9 @@ var exportedMethods = {
         });
     },
 
-    checkEmailExist(email){
-         return Users().then((userCollection) => {
+    //check if email exists
+    checkEmailExist(email) {
+        return Users().then((userCollection) => {
             return userCollection.findOne({ "profile.email": email }).then((userObj) => {
                 if (!userObj) return false;
                 return true;
@@ -202,10 +218,10 @@ var exportedMethods = {
         });
     },
 
-    
-    getUserBySessionIdAndPassword(sessionId, password){
+    //get user by session id and password
+    getUserBySessionIdAndPassword(sessionId, password) {
         return Users().then((userCollection) => {
-            return userCollection.findOne({$and: [{sessionId: sessionId}, {hashedPassword: password}]}).then((userObj) => {
+            return userCollection.findOne({ $and: [{ sessionId: sessionId }, { hashedPassword: password }] }).then((userObj) => {
                 if (!userObj) throw "Users not found";
                 return userObj;
             }).catch((error) => {
@@ -213,8 +229,9 @@ var exportedMethods = {
             });
         });
     },
-    
-    deleteSessionIdBySessionId(id){
+
+    //delete user's session id
+    deleteSessionIdBySessionId(id) {
         return Users().then((userCollection) => {
             return userCollection.update({ sessionId: id }, { $unset: { "sessionId": "" } });
         });

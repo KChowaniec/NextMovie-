@@ -1,11 +1,9 @@
 /*Program Title: data/index.js
-Author: Kathy Chowaniec
 Course: CS546-WS
-Date: 07/20/2016
+Date: 08/18/2016
 Description:
-This module exports the form methods 
+This module exports the data modules
 */
-
 var form = require("./form");
 var users = require("./users");
 var playlist = require("./playlist");

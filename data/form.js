@@ -1,9 +1,15 @@
-var ids = [];
+/*Program Title: data/form.js
+Course: CS546-WS
+Date: 08/18/2016
+Description:
+This module exports methods related to the search form
+*/
+
 var api = require("./api");
-var directorId;
 
 var exportedMethods = {
 
+    //create query string using search criteria entered
     createQueryString(actors, genre, crew, rating, evaluation, year, keywords) {
         var query = "";
         if (rating) query = query + "certification_country=US";
@@ -16,7 +22,7 @@ var exportedMethods = {
         if (year) {
             query = query + "&primary_release_year=" + year;
         }
-        else if (!year) {
+        else if (!year) { //reformat release date
             let currentDate = new Date();
             let formatDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
             query = query + "&primary_release_date.lte=" + formatDate;
@@ -26,6 +32,7 @@ var exportedMethods = {
         return query;
     },
 
+    //format release date as mm-dd-yyyy
     formatReleaseDate(movielist) {
         for (var i = 0; i < movielist.length; i++) {
             if (!movielist[i].release_date == '') {
@@ -36,33 +43,7 @@ var exportedMethods = {
             }
         }
         return movielist;
-    },
-
-    getKeywordIds(keywords) {
-        var ids = [];
-        for (var i = 0; i < keywords.length; i++) {
-            var wordId = this.getKeywordIdByName(keywords[i]);
-            wordId.then((keywordId) => {
-                if (keywordId.total_results > 0) {
-                    ids.push(keywordId.results[0].id);
-                }
-            });
-        }
-        return ids;
-    },
-    getActorIds(actors) {
-
-        var ids = [];
-        for (var i = 0; i < actors.length; i++) {
-            var id = api.getPersonIdByName(actors[i]);
-            id.then((newId) => {
-                ids.push(newId);
-            });
-        }
-        Promise.all([id]).then(values => {
-            //  console.log(values);
-            return values;
-        });
     }
+
 }
 module.exports = exportedMethods; //export methods
