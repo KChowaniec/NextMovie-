@@ -7,6 +7,7 @@ const configRoutes = require("./routes");
 const exphbs = require('express-handlebars');
 const Handlebars = require('handlebars');
 const users = require('./data/users');
+var config = require('./all-config.json');
 
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
@@ -68,7 +69,7 @@ app.use(function (request, response, next) {
 
 configRoutes(app);
 
-app.listen(3000, () => {
+app.listen(config.port, () => {
     console.log("We've now got a server!");
-    console.log("Your routes will be running on http://localhost:3000");
+    console.log("Your routes will be running on http://localhost:" + config.port);
 });

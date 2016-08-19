@@ -1,9 +1,10 @@
-var MongoClient = require("mongodb").MongoClient;;
+var MongoClient = require("mongodb").MongoClient;
+var config = require('../all-config.json');
 
 var settings = {
     mongoConfig: {
-        serverUrl: "mongodb://localhost:27017/",
-        database: "nextMovie"
+        serverUrl: config.serverUrl,
+        database: config.database
     }
 };
 
